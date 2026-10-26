@@ -6,7 +6,9 @@
 <title>ARCHIVE</title>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 html, body {
   margin: 0;
@@ -21,6 +23,9 @@ html, body {
   height: 100svh;
   overflow: hidden;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #scene {
@@ -32,12 +37,13 @@ html, body {
 
 #message {
   position: fixed;
-  bottom: 12px;
+  bottom: 16px;
   left: 0;
   width: 100%;
   color: white;
-  font-size: 12px;
   text-align: center;
+  font-size: 12px;
+  letter-spacing: 3px;
   pointer-events: none;
 }
 
@@ -46,6 +52,7 @@ html, body {
   min-height: 100vh;
   padding: 60px 22px;
   color: #f6f1f4;
+  background: #141319;
   text-align: center;
 }
 
@@ -83,7 +90,7 @@ html, body {
 
 <section id="opening">
   <img id="scene" alt="タップして進む">
-  <div id="message">TAP TO CONTINUE</div>
+  <div id="message">LOADING...</div>
 </section>
 
 <section id="lobby">
@@ -95,15 +102,18 @@ html, body {
     <button onclick="alert('キャラクター資料はこれから追加します')">
       CHARACTERS
     </button>
+
     <button onclick="alert('物語の資料はこれから追加します')">
       STORIES
     </button>
+
     <button onclick="alert('世界観の資料はこれから追加します')">
       WORLDS
     </button>
   </nav>
 </section>
 
+<script>
 const images = [
   "IMG_3320.png",
   "無題290_20261027070018.png",
@@ -116,40 +126,39 @@ const scene = document.getElementById("scene");
 const message = document.getElementById("message");
 const lobby = document.getElementById("lobby");
 
-let stage = 0;
-let busy = false;
+let currentIndex = 0;
+let loading = false;
 
-function showImage(index) {
-  busy = true;
+function loadImage(index) {
+  loading = true;
   message.textContent = "LOADING...";
 
-  scene.onload = () => {
+  scene.onload = function() {
+    loading = false;
     message.textContent = "TAP TO CONTINUE";
-    busy = false;
   };
 
-  scene.onerror = () => {
-    message.textContent = "IMAGE ERROR: " + images[index];
-    busy = true;
+  scene.onerror = function() {
+    loading = true;
+    message.textContent = "IMAGE ERROR";
   };
 
-  scene.src = "./" + encodeURI(images[index]);
+  scene.src = images[index];
 }
 
-opening.addEventListener("click", () => {
-  if (busy) return;
+opening.addEventListener("click", function() {
+  if (loading) return;
 
-  stage++;
-
-  if (stage < images.length) {
-    showImage(stage);
+  if (currentIndex < images.length - 1) {
+    currentIndex++;
+    loadImage(currentIndex);
   } else {
     opening.style.display = "none";
     lobby.style.display = "block";
   }
 });
 
-showImage(0);
+loadImage(currentIndex);
 </script>
 
 </body>
