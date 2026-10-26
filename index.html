@@ -6,9 +6,7 @@
 <title>ARCHIVE</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body {
   margin: 0;
@@ -29,8 +27,18 @@ html, body {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  object-fit: contain;
+}
+
+#message {
+  position: fixed;
+  bottom: 12px;
+  left: 0;
+  width: 100%;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  pointer-events: none;
 }
 
 #lobby {
@@ -38,7 +46,6 @@ html, body {
   min-height: 100vh;
   padding: 60px 22px;
   color: #f6f1f4;
-  background: #141319;
   text-align: center;
 }
 
@@ -75,9 +82,8 @@ html, body {
 <body>
 
 <section id="opening">
-  <img id="scene"
-       src="CECF8610-476D-4D10-ACCF-58DD0A7CB056.png"
-       alt="タップして進む">
+  <img id="scene" alt="タップして進む">
+  <div id="message">TAP TO CONTINUE</div>
 </section>
 
 <section id="lobby">
@@ -106,22 +112,45 @@ const images = [
   "無題290_20261027075250.png"
 ];
 
-let stage = 0;
-
 const opening = document.getElementById("opening");
 const scene = document.getElementById("scene");
+const message = document.getElementById("message");
 const lobby = document.getElementById("lobby");
 
+let stage = 0;
+let busy = false;
+
+function showImage(index) {
+  busy = true;
+  message.textContent = "LOADING...";
+
+  scene.onload = () => {
+    message.textContent = "TAP TO CONTINUE";
+    busy = false;
+  };
+
+  scene.onerror = () => {
+    message.textContent = "IMAGE ERROR: " + images[index];
+    busy = true;
+  };
+
+  scene.src = "./" + encodeURI(images[index]);
+}
+
 opening.addEventListener("click", () => {
+  if (busy) return;
+
   stage++;
 
   if (stage < images.length) {
-    scene.src = images[stage];
+    showImage(stage);
   } else {
     opening.style.display = "none";
     lobby.style.display = "block";
   }
 });
+
+showImage(0);
 </script>
 
 </body>
