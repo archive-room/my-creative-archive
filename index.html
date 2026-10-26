@@ -1,191 +1,147 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>創作アーカイブ</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archive</title>
+<style>
+* { box-sizing: border-box; }
 
-    body {
-      margin: 0;
-      background: #101116;
-      color: #eeeaf2;
-      font-family: sans-serif;
-    }
+html, body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #fff;
+  font-family: sans-serif;
+}
 
-    header {
-      padding: 24px 20px;
-      text-align: center;
-      border-bottom: 1px solid #393743;
-    }
+#opening {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 500px;
+  overflow: hidden;
+  background: #fdfcfb;
+}
 
-    header p {
-      color: #aaa5b8;
-      letter-spacing: 3px;
-      font-size: 11px;
-    }
+#scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
 
-    h1 {
-      font-size: 25px;
-      letter-spacing: 4px;
-      font-weight: normal;
-    }
+#apple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 32%;
+  height: 32%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    main {
-      max-width: 700px;
-      margin: auto;
-      padding: 24px 18px;
-    }
+#apple img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
-    .intro {
-      padding: 28px 20px;
-      border: 1px solid #484352;
-      background: #191820;
-      margin-bottom: 30px;
-    }
+#hint {
+  position: absolute;
+  bottom: 8%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: rgba(80, 70, 70, 0.55);
+  font-size: 11px;
+  letter-spacing: 4px;
+}
 
-    .intro p {
-      color: #c1bbc9;
-      line-height: 1.9;
-      font-size: 14px;
-    }
+#lobby {
+  display: none;
+  min-height: 100svh;
+  padding: 60px 22px;
+  color: #f6f1f4;
+  background: #141319;
+  text-align: center;
+}
 
-    h2 {
-      font-size: 16px;
-      font-weight: normal;
-      letter-spacing: 2px;
-      margin-bottom: 16px;
-    }
+#lobby h1 {
+  margin-top: 20vh;
+  font-size: 25px;
+  font-weight: normal;
+  letter-spacing: 5px;
+}
 
-    .menu {
-      display: grid;
-      gap: 12px;
-    }
+#lobby p {
+  color: #aaa3b3;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
 
-    button {
-      width: 100%;
-      padding: 20px;
-      color: #eeeaf2;
-      background: #191820;
-      border: 1px solid #484352;
-      text-align: left;
-      font-size: 15px;
-      cursor: pointer;
-    }
+#lobby nav {
+  max-width: 400px;
+  margin: 50px auto;
+}
 
-    button span {
-      display: block;
-      color: #9d96aa;
-      font-size: 12px;
-      margin-top: 8px;
-    }
-
-    button:active {
-      background: #302a3a;
-    }
-
-    #detail {
-      display: none;
-      margin-top: 24px;
-      padding: 20px;
-      border: 1px solid #484352;
-      line-height: 1.9;
-    }
-
-    .back {
-      margin-top: 16px;
-      text-align: center;
-    }
-
-    footer {
-      padding: 30px 15px;
-      color: #777180;
-      text-align: center;
-      font-size: 11px;
-    }
-  </style>
+#lobby button {
+  width: 100%;
+  margin: 7px 0;
+  padding: 20px;
+  color: white;
+  background: transparent;
+  border: 1px solid #494451;
+  font-size: 14px;
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <p>PRIVATE COLLECTION</p>
-    <h1>創作アーカイブ</h1>
-    <p>CHARACTERS / STORIES / WORLDS</p>
-  </header>
+<section id="opening">
+  <img id="scene" src="IMG_3320.png" alt="">
+  <div id="apple" role="button" aria-label="りんごをタップ">
+    <img id="appleImage" src="IMG_3320.png" alt="">
+  </div>
+  <div id="hint"></div>
+</section>
 
-  <main>
-    <section class="intro">
-      <h2>WELCOME TO MY ARCHIVE</h2>
-      <p>
-        物語と登場人物の記録。<br>
-        ここに、私だけの創作世界を保管する。
-      </p>
-    </section>
+<section id="lobby">
+  <p>PRIVATE COLLECTION</p>
+  <h1>ARCHIVE</h1>
+  <p>CHARACTERS / STORIES / WORLDS</p>
+  <nav>
+    <button onclick="alert('キャラクター資料はこれから追加します')">CHARACTERS</button>
+    <button onclick="alert('物語の資料はこれから追加します')">STORIES</button>
+    <button onclick="alert('世界観の資料はこれから追加します')">WORLDS</button>
+  </nav>
+</section>
 
-    <h2>ARCHIVE INDEX</h2>
+<script>
+let taps = 0;
 
-    <div class="menu">
-      <button onclick="showDetail('characters')">
-        01　CHARACTERS
-        <span>創作キャラクター・人物設定</span>
-      </button>
+const apple = document.getElementById('apple');
+const opening = document.getElementById('opening');
+const lobby = document.getElementById('lobby');
 
-      <button onclick="showDetail('stories')">
-        02　STORIES
-        <span>物語・プロット・あらすじ</span>
-      </button>
+apple.addEventListener('click', () => {
+  taps++;
 
-      <button onclick="showDetail('worlds')">
-        03　WORLDS
-        <span>世界観・用語・設定資料</span>
-      </button>
-    </div>
+  if (taps >= 4) {
+    opening.style.display = 'none';
+    lobby.style.display = 'block';
+    return;
+  }
 
-    <section id="detail">
-      <h2 id="detailTitle"></h2>
-      <p id="detailText"></p>
-      <button class="back" onclick="hideDetail()">← INDEX に戻る</button>
-    </section>
-  </main>
+  apple.style.transform =
+    `translate(-50%, -50%) scale(${1 - taps * 0.12})`;
 
-  <footer>
-    MY CREATIVE ARCHIVE
-  </footer>
-
-  <script>
-    const contents = {
-      characters: {
-        title: "CHARACTERS",
-        text: "ここに創作キャラクターのプロフィールを追加していきます。"
-      },
-      stories: {
-        title: "STORIES",
-        text: "ここに物語のあらすじやプロットを追加していきます。"
-      },
-      worlds: {
-        title: "WORLDS",
-        text: "ここに世界観や用語、設定資料を追加していきます。"
-      }
-    };
-
-    function showDetail(type) {
-      document.getElementById("detailTitle").textContent =
-        contents[type].title;
-      document.getElementById("detailText").textContent =
-        contents[type].text;
-      document.getElementById("detail").style.display = "block";
-      document.getElementById("detail").scrollIntoView({
-        behavior: "smooth"
-      });
-    }
-
-    function hideDetail() {
-      document.getElementById("detail").style.display = "none";
-    }
-  </script>
+  apple.style.opacity = String(1 - taps * 0.18);
+});
+</script>
 
 </body>
 </html>
