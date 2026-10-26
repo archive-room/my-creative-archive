@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ARCHIVE</title>
 <style>
 * { box-sizing: border-box; }
@@ -16,31 +15,20 @@ html, body {
 }
 
 #opening {
-  position: relative;
   width: 100%;
   height: 100vh;
   height: 100svh;
   overflow: hidden;
+  position: relative;
+  cursor: pointer;
 }
 
-#scene, #appleImage {
-  position: absolute;
-  inset: 0;
+#opening img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-}
-
-#appleImage {
-  display: none;
-}
-
-#appleStage {
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  display: block;
 }
 
 #lobby {
@@ -83,11 +71,8 @@ html, body {
 </head>
 <body>
 
-<section id="opening">
+<section id="opening" aria-label="タップして進む">
   <img id="scene" src="IMG_3320.png" alt="">
-  <div id="appleStage" role="button" aria-label="画面をタップ">
-    <img id="appleImage" alt="">
-  </div>
 </section>
 
 <section id="lobby">
@@ -103,6 +88,7 @@ html, body {
 
 <script>
 const images = [
+  "IMG_3320.png",
   "無題290_20261027065515.png",
   "無題290_20261027070018.png",
   "無題290_20261027070623.png",
@@ -111,16 +97,15 @@ const images = [
 
 let stage = 0;
 
-const appleStage = document.getElementById("appleStage");
-const appleImage = document.getElementById("appleImage");
 const opening = document.getElementById("opening");
+const scene = document.getElementById("scene");
 const lobby = document.getElementById("lobby");
 
-appleStage.addEventListener("click", () => {
+opening.addEventListener("click", () => {
+  stage++;
+
   if (stage < images.length) {
-    appleImage.src = images[stage];
-    appleImage.style.display = "block";
-    stage++;
+    scene.src = images[stage];
   } else {
     opening.style.display = "none";
     lobby.style.display = "block";
