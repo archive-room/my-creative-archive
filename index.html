@@ -18,7 +18,6 @@ html, body {
   overflow: hidden;
   background: #141319;
   font-family: sans-serif;
-  overscroll-behavior: none;
 }
 
 #opening {
@@ -26,7 +25,6 @@ html, body {
   inset: 0;
   width: 100%;
   height: 100%;
-  height: 100dvh;
   overflow: hidden;
   background: #141319;
 }
@@ -42,22 +40,22 @@ html, body {
   -webkit-user-drag: none;
 }
 
-/* りんごをタップする場所 */
+/* りんごの位置に合わせる */
 #appleTarget {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 70%;
   width: 120px;
   height: 120px;
   transform: translate(-50%, -50%);
   border: none;
   background: transparent;
   border-radius: 50%;
+  padding: 0;
   cursor: pointer;
   touch-action: manipulation;
 }
 
-/* ふわふわ広がる輪っか */
 #appleTarget::before,
 #appleTarget::after {
   content: "";
@@ -78,7 +76,6 @@ html, body {
     transform: scale(0.7);
     opacity: 0.8;
   }
-
   100% {
     transform: scale(2.2);
     opacity: 0;
@@ -127,7 +124,6 @@ html, body {
 </head>
 
 <body>
-
 <section id="opening">
   <img id="scene" alt="">
   <button id="appleTarget" aria-label="りんごをタップ"></button>
@@ -137,17 +133,10 @@ html, body {
   <p>PRIVATE COLLECTION</p>
   <h1>ARCHIVE</h1>
   <p>CHARACTERS / STORIES / WORLDS</p>
-
   <nav>
-    <button onclick="alert('キャラクター資料はこれから追加します')">
-      CHARACTERS
-    </button>
-    <button onclick="alert('物語の資料はこれから追加します')">
-      STORIES
-    </button>
-    <button onclick="alert('世界観の資料はこれから追加します')">
-      WORLDS
-    </button>
+    <button onclick="alert('キャラクター資料はこれから追加します')">CHARACTERS</button>
+    <button onclick="alert('物語の資料はこれから追加します')">STORIES</button>
+    <button onclick="alert('世界観の資料はこれから追加します')">WORLDS</button>
   </nav>
 </section>
 
@@ -187,7 +176,6 @@ function loadImage(index) {
 
 appleTarget.addEventListener("click", function(event) {
   event.stopPropagation();
-
   if (loading) return;
 
   if (currentIndex < images.length - 1) {
@@ -201,6 +189,5 @@ appleTarget.addEventListener("click", function(event) {
 
 loadImage(currentIndex);
 </script>
-
 </body>
 </html>
