@@ -2,90 +2,94 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>ARCHIVE</title>
 
 <style>
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
   margin: 0;
-  min-height: 100%;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   background: #141319;
   font-family: sans-serif;
+  overscroll-behavior: none;
 }
 
 #opening {
-  position: relative;
+  position: fixed;
+  inset: 0;
   width: 100%;
-  height: 100vh;
-  height: 100svh;
+  height: 100%;
+  height: 100dvh;
   overflow: hidden;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #141319;
 }
 
 #scene {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-}
-
-#message {
-  position: absolute;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: white;
-  text-align: center;
-  font-size: 12px;
-  letter-spacing: 3px;
-  padding: 12px 24px;
-  white-space: nowrap;
   pointer-events: none;
-  z-index: 2;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-#message::before,
-#message::after {
+/* りんごをタップする場所 */
+#appleTarget {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* ふわふわ広がる輪っか */
+#appleTarget::before,
+#appleTarget::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  inset: 25%;
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 50%;
-  animation: ripple 2.4s ease-out infinite;
   pointer-events: none;
+  animation: ripple 2.6s ease-out infinite;
 }
 
-#message::after {
-  animation-delay: 1.2s;
+#appleTarget::after {
+  animation-delay: 1.3s;
 }
 
 @keyframes ripple {
   0% {
-    transform: scale(0.85);
+    transform: scale(0.7);
     opacity: 0.8;
   }
 
   100% {
-    transform: scale(1.5, 2);
+    transform: scale(2.2);
     opacity: 0;
   }
 }
 
-#message.loading::before,
-#message.loading::after {
-  display: none;
-}
-
 #lobby {
   display: none;
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
   padding: 60px 22px;
   color: #f6f1f4;
   background: #141319;
@@ -125,8 +129,8 @@ html, body {
 <body>
 
 <section id="opening">
-  <img id="scene" alt="タップして進む">
-  <div id="message" class="loading">LOADING...</div>
+  <img id="scene" alt="">
+  <button id="appleTarget" aria-label="りんごをタップ"></button>
 </section>
 
 <section id="lobby">
@@ -138,11 +142,9 @@ html, body {
     <button onclick="alert('キャラクター資料はこれから追加します')">
       CHARACTERS
     </button>
-
     <button onclick="alert('物語の資料はこれから追加します')">
       STORIES
     </button>
-
     <button onclick="alert('世界観の資料はこれから追加します')">
       WORLDS
     </button>
@@ -159,33 +161,33 @@ const images = [
 
 const opening = document.getElementById("opening");
 const scene = document.getElementById("scene");
-const message = document.getElementById("message");
+const appleTarget = document.getElementById("appleTarget");
 const lobby = document.getElementById("lobby");
 
 let currentIndex = 0;
-let loading = false;
+let loading = true;
 
 function loadImage(index) {
   loading = true;
-  message.textContent = "LOADING...";
-  message.classList.add("loading");
+  appleTarget.disabled = true;
 
   scene.onload = function() {
     loading = false;
-    message.textContent = "TAP TO CONTINUE";
-    message.classList.remove("loading");
+    appleTarget.disabled = false;
   };
 
   scene.onerror = function() {
     loading = true;
-    message.textContent = "IMAGE ERROR";
-    message.classList.add("loading");
+    appleTarget.disabled = true;
+    alert("画像が読み込めませんでした。ファイル名を確認してください。");
   };
 
   scene.src = images[index];
 }
 
-opening.addEventListener("click", function() {
+appleTarget.addEventListener("click", function(event) {
+  event.stopPropagation();
+
   if (loading) return;
 
   if (currentIndex < images.length - 1) {
