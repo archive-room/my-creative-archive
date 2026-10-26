@@ -18,6 +18,7 @@ html, body {
 }
 
 #opening {
+  position: relative;
   width: 100%;
   height: 100vh;
   height: 100svh;
@@ -36,15 +37,50 @@ html, body {
 }
 
 #message {
-  position: fixed;
-  bottom: 16px;
-  left: 0;
-  width: 100%;
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
   color: white;
   text-align: center;
   font-size: 12px;
   letter-spacing: 3px;
+  padding: 12px 24px;
+  white-space: nowrap;
   pointer-events: none;
+  z-index: 2;
+}
+
+#message::before,
+#message::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  animation: ripple 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+#message::after {
+  animation-delay: 1.2s;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1.5, 2);
+    opacity: 0;
+  }
+}
+
+#message.loading::before,
+#message.loading::after {
+  display: none;
 }
 
 #lobby {
@@ -90,7 +126,7 @@ html, body {
 
 <section id="opening">
   <img id="scene" alt="タップして進む">
-  <div id="message">LOADING...</div>
+  <div id="message" class="loading">LOADING...</div>
 </section>
 
 <section id="lobby">
@@ -132,15 +168,18 @@ let loading = false;
 function loadImage(index) {
   loading = true;
   message.textContent = "LOADING...";
+  message.classList.add("loading");
 
   scene.onload = function() {
     loading = false;
     message.textContent = "TAP TO CONTINUE";
+    message.classList.remove("loading");
   };
 
   scene.onerror = function() {
     loading = true;
     message.textContent = "IMAGE ERROR";
+    message.classList.add("loading");
   };
 
   scene.src = images[index];
