@@ -1,644 +1,212 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#eaf7ff">
-<title>ARCHIVE — Private Collection</title>
-
+<title>ARCHIVE</title>
 <style>
-:root {
-  --ink: #4b6276;
-  --muted: #8298aa;
-  --ice: #eaf7ff;
-  --ice2: #d7efff;
-  --line: rgba(117,166,198,.42);
-  --glass: rgba(255,255,255,.78);
-  --blue: #a8d9f4;
-  --white: #fbfeff;
-  --shadow: 0 5px 18px rgba(104,157,190,.09);
-}
-* { box-sizing: border-box; }
-html { min-height: 100%; scroll-behavior: smooth; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
-  background: linear-gradient(145deg, #fbfeff, #eaf7ff 60%, #f8fdff);
-}
-button, input, textarea, select { font: inherit; }
-button { cursor: pointer; }
-button:focus-visible, input:focus-visible, textarea:focus-visible,
-select:focus-visible {
-  outline: 2px solid #83c5ec;
-  outline-offset: 2px;
-}
-.hidden { display: none !important; }
-button:active { opacity: .78; }
-button:disabled { opacity: .5; cursor: not-allowed; }
-
-button {
-  color: #6386a0;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.82);
-  padding: 10px 14px;
-}
-input, textarea, select {
-  width: 100%;
-  padding: 11px;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.9);
-  border-radius: 2px;
-}
-textarea { min-height: 100px; resize: vertical; }
-label {
-  display: block;
-  margin-bottom: 6px;
-  color: #7896ac;
-  font: 11px/1.6 sans-serif;
-  letter-spacing: .8px;
-}
-button, input, textarea, select { border-radius: 2px; }
-
-#opening {
-  height: 100svh;
-  min-height: 420px;
-  position: relative;
-  overflow: hidden;
-  background: var(--ice);
-  cursor: pointer;
-}
-#scene {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center;
-}
-#openingFallback {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  background: linear-gradient(145deg, #fbfeff, #e4f5ff);
-  color: #6b9ab9;
-}
-#openingFallback .fallback-title {
-  font-size: 24px;
-  letter-spacing: 4px;
-}
-#openingFallback p {
-  font: 10px sans-serif;
-  letter-spacing: 3px;
-}
-#tapHint {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 8%;
-  color: white;
-  text-align: center;
-  font: 11px sans-serif;
-  letter-spacing: 2px;
-  text-shadow: 0 1px 7px #54768c;
-  pointer-events: none;
-}
-
-#lobby {
-  position: relative;
-  min-height: 100svh;
-  padding: 70px 20px 35px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-.top-actions {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  display: flex;
-  gap: 8px;
-}
-.icon-button {
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(117,166,198,.35);
-  background: rgba(255,255,255,.65);
-  color: #83c5ec;
-  font: 25px/1 sans-serif;
-}
-.eyebrow {
-  margin: 0 0 35px;
-  color: #8da9bd;
-  font: 10px sans-serif;
-  letter-spacing: 4px;
-}
-#lobby h1 {
-  margin: 0;
-  color: #5a7b94;
-  font-size: clamp(34px, 8vw, 48px);
-  font-weight: normal;
-  letter-spacing: 8px;
-}
-.subtitle {
-  margin: 15px 0 38px;
-  color: #91a9bb;
-  font: 10px sans-serif;
-  letter-spacing: 1.6px;
-}
-.main-menu {
-  width: min(100%, 410px);
-  display: grid;
-  gap: 10px;
-}
-.menu-button {
-  min-height: 58px;
-  font: 12px sans-serif;
-  letter-spacing: 3px;
-  box-shadow: var(--shadow);
-}
-.menu-button:hover { background: #f0faff; }
-.home-note {
-  margin-top: 25px;
-  color: #9bb1c1;
-  font: 10px sans-serif;
-}
-
-.page {
-  min-height: 100svh;
-  padding: 24px 15px 40px;
-}
-.page-inner {
-  width: min(100%, 1050px);
-  margin: 0 auto;
-}
-.page-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 22px;
-}
-.back-button {
-  white-space: nowrap;
-  font: 10px sans-serif;
-  letter-spacing: 1px;
-}
-.page-title {
-  margin: 0;
-  color: #5c7e97;
-  font-size: 22px;
-  font-weight: normal;
-  letter-spacing: 3px;
-  overflow-wrap: anywhere;
-}
-.page-subtitle {
-  margin: 5px 0 0;
-  color: #91aabd;
-  font: 10px sans-serif;
-  letter-spacing: .8px;
-}
-.panel {
-  margin-bottom: 16px;
-  padding: 16px;
-  background: var(--glass);
-  border: 1px solid rgba(255,255,255,.95);
-  outline: 1px solid rgba(137,188,217,.2);
-  box-shadow: var(--shadow);
-}
-.panel-title {
-  margin: 0 0 16px;
-  font-size: 14px;
-  font-weight: normal;
-  letter-spacing: 1.5px;
-}
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-.field.wide { grid-column: 1 / -1; }
-.form-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
-.primary-button {
-  background: linear-gradient(135deg, #d9f1ff, #fbfeff);
-  border-color: #9ccce8;
-}
-.danger-button {
-  color: #a16e7a;
-  border-color: rgba(202,155,171,.5);
-}
-.status, .note {
-  color: #7894a9;
-  font: 11px/1.7 sans-serif;
-  overflow-wrap: anywhere;
-}
-.status { min-height: 1.5em; }
-
-.section-heading {
-  margin: 30px 0 12px;
-}
-.section-heading h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: normal;
-  letter-spacing: 2px;
-}
-.section-heading p {
-  margin: 5px 0 0;
-  color: var(--muted);
-  font: 10px sans-serif;
-  letter-spacing: 1px;
-}
-
-/* キャラクター画像を一覧の主役にする */
-.character-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-.character-card {
-  min-width: 0;
-  padding: 7px;
-  border: 1px solid rgba(137,188,217,.24);
-  background: rgba(255,255,255,.74);
-}
-.character-photo {
-  display: block;
-  width: 100%;
-  height: clamp(180px, 58vw, 360px);
-  object-fit: contain;
-  object-position: center;
-  background: rgba(234,247,255,.38);
-  border: 1px solid rgba(137,188,217,.18);
-  cursor: zoom-in;
-}
-.character-photo.no-image {
-  display: grid;
-  place-items: center;
-  color: #9fc8e2;
-  font-size: 24px;
-  cursor: default;
-}
-.character-card-name {
-  margin: 10px 2px 5px;
-  font-size: 15px;
-  font-weight: normal;
-  letter-spacing: .6px;
-  overflow-wrap: anywhere;
-}
-.character-card-summary {
-  margin: 0 2px;
-  color: #7995a9;
-  font: 10px/1.6 sans-serif;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-.card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin: 10px 2px 2px;
-}
-.card-actions button {
-  padding: 7px 9px;
-  font: 10px sans-serif;
-}
-.empty-state {
-  padding: 25px 12px;
-  color: #8aa7bb;
-  text-align: center;
-  font: 12px/1.8 sans-serif;
-}
-
-/* 画像拡大 */
-#lightbox {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: grid;
-  place-items: center;
-  padding: 12px;
-  background: rgba(30,48,63,.92);
-  cursor: zoom-out;
-}
-#lightbox img {
-  display: block;
-  max-width: 100%;
-  max-height: 90svh;
-  object-fit: contain;
-}
-#lightboxClose {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 42px;
-  height: 42px;
-  color: white;
-  border-color: rgba(255,255,255,.5);
-  background: rgba(255,255,255,.12);
-  font: 22px sans-serif;
-}
-
-.file-list {
-  display: grid;
-  gap: 8px;
-}
-.file-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.7);
-}
-.file-row-name {
-  min-width: 0;
-  overflow-wrap: anywhere;
-  font-size: 13px;
-}
-.file-row small {
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-  font: 10px sans-serif;
-}
-.file-row-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-.file-row-actions button { font: 10px sans-serif; }
-
-#siteFixedBadge {
-  position: fixed;
-  z-index: 20;
-  left: 10px;
-  bottom: 10px;
-  padding: 7px 10px;
-  color: #6386a0;
-  background: rgba(255,255,255,.92);
-  border: 1px solid var(--line);
-  font: 10px sans-serif;
-}
-@media (min-width: 650px) {
-  .page { padding: 30px 24px 50px; }
-  .form-grid { grid-template-columns: 1fr 1fr; }
-  .panel { padding: 22px; }
-  .character-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-  .character-photo { height: 340px; }
-}
-@media (min-width: 1000px) {
-  .character-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .character-photo { height: 360px; }
-}
-@media (max-width: 360px) {
-  .character-grid { grid-template-columns: 1fr; }
-  .character-photo { height: min(100vw, 420px); }
-}
+:root{--ink:#4b6276;--muted:#8298aa;--ice:#eaf7ff;--line:rgba(117,166,198,.42);--glass:rgba(255,255,255,.8);--blue:#a8d9f4}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,"Times New Roman",serif;background:linear-gradient(145deg,#fbfeff,#eaf7ff 60%,#f8fdff)}
+button,input,textarea{font:inherit}
+button{cursor:pointer;color:#6386a0;border:1px solid var(--line);background:#ffffffd9;padding:10px 14px;border-radius:2px}
+input,textarea{width:100%;padding:11px;color:var(--ink);border:1px solid var(--line);background:#ffffffed;border-radius:2px}
+textarea{min-height:90px;resize:vertical}
+label{display:block;margin-bottom:6px;color:#7896ac;font:11px sans-serif;letter-spacing:.6px}
+.hidden{display:none!important}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #83c5ec;outline-offset:2px}
+#opening{height:100svh;min-height:420px;position:relative;overflow:hidden;cursor:pointer;background:var(--ice)}
+#scene{width:100%;height:100%;object-fit:cover}
+#openingFallback{position:absolute;inset:0;display:grid;place-content:center;text-align:center;background:linear-gradient(145deg,#fbfeff,#e4f5ff);color:#6b9ab9}
+#openingFallback p{font:10px sans-serif;letter-spacing:3px}
+#tapHint{position:absolute;bottom:8%;left:0;right:0;text-align:center;color:white;font:11px sans-serif;letter-spacing:2px;text-shadow:0 1px 7px #54768c;pointer-events:none}
+#lobby{min-height:100svh;padding:70px 20px 35px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
+.top-actions{position:absolute;top:18px;right:18px;display:flex;gap:8px}
+.icon-button{width:42px;height:42px;padding:0;color:#83c5ec;font:25px sans-serif}
+.eyebrow{margin-bottom:35px;color:#8da9bd;font:10px sans-serif;letter-spacing:4px}
+h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;letter-spacing:8px}
+.subtitle{margin:15px 0 38px;color:#91a9bb;font:10px sans-serif;letter-spacing:1.5px}
+.main-menu{width:min(100%,410px);display:grid;gap:10px}
+.menu-button{min-height:58px;font:12px sans-serif;letter-spacing:3px}
+.page{min-height:100svh;padding:24px 15px 40px}
+.inner{width:min(100%,1050px);margin:auto}
+.page-header{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.back{white-space:nowrap;font:10px sans-serif}
+.page-title{margin:0;font-size:22px;font-weight:normal;letter-spacing:3px}
+.note{color:#7894a9;font:11px/1.7 sans-serif;overflow-wrap:anywhere}
+.panel{margin-bottom:16px;padding:16px;background:var(--glass);border:1px solid white;outline:1px solid #89bcd733;box-shadow:0 5px 18px #689dbe17}
+.panel-title{margin:0 0 15px;font-size:14px;font-weight:normal;letter-spacing:1.5px}
+.form-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.wide{grid-column:1/-1}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.primary{background:linear-gradient(135deg,#d9f1ff,#fbfeff);border-color:#9ccce8}
+.danger{color:#a16e7a;border-color:#ca9bab80}
+.status{min-height:1em;color:#7894a9;font:11px/1.7 sans-serif}
+.section-heading{margin:24px 0 12px}
+.section-heading h3{margin:0;font-size:18px;font-weight:normal;letter-spacing:2px}
+.section-heading p{margin:5px 0;color:var(--muted);font:10px sans-serif}
+.character-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.character-card{min-width:0;padding:7px;border:1px solid #89bcd740;background:#ffffffbd}
+.character-photo{display:block;width:100%;height:clamp(180px,58vw,360px);object-fit:contain;object-position:center;background:#eaf7ff55;border:1px solid #89bcd72e;cursor:zoom-in}
+.no-image{display:grid;place-items:center;color:#9fc8e2;font:12px sans-serif;cursor:default}
+.card-name{margin:10px 2px 5px;font-size:15px;font-weight:normal;overflow-wrap:anywhere}
+.card-summary{margin:0 2px;color:#7995a9;font:10px/1.7 sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+.card-actions{display:flex;flex-wrap:wrap;gap:5px;margin:10px 2px 2px}
+.card-actions button{padding:7px 9px;font:10px sans-serif}
+.empty{padding:25px 12px;color:#8aa7bb;text-align:center;font:12px/1.8 sans-serif}
+#lightbox{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:12px;background:#1e304ff0;cursor:zoom-out}
+#lightbox img{display:block;max-width:100%;max-height:90svh;object-fit:contain}
+#lightboxClose{position:absolute;top:12px;right:12px;width:42px;height:42px;color:white;background:#ffffff20;border-color:#ffffff80;font:22px sans-serif}
+.file-list{display:grid;gap:8px}
+.file-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);background:#ffffffb3}
+.file-row-name{min-width:0;overflow-wrap:anywhere;font-size:13px}
+.file-row small{display:block;margin-top:4px;color:var(--muted);font:10px sans-serif}
+.file-row-actions{display:flex;flex-wrap:wrap;gap:5px}
+.file-row-actions button{font:10px sans-serif}
+#siteFixedBadge{position:fixed;z-index:20;left:10px;bottom:10px;padding:7px 10px;color:#6386a0;background:#fffffff0;border:1px solid var(--line);font:10px sans-serif}
+@media(min-width:650px){.page{padding:30px 24px 50px}.form-grid{grid-template-columns:1fr 1fr}.panel{padding:22px}.character-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.character-photo{height:340px}}
+@media(min-width:1000px){.character-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.character-photo{height:360px}}
+@media(max-width:360px){.character-grid{grid-template-columns:1fr}.character-photo{height:min(100vw,420px)}}
 </style>
 </head>
-
 <body>
 
-<!-- オープニング -->
-<section id="opening" aria-label="オープニング">
+<section id="opening">
   <img id="scene" src="IMG_3320.png" alt="ARCHIVE">
-  <div id="openingFallback" class="hidden">
-    <div class="fallback-title">ARCHIVE</div>
-    <p>PRIVATE COLLECTION</p>
-  </div>
+  <div id="openingFallback" class="hidden"><div>ARCHIVE</div><p>PRIVATE COLLECTION</p></div>
   <div id="tapHint">TAP TO CONTINUE</div>
 </section>
 
-<!-- ロビー -->
 <section id="lobby" class="hidden">
   <div class="top-actions">
-    <button class="icon-button" id="filesShortcut" aria-label="FILES" title="FILES">▤</button>
-    <button class="icon-button" id="settingsShortcut" aria-label="設定" title="設定">⚙</button>
+    <button class="icon-button" id="filesShortcut" aria-label="FILES">▤</button>
+    <button class="icon-button" id="settingsShortcut" aria-label="設定">⚙</button>
   </div>
   <p class="eyebrow">PRIVATE COLLECTION</p>
   <h1>ARCHIVE</h1>
   <p class="subtitle">CHARACTERS / STORIES / WORLDS</p>
-
   <nav class="main-menu">
     <button class="menu-button" data-page="charactersPage">CHARACTERS</button>
     <button class="menu-button" data-page="storiesPage">STORIES</button>
     <button class="menu-button" data-page="worldsPage">WORLDS</button>
     <button class="menu-button" data-page="filesPage">FILES</button>
   </nav>
-  <p class="home-note">PRIVATE COLLECTION</p>
 </section>
 
-<!-- キャラクター -->
 <section id="charactersPage" class="page hidden">
-  <div class="page-inner">
+  <div class="inner">
     <header class="page-header">
-      <button class="back-button" data-home>← HOME</button>
-      <div>
-        <h2 class="page-title">CHARACTERS</h2>
-        <p class="page-subtitle">CHARACTER ARCHIVE</p>
-      </div>
+      <button class="back" data-home>← HOME</button>
+      <div><h2 class="page-title">CHARACTERS</h2><p class="note">CHARACTER ARCHIVE</p></div>
     </header>
 
-    <div class="panel">
-      <h3 class="panel-title">NEW / EDIT FILE</h3>
+    <!-- 一覧を先に表示 -->
+    <div class="actions" style="margin-bottom:20px">
+      <button class="primary" id="addCharacter">＋ ADD CHARACTER</button>
+    </div>
+
+    <!-- 追加・編集時だけ開くフォーム -->
+    <div id="formPanel" class="panel hidden">
+      <h3 class="panel-title" id="formTitle">NEW FILE</h3>
       <form id="characterForm">
         <input type="hidden" id="editId">
         <div class="form-grid">
-          <div>
-            <label for="name">NAME / 名前 *</label>
-            <input id="name" maxlength="100" required placeholder="キャラクター名">
-          </div>
-          <div>
-            <label for="age">AGE / 年齢</label>
-            <input id="age" maxlength="100" placeholder="例：18歳">
-          </div>
-          <div>
-            <label for="birthday">BIRTHDAY / 誕生日</label>
-            <input id="birthday" maxlength="100" placeholder="例：4月12日">
-          </div>
-          <div>
-            <label for="relationships">RELATIONSHIPS / 関係性</label>
-            <input id="relationships" maxlength="500" placeholder="関係する人物など">
-          </div>
-          <div class="field wide">
-            <label for="profile">PROFILE / プロフィール</label>
-            <textarea id="profile" maxlength="10000" placeholder="プロフィール、外見、背景など"></textarea>
-          </div>
-          <div class="field wide">
-            <label for="personality">PERSONALITY / 性格・設定</label>
-            <textarea id="personality" maxlength="10000" placeholder="性格、口調、設定など"></textarea>
-          </div>
-          <div class="field wide">
-            <label for="extra">OTHER NOTES / その他</label>
-            <textarea id="extra" maxlength="10000" placeholder="自由に使える追加項目"></textarea>
-          </div>
-          <div class="field wide">
-            <label for="imageFile">IMAGE / 画像</label>
-            <input id="imageFile" type="file" accept="image/*">
-            <p class="note">画像を選び直さずに更新すれば、登録済みの画像が残ります。</p>
-          </div>
+          <div><label for="name">NAME / 名前 *</label><input id="name" maxlength="100" required></div>
+          <div><label for="age">AGE / 年齢</label><input id="age" maxlength="100"></div>
+          <div><label for="birthday">BIRTHDAY / 誕生日</label><input id="birthday" maxlength="100"></div>
+          <div><label for="relationships">RELATIONSHIPS / 関係性</label><input id="relationships" maxlength="500"></div>
+          <div class="wide"><label for="profile">PROFILE / プロフィール</label><textarea id="profile" maxlength="10000"></textarea></div>
+          <div class="wide"><label for="personality">PERSONALITY / 性格・設定</label><textarea id="personality" maxlength="10000"></textarea></div>
+          <div class="wide"><label for="extra">OTHER NOTES / その他</label><textarea id="extra" maxlength="10000"></textarea></div>
+          <div class="wide"><label for="imageFile">IMAGE / 画像</label><input id="imageFile" type="file" accept="image/*"><p class="note">画像を変更しない場合は選び直さなくて大丈夫です。</p></div>
         </div>
-        <div class="form-actions">
-          <button class="primary-button" type="submit" id="saveButton">SAVE FILE</button>
-          <button type="button" id="clearForm">CLEAR</button>
+        <div class="actions">
+          <button class="primary" type="submit" id="saveButton">SAVE FILE</button>
+          <button type="button" id="cancelForm">CANCEL</button>
         </div>
-        <p id="formStatus" class="status" aria-live="polite"></p>
+        <p class="status" id="formStatus" aria-live="polite"></p>
       </form>
     </div>
 
-    <div class="section-heading">
-      <h3>SAVED FILES</h3>
-      <p id="characterCount">YOUR COLLECTION</p>
-    </div>
+    <div class="section-heading"><h3>SAVED FILES</h3><p id="characterCount">0 FILES</p></div>
     <div id="characterList" class="character-grid"></div>
   </div>
 </section>
 
-<!-- STORIES -->
 <section id="storiesPage" class="page hidden">
-  <div class="page-inner">
-    <header class="page-header">
-      <button class="back-button" data-home>← HOME</button>
-      <div>
-        <h2 class="page-title">STORIES</h2>
-        <p class="page-subtitle">STORY ARCHIVE</p>
-      </div>
-    </header>
-    <div class="panel">
-      <h3 class="panel-title">STORIES</h3>
-      <p class="note">ストーリー機能はまだ準備中です。</p>
-    </div>
+  <div class="inner">
+    <header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">STORIES</h2></header>
+    <div class="panel"><h3 class="panel-title">STORIES</h3><p class="note">ストーリー機能は準備中です。</p></div>
   </div>
 </section>
 
-<!-- WORLDS -->
 <section id="worldsPage" class="page hidden">
-  <div class="page-inner">
-    <header class="page-header">
-      <button class="back-button" data-home>← HOME</button>
-      <div>
-        <h2 class="page-title">WORLDS</h2>
-        <p class="page-subtitle">WORLD ARCHIVE</p>
-      </div>
-    </header>
-    <div class="panel">
-      <h3 class="panel-title">WORLDS</h3>
-      <p class="note">ワールド機能はまだ準備中です。</p>
-    </div>
+  <div class="inner">
+    <header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">WORLDS</h2></header>
+    <div class="panel"><h3 class="panel-title">WORLDS</h3><p class="note">ワールド機能は準備中です。</p></div>
   </div>
 </section>
 
-<!-- FILES -->
 <section id="filesPage" class="page hidden">
-  <div class="page-inner">
-    <header class="page-header">
-      <button class="back-button" data-home>← HOME</button>
-      <div>
-        <h2 class="page-title">FILES</h2>
-        <p class="page-subtitle">FILE MANAGEMENT</p>
-      </div>
-    </header>
-
+  <div class="inner">
+    <header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">FILES</h2></header>
     <div class="panel">
       <h3 class="panel-title">FILE MANAGEMENT</h3>
-      <p class="note">
-        登録済みキャラクターの一覧、データのバックアップ、復元を管理できます。
-      </p>
-      <div class="form-actions">
-        <button class="primary-button" id="exportData">EXPORT BACKUP</button>
+      <p class="note">バックアップを書き出したり、保存済みデータを復元できます。</p>
+      <div class="actions">
+        <button class="primary" id="exportData">EXPORT BACKUP</button>
         <button id="importButton">IMPORT BACKUP</button>
-        <input class="hidden" id="importFile" type="file" accept=".json,application/json">
+        <input id="importFile" class="hidden" type="file" accept=".json,application/json">
       </div>
       <p id="fileStatus" class="status" aria-live="polite"></p>
     </div>
-
-    <div class="section-heading">
-      <h3>ALL FILES</h3>
-      <p id="fileCount">YOUR COLLECTION</p>
-    </div>
+    <div class="section-heading"><h3>ALL FILES</h3><p id="fileCount">0 FILES</p></div>
     <div id="fileList" class="file-list"></div>
   </div>
 </section>
 
-<!-- 設定 -->
 <section id="settingsPage" class="page hidden">
-  <div class="page-inner">
-    <header class="page-header">
-      <button class="back-button" data-home>← HOME</button>
-      <div>
-        <h2 class="page-title">SETTINGS</h2>
-        <p class="page-subtitle">ARCHIVE SETTINGS</p>
-      </div>
-    </header>
-
+  <div class="inner">
+    <header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">SETTINGS</h2></header>
     <div class="panel">
       <h3 class="panel-title">SITE FIX</h3>
-      <p class="note">このブラウザでサイト固定の表示を切り替えます。</p>
-      <div class="form-actions">
-        <button class="primary-button" id="toggleFixed">サイト固定：OFF</button>
-      </div>
-      <p class="note">※ これはこの端末での表示設定です。サイトをパスワードで保護する機能ではありません。</p>
+      <p class="note">サイト内の固定表示を切り替えます。</p>
+      <button class="primary" id="toggleFixed">サイト固定：OFF</button>
+      <p class="note">この設定はブラウザ内で保存されます。ブラウザ自体の固定やアクセス制限を行うものではありません。</p>
     </div>
-
     <div class="panel">
       <h3 class="panel-title">ADMIN LOGIN</h3>
-      <p class="note">管理人用画面への入口です。下のパスワードはサンプル設定です。</p>
+      <p class="note">サンプルの管理人ログインです。公開サイトを安全に保護する認証ではありません。</p>
       <form id="adminForm">
         <label for="adminPassword">PASSWORD</label>
         <input id="adminPassword" type="password" autocomplete="current-password" placeholder="管理人パスワード">
-        <div class="form-actions">
-          <button class="primary-button" type="submit">LOGIN</button>
-        </div>
+        <div class="actions"><button class="primary" type="submit">LOGIN</button></div>
       </form>
       <p id="adminStatus" class="status" aria-live="polite"></p>
     </div>
-
     <div class="panel">
-      <h3 class="panel-title">DATA</h3>
-      <p class="note">このブラウザに保存されているキャラクターデータを消去します。必要な場合は先にバックアップを作成してください。</p>
-      <button class="danger-button" id="clearAllData">DELETE ALL LOCAL DATA</button>
+      <h3 class="panel-title">LOCAL DATA</h3>
+      <p class="note">このブラウザに保存されたキャラクターデータをすべて削除します。</p>
+      <button class="danger" id="clearAllData">DELETE ALL LOCAL DATA</button>
       <p id="settingsStatus" class="status" aria-live="polite"></p>
     </div>
   </div>
 </section>
 
-<!-- 管理人ページ -->
 <section id="adminPage" class="page hidden">
-  <div class="page-inner">
-    <header class="page-header">
-      <button class="back-button" data-home>← HOME</button>
-      <div>
-        <h2 class="page-title">ADMIN</h2>
-        <p class="page-subtitle">ADMINISTRATOR</p>
-      </div>
-    </header>
+  <div class="inner">
+    <header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">ADMIN</h2></header>
     <div class="panel">
       <h3 class="panel-title">ADMIN PANEL</h3>
-      <p class="note">
-        この画面はフロントエンドのサンプルです。HTMLにパスワードが含まれるため、本当のアクセス制限にはなりません。
-        公開サイトの管理人専用機能には、サーバー側の認証設定が必要です。
-      </p>
-      <button id="adminToFiles">OPEN FILES</button>
-      <button id="adminLogout">LOG OUT</button>
+      <p class="note">この画面はサンプルです。HTML内のパスワードは閲覧できるため、実際の認証にはサーバー側の設定が必要です。</p>
+      <div class="actions"><button id="adminToFiles">OPEN FILES</button><button id="adminLogout">LOG OUT</button></div>
     </div>
   </div>
 </section>
 
-<!-- 画像拡大 -->
+<!-- タップで画像を拡大 -->
 <div id="lightbox" class="hidden" role="dialog" aria-label="拡大画像">
   <button id="lightboxClose" aria-label="閉じる">×</button>
   <img id="lightboxImage" alt="拡大画像">
@@ -648,490 +216,250 @@ button, input, textarea, select { border-radius: 2px; }
 
 <script>
 (() => {
-  "use strict";
+"use strict";
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = "archive_character_files_ice_v1";
+const FIXED_KEY = "archive_site_fixed_ice_v1";
+const ADMIN_PASSWORD = "change-this-password";
+const pages = ["opening","lobby","charactersPage","storiesPage","worldsPage","filesPage","settingsPage","adminPage"];
+let stage = 0, selectedImage = "", adminLoggedIn = false;
 
-  const $ = id => document.getElementById(id);
-  const STORAGE_KEY = "archive_character_files_ice_v1";
-  const FIXED_KEY = "archive_site_fixed_ice_v1";
-
-  // 必要に応じて変更してください。
-  // HTML内に保存されるため、この値は安全な認証にはなりません。
-  const ADMIN_PASSWORD = "change-this-password";
-
-  const pageIds = [
-    "opening", "lobby", "charactersPage", "storiesPage",
-    "worldsPage", "filesPage", "settingsPage", "adminPage"
-  ];
-
-  let stage = 0;
-  let currentImageData = "";
-  let adminLoggedIn = false;
-
-  function showOnly(id) {
-    pageIds.forEach(pageId => $(pageId).classList.add("hidden"));
-    $(id).classList.remove("hidden");
-    window.scrollTo({ top: 0, behavior: "auto" });
+function showOnly(id) {
+  pages.forEach(p => $(p).classList.add("hidden"));
+  $(id).classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"auto"});
+}
+function home(){showOnly("lobby");}
+function getData(){
+  try { const d=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");return Array.isArray(d)?d:[]; }
+  catch{return [];}
+}
+function setData(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
+function el(tag,cls,text){
+  const e=document.createElement(tag);
+  if(cls)e.className=cls;
+  if(text!==undefined)e.textContent=text;
+  return e;
+}
+function button(parent,label,fn,cls=""){
+  const b=el("button",cls,label);b.type="button";b.addEventListener("click",fn);parent.append(b);return b;
+}
+function updateFixed(){
+  const on=localStorage.getItem(FIXED_KEY)==="true";
+  $("toggleFixed").textContent="サイト固定："+(on?"ON":"OFF");
+  $("siteFixedBadge").classList.toggle("hidden",!on);
+}
+function clearForm(){
+  $("characterForm").reset();
+  $("editId").value="";
+  selectedImage="";
+  $("formTitle").textContent="NEW FILE";
+  $("saveButton").textContent="SAVE FILE";
+  $("formStatus").textContent="";
+  $("formPanel").classList.add("hidden");
+}
+function openForm(item=null){
+  clearForm();
+  $("formPanel").classList.remove("hidden");
+  if(item){
+    $("formTitle").textContent="EDIT FILE";
+    $("saveButton").textContent="UPDATE FILE";
+    $("editId").value=item.id;
+    ["name","age","birthday","relationships","profile","personality","extra"].forEach(k=>$(k).value=item[k]||"");
+  }else{
+    $("formTitle").textContent="NEW FILE";
   }
+  $("formPanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
 
-  function goHome() {
+$("scene").addEventListener("error",()=>{
+  $("scene").classList.add("hidden");
+  $("openingFallback").classList.remove("hidden");
+});
+$("opening").addEventListener("click",()=>{
+  if(stage===0){
+    stage=1;
+    $("scene").src="無題290_20261027070018.png";
+    $("tapHint").textContent="TAP TO ENTER";
+  }else{
+    stage=2;
     showOnly("lobby");
   }
+});
 
-  function getCharacters() {
-    try {
-      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      return Array.isArray(data) ? data : [];
-    } catch {
-      return [];
-    }
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>{
+  showOnly(b.dataset.page);
+  if(b.dataset.page==="charactersPage")renderCharacters();
+  if(b.dataset.page==="filesPage")renderFiles();
+}));
+document.querySelectorAll("[data-home]").forEach(b=>b.addEventListener("click",home));
+$("settingsShortcut").addEventListener("click",()=>{updateFixed();showOnly("settingsPage");});
+$("filesShortcut").addEventListener("click",()=>{renderFiles();showOnly("filesPage");});
+$("addCharacter").addEventListener("click",()=>openForm());
+$("cancelForm").addEventListener("click",clearForm);
+
+$("toggleFixed").addEventListener("click",()=>{
+  localStorage.setItem(FIXED_KEY,String(localStorage.getItem(FIXED_KEY)!=="true"));
+  updateFixed();
+});
+
+$("imageFile").addEventListener("change",async e=>{
+  const file=e.target.files&&e.target.files[0];
+  if(!file){selectedImage="";return;}
+  if(!file.type.startsWith("image/")){
+    $("formStatus").textContent="画像ファイルを選んでください。";e.target.value="";return;
   }
-
-  function setCharacters(items) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  if(file.size>1.5*1024*1024){
+    $("formStatus").textContent="画像が大きすぎます。1.5MB以下を目安にしてください。";e.target.value="";return;
   }
-
-  function makeText(tag, className, text) {
-    const element = document.createElement(tag);
-    if (className) element.className = className;
-    element.textContent = text || "";
-    return element;
-  }
-
-  function addButton(parent, label, action, className = "") {
-    const button = makeText("button", className, label);
-    button.type = "button";
-    button.addEventListener("click", action);
-    parent.append(button);
-    return button;
-  }
-
-  function readField(id) {
-    return $(id).value.trim();
-  }
-
-  // オープニング画像の切り替え
-  const scene = $("scene");
-  const fallback = $("openingFallback");
-  const secondImage = "無題290_20261027070018.png";
-
-  scene.addEventListener("error", () => {
-    scene.classList.add("hidden");
-    fallback.classList.remove("hidden");
-  });
-
-  scene.addEventListener("load", () => {
-    scene.classList.remove("hidden");
-    fallback.classList.add("hidden");
-  });
-
-  $("opening").addEventListener("click", () => {
-    if (stage === 0) {
-      stage = 1;
-      scene.src = secondImage;
-      $("tapHint").textContent = "TAP TO ENTER";
-    } else {
-      stage = 2;
-      showOnly("lobby");
-    }
-  });
-
-  // ナビゲーション
-  document.querySelectorAll("[data-page]").forEach(button => {
-    button.addEventListener("click", () => {
-      const page = button.dataset.page;
-      showOnly(page);
-      if (page === "charactersPage") renderCharacters();
-      if (page === "filesPage") renderFiles();
+  try{
+    selectedImage=await new Promise((resolve,reject)=>{
+      const r=new FileReader();r.onload=()=>resolve(String(r.result));r.onerror=reject;r.readAsDataURL(file);
     });
-  });
+    $("formStatus").textContent="画像を読み込みました。保存してください。";
+  }catch{$("formStatus").textContent="画像を読み込めませんでした。";}
+});
 
-  document.querySelectorAll("[data-home]").forEach(button => {
-    button.addEventListener("click", goHome);
-  });
-
-  $("settingsShortcut").addEventListener("click", () => {
-    updateFixedUI();
-    showOnly("settingsPage");
-  });
-
-  $("filesShortcut").addEventListener("click", () => {
-    renderFiles();
-    showOnly("filesPage");
-  });
-
-  // サイト固定表示
-  function updateFixedUI() {
-    const fixed = localStorage.getItem(FIXED_KEY) === "true";
-    $("toggleFixed").textContent = "サイト固定：" + (fixed ? "ON" : "OFF");
-    $("siteFixedBadge").classList.toggle("hidden", !fixed);
+$("characterForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const name=$("name").value.trim();
+  if(!name){$("formStatus").textContent="名前を入力してください。";return;}
+  const data=getData(), id=$("editId").value||Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+  const old=data.find(x=>x.id===id);
+  const item={
+    id,name,age:$("age").value.trim(),birthday:$("birthday").value.trim(),
+    relationships:$("relationships").value.trim(),profile:$("profile").value.trim(),
+    personality:$("personality").value.trim(),extra:$("extra").value.trim(),
+    image:selectedImage||(old&&old.image)||"",updatedAt:new Date().toISOString()
+  };
+  const next=old?data.map(x=>x.id===id?item:x):[item,...data];
+  try{
+    setData(next);clearForm();renderCharacters();renderFiles();
+  }catch{
+    $("formPanel").classList.remove("hidden");
+    $("formStatus").textContent="保存容量が足りない可能性があります。画像を小さくしてください。";
   }
+});
 
-  $("toggleFixed").addEventListener("click", () => {
-    const current = localStorage.getItem(FIXED_KEY) === "true";
-    localStorage.setItem(FIXED_KEY, String(!current));
-    updateFixedUI();
-  });
+function openImage(src,alt){
+  if(!src)return;
+  $("lightboxImage").src=src;
+  $("lightboxImage").alt=alt||"拡大画像";
+  $("lightbox").classList.remove("hidden");
+}
+function closeImage(){
+  $("lightbox").classList.add("hidden");
+  $("lightboxImage").src="";
+}
+$("lightbox").addEventListener("click",e=>{
+  if(e.target===$("lightbox")||e.target===$("lightboxClose"))closeImage();
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeImage();});
 
-  // キャラクターフォーム
-  function resetForm() {
-    $("characterForm").reset();
-    $("editId").value = "";
-    $("imageFile").value = "";
-    currentImageData = "";
-    $("saveButton").textContent = "SAVE FILE";
-    $("formStatus").textContent = "";
+function details(item){
+  const old=$("detailPanel");if(old)old.remove();
+  const panel=el("div","panel");panel.id="detailPanel";
+  panel.append(el("h3","panel-title",item.name));
+  if(item.image){
+    const img=el("img");img.src=item.image;img.alt=item.name;
+    img.style.cssText="width:100%;max-height:75svh;object-fit:contain;cursor:zoom-in";
+    img.addEventListener("click",()=>openImage(item.image,item.name));panel.append(img);
   }
-
-  $("clearForm").addEventListener("click", resetForm);
-
-  $("imageFile").addEventListener("change", async event => {
-    const file = event.target.files && event.target.files[0];
-    if (!file) {
-      currentImageData = "";
-      return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-      $("formStatus").textContent = "画像ファイルを選んでください。";
-      event.target.value = "";
-      return;
-    }
-
-    if (file.size > 1.5 * 1024 * 1024) {
-      $("formStatus").textContent = "画像が大きすぎます。1.5MB以下を目安にしてください。";
-      event.target.value = "";
-      return;
-    }
-
-    try {
-      currentImageData = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      $("formStatus").textContent = "画像を読み込みました。SAVE FILEを押してください。";
-    } catch {
-      currentImageData = "";
-      $("formStatus").textContent = "画像を読み込めませんでした。";
-    }
+  [["年齢",item.age],["誕生日",item.birthday],["関係性",item.relationships],
+   ["プロフィール",item.profile],["性格・設定",item.personality],["その他",item.extra]]
+  .forEach(([label,value])=>{
+    if(!value)return;
+    panel.append(el("p","note",label));
+    const t=el("div","",value);
+    t.style.cssText="white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8";
+    panel.append(t);
   });
-
-  $("characterForm").addEventListener("submit", event => {
-    event.preventDefault();
-
-    const name = readField("name");
-    if (!name) {
-      $("formStatus").textContent = "名前を入力してください。";
-      return;
-    }
-
-    const id = $("editId").value ||
-      (Date.now().toString(36) + Math.random().toString(36).slice(2, 8));
-
-    const items = getCharacters();
-    const old = items.find(item => item.id === id);
-
-    const item = {
-      id,
-      name,
-      age: readField("age"),
-      birthday: readField("birthday"),
-      relationships: readField("relationships"),
-      profile: readField("profile"),
-      personality: readField("personality"),
-      extra: readField("extra"),
-      image: currentImageData || (old && old.image) || "",
-      updatedAt: new Date().toISOString()
-    };
-
-    const next = old
-      ? items.map(entry => entry.id === id ? item : entry)
-      : [item, ...items];
-
-    try {
-      setCharacters(next);
-      resetForm();
-      $("formStatus").textContent = "保存しました。";
-      renderCharacters();
-      renderFiles();
-    } catch {
-      $("formStatus").textContent =
-        "保存容量が足りない可能性があります。画像を小さくして試してください。";
-    }
+  $("characterList").before(panel);
+  panel.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function edit(item){openForm(item);}
+function removeCharacter(id){
+  const item=getData().find(x=>x.id===id);if(!item)return;
+  if(!confirm("「"+item.name+"」を削除しますか？"))return;
+  setData(getData().filter(x=>x.id!==id));renderCharacters();renderFiles();
+}
+function renderCharacters(){
+  const list=$("characterList"),data=getData();
+  list.replaceChildren();
+  $("characterCount").textContent=data.length+" FILES";
+  const old=$("detailPanel");if(old)old.remove();
+  if(!data.length){list.append(el("div","empty","まだキャラクターがありません。「＋ ADD CHARACTER」から追加してください。"));return;}
+  data.forEach(item=>{
+    const card=el("article","character-card");
+    if(item.image){
+      const img=el("img","character-photo");img.src=item.image;img.alt=item.name+"の画像";img.loading="lazy";
+      img.addEventListener("click",()=>openImage(item.image,item.name));
+      card.append(img);
+    }else card.append(el("div","character-photo no-image","NO IMAGE"));
+    card.append(el("h3","card-name",item.name));
+    const summary=[item.age&&"年齢："+item.age,item.birthday&&"誕生日："+item.birthday,item.relationships&&"関係性："+item.relationships].filter(Boolean).join("\n");
+    if(summary)card.append(el("p","card-summary",summary));
+    const actions=el("div","card-actions");
+    button(actions,"DETAILS",()=>details(item));
+    button(actions,"EDIT",()=>edit(item));
+    button(actions,"DELETE",()=>removeCharacter(item.id),"danger");
+    card.append(actions);list.append(card);
   });
-
-  function openLightbox(src, alt) {
-    if (!src) return;
-    $("lightboxImage").src = src;
-    $("lightboxImage").alt = alt || "拡大画像";
-    $("lightbox").classList.remove("hidden");
-  }
-
-  function closeLightbox() {
-    $("lightbox").classList.add("hidden");
-    $("lightboxImage").src = "";
-  }
-
-  $("lightbox").addEventListener("click", event => {
-    if (event.target === $("lightbox") || event.target === $("lightboxClose")) {
-      closeLightbox();
-    }
+}
+function renderFiles(){
+  const list=$("fileList"),data=getData();list.replaceChildren();
+  $("fileCount").textContent=data.length+" FILES";
+  if(!data.length){list.append(el("div","empty","ファイルはまだありません。"));return;}
+  data.forEach(item=>{
+    const row=el("div","file-row"),info=el("div","file-row-name",item.name);
+    info.append(el("small","",item.image?"IMAGE INCLUDED":"TEXT FILE"));row.append(info);
+    const actions=el("div","file-row-actions");
+    button(actions,"OPEN",()=>{showOnly("charactersPage");renderCharacters();details(item);});
+    button(actions,"EDIT",()=>{showOnly("charactersPage");edit(item);});
+    row.append(actions);list.append(row);
   });
+}
 
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") closeLightbox();
-  });
+$("exportData").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify({app:"ARCHIVE",version:1,characters:getData()},null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="archive-backup.json";a.click();URL.revokeObjectURL(url);
+  $("fileStatus").textContent="バックアップを作成しました。";
+});
+$("importButton").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  try{
+    const parsed=JSON.parse(await file.text()),items=Array.isArray(parsed)?parsed:parsed.characters;
+    if(!Array.isArray(items)||!items.every(x=>x&&typeof x.id==="string"&&typeof x.name==="string"))throw Error();
+    const append=confirm("OK：現在のデータに追加\nキャンセル：現在のデータを置き換え");
+    setData(append?[...getData(),...items]:items);
+    renderCharacters();renderFiles();$("fileStatus").textContent="バックアップを読み込みました。";
+  }catch{$("fileStatus").textContent="正しいバックアップファイルを選んでください。";}
+  finally{e.target.value="";}
+});
 
-  function renderCharacters() {
-    const list = $("characterList");
-    const items = getCharacters();
-    list.replaceChildren();
-    $("characterCount").textContent = items.length + " FILES";
+$("adminForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  if($("adminPassword").value===ADMIN_PASSWORD){
+    adminLoggedIn=true;$("adminPassword").value="";
+    $("adminStatus").textContent="ログインしました。";showOnly("adminPage");
+  }else $("adminStatus").textContent="パスワードが違います。";
+});
+$("adminToFiles").addEventListener("click",()=>{
+  if(!adminLoggedIn)return;renderFiles();showOnly("filesPage");
+});
+$("adminLogout").addEventListener("click",()=>{
+  adminLoggedIn=false;$("adminStatus").textContent="ログアウトしました。";showOnly("settingsPage");
+});
+$("clearAllData").addEventListener("click",()=>{
+  if(!confirm("このブラウザのキャラクターデータをすべて削除しますか？"))return;
+  localStorage.removeItem(STORAGE_KEY);clearForm();renderCharacters();renderFiles();
+  $("settingsStatus").textContent="キャラクターデータを削除しました。";
+});
 
-    if (!items.length) {
-      list.append(makeText("div", "empty-state", "まだキャラクターがありません。上のフォームから追加してください。"));
-      return;
-    }
-
-    items.forEach(item => {
-      const card = makeText("article", "character-card", "");
-
-      if (item.image) {
-        const image = document.createElement("img");
-        image.className = "character-photo";
-        image.src = item.image;
-        image.alt = item.name + "の画像";
-        image.loading = "lazy";
-        image.addEventListener("click", () => openLightbox(item.image, item.name));
-        card.append(image);
-      } else {
-        card.append(makeText("div", "character-photo no-image", "NO IMAGE"));
-      }
-
-      card.append(makeText("h3", "character-card-name", item.name));
-
-      const summary = [
-        item.age && "年齢：" + item.age,
-        item.birthday && "誕生日：" + item.birthday,
-        item.relationships && "関係性：" + item.relationships
-      ].filter(Boolean).join("\n");
-
-      if (summary) {
-        card.append(makeText("p", "character-card-summary", summary));
-      }
-
-      const actions = makeText("div", "card-actions", "");
-
-      addButton(actions, "DETAILS", () => showCharacterDetails(item));
-      addButton(actions, "EDIT", () => editCharacter(item));
-      addButton(actions, "DELETE", () => deleteCharacter(item.id), "danger-button");
-
-      card.append(actions);
-      list.append(card);
-    });
-  }
-
-  function showCharacterDetails(item) {
-    const existing = $("detailPanel");
-    if (existing) existing.remove();
-
-    const panel = makeText("div", "panel", "");
-    panel.id = "detailPanel";
-    panel.append(makeText("h3", "panel-title", item.name));
-
-    if (item.image) {
-      const image = document.createElement("img");
-      image.src = item.image;
-      image.alt = item.name + "の画像";
-      image.style.cssText =
-        "display:block;width:100%;max-height:75svh;object-fit:contain;background:rgba(234,247,255,.35);cursor:zoom-in;border:1px solid rgba(137,188,217,.2);";
-      image.addEventListener("click", () => openLightbox(item.image, item.name));
-      panel.append(image);
-    }
-
-    const fields = [
-      ["年齢", item.age],
-      ["誕生日", item.birthday],
-      ["関係性", item.relationships],
-      ["プロフィール", item.profile],
-      ["性格・設定", item.personality],
-      ["その他", item.extra]
-    ];
-
-    fields.forEach(([label, value]) => {
-      if (!value) return;
-      const block = document.createElement("div");
-      block.style.marginTop = "16px";
-      block.append(makeText("div", "note", label));
-      const text = makeText("div", "", value);
-      text.style.cssText = "white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;margin-top:5px;";
-      block.append(text);
-      panel.append(block);
-    });
-
-    $("characterList").before(panel);
-    panel.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function editCharacter(item) {
-    $("editId").value = item.id;
-    ["name", "age", "birthday", "relationships", "profile", "personality", "extra"]
-      .forEach(key => $(key).value = item[key] || "");
-
-    $("imageFile").value = "";
-    currentImageData = "";
-    $("saveButton").textContent = "UPDATE FILE";
-    $("formStatus").textContent =
-      "編集後にUPDATE FILEを押してください。画像を選び直さなければ元の画像が残ります。";
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  function deleteCharacter(id) {
-    const item = getCharacters().find(entry => entry.id === id);
-    if (!item) return;
-    if (!confirm("「" + item.name + "」を削除しますか？")) return;
-
-    setCharacters(getCharacters().filter(entry => entry.id !== id));
-    renderCharacters();
-    renderFiles();
-  }
-
-  // FILES一覧
-  function renderFiles() {
-    const list = $("fileList");
-    const items = getCharacters();
-    list.replaceChildren();
-    $("fileCount").textContent = items.length + " FILES";
-
-    if (!items.length) {
-      list.append(makeText("div", "empty-state", "ファイルはまだありません。"));
-      return;
-    }
-
-    items.forEach(item => {
-      const row = makeText("div", "file-row", "");
-      const info = makeText("div", "file-row-name", item.name);
-      info.append(makeText("small", "", item.image ? "IMAGE INCLUDED" : "TEXT FILE"));
-      row.append(info);
-
-      const actions = makeText("div", "file-row-actions", "");
-      addButton(actions, "OPEN", () => {
-        showOnly("charactersPage");
-        renderCharacters();
-        showCharacterDetails(item);
-      });
-      addButton(actions, "EDIT", () => {
-        showOnly("charactersPage");
-        editCharacter(item);
-      });
-      row.append(actions);
-      list.append(row);
-    });
-  }
-
-  // バックアップ書き出し
-  $("exportData").addEventListener("click", () => {
-    const data = {
-      app: "ARCHIVE",
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      characters: getCharacters()
-    };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json"
-    });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "archive-backup.json";
-    anchor.click();
-    URL.revokeObjectURL(url);
-    $("fileStatus").textContent = "バックアップを作成しました。";
-  });
-
-  // バックアップ復元
-  $("importButton").addEventListener("click", () => $("importFile").click());
-
-  $("importFile").addEventListener("change", async event => {
-    const file = event.target.files && event.target.files[0];
-    if (!file) return;
-
-    try {
-      const parsed = JSON.parse(await file.text());
-      const imported = Array.isArray(parsed) ? parsed : parsed.characters;
-
-      if (!Array.isArray(imported)) {
-        throw new Error("invalid data");
-      }
-
-      const valid = imported.every(item =>
-        item && typeof item.name === "string" && typeof item.id === "string"
-      );
-
-      if (!valid) throw new Error("invalid characters");
-
-      const mode = confirm(
-        "OK：現在のデータに追加する\nキャンセル：現在のデータを置き換える"
-      );
-
-      const next = mode
-        ? [...getCharacters(), ...imported]
-        : imported;
-
-      setCharacters(next);
-      renderCharacters();
-      renderFiles();
-      $("fileStatus").textContent = "バックアップを読み込みました。";
-    } catch {
-      $("fileStatus").textContent = "ファイルを読み込めませんでした。正しいバックアップを選んでください。";
-    } finally {
-      event.target.value = "";
-    }
-  });
-
-  // 管理人ログイン：デモ用の簡易チェック
-  $("adminForm").addEventListener("submit", event => {
-    event.preventDefault();
-
-    if ($("adminPassword").value === ADMIN_PASSWORD) {
-      adminLoggedIn = true;
-      $("adminPassword").value = "";
-      $("adminStatus").textContent = "ログインしました。";
-      showOnly("adminPage");
-    } else {
-      $("adminStatus").textContent = "パスワードが違います。";
-    }
-  });
-
-  $("adminToFiles").addEventListener("click", () => {
-    if (!adminLoggedIn) return;
-    renderFiles();
-    showOnly("filesPage");
-  });
-
-  $("adminLogout").addEventListener("click", () => {
-    adminLoggedIn = false;
-    $("adminStatus").textContent = "ログアウトしました。";
-    showOnly("settingsPage");
-  });
-
-  // ローカルデータ削除
-  $("clearAllData").addEventListener("click", () => {
-    if (!confirm("このブラウザに保存されたキャラクターデータをすべて削除しますか？")) return;
-
-    localStorage.removeItem(STORAGE_KEY);
-    resetForm();
-    renderCharacters();
-    renderFiles();
-    $("settingsStatus").textContent = "このブラウザのキャラクターデータを削除しました。";
-  });
-
-  updateFixedUI();
+updateFixed();
 })();
 </script>
-
 </body>
 </html>
