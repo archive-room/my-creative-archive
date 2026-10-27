@@ -2,824 +2,909 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>ARCHIVE — Private Collection</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-:root {
-  --bg: #141319;
-  --panel: rgba(255,255,255,.045);
-  --line: rgba(255,255,255,.16);
-  --text: #f6f1f4;
-  --muted: #aaa3b3;
-  --accent: #d9d3e8;
+:root{
+  --ink:#4b6276;--muted:#8298aa;--ice:#eaf7ff;--ice2:#d7efff;
+  --line:rgba(117,166,198,.55);--glass:rgba(255,255,255,.68);
+  --blue:#a8d9f4;--white:#fbfeff;--shadow:0 12px 34px rgba(104,157,190,.16);
 }
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body {
-  margin: 0; min-height: 100%; background: var(--bg); color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-}
-body { min-height: 100dvh; }
-button, input, textarea { font: inherit; }
-button { cursor: pointer; touch-action: manipulation; }
-button:disabled { opacity: .45; cursor: wait; }
-button:focus-visible, input:focus-visible, textarea:focus-visible {
-  outline: 1px solid var(--accent); outline-offset: 3px;
-}
-button, input, textarea {
-  color: var(--text); border: 1px solid var(--line); border-radius: 3px;
-  background: rgba(255,255,255,.035);
-}
-button { padding: 12px 16px; letter-spacing: 1px; }
-button:hover { background: rgba(255,255,255,.09); }
-input, textarea { width: 100%; padding: 12px; }
-textarea { min-height: 180px; resize: vertical; line-height: 1.8; }
-input::placeholder, textarea::placeholder { color: #827c8c; }
-label { display: block; color: var(--muted); font-size: 12px; letter-spacing: 1px; margin-bottom: 8px; }
-.field { margin: 18px 0; }
-.hidden { display: none !important; }
-
-/* Opening */
-#opening {
-  position: fixed; inset: 0; width: 100%; height: 100%;
-  overflow: hidden; background: #141319; z-index: 20;
-}
-#scene {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: contain; pointer-events: none; user-select: none;
-  -webkit-user-drag: none;
-}
-#appleTarget {
-  position: absolute; left: 52%; top: 67.5%; width: 120px; height: 120px;
-  transform: translate(-50%, -50%); border: none; background: transparent;
-  border-radius: 50%; padding: 0;
-}
-#appleTarget::before, #appleTarget::after {
-  content: ""; position: absolute; inset: 25%; border: 1px solid rgba(255,255,255,.8);
-  border-radius: 50%; pointer-events: none; animation: ripple 2.6s ease-out infinite;
-}
-#appleTarget::after { animation-delay: 1.3s; }
-@keyframes ripple {
-  0% { transform: scale(.7); opacity: .8; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
-
-/* Main */
-#app { display: none; min-height: 100dvh; padding: 22px 18px 60px; }
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; max-width: 1000px; margin: 0 auto 40px;
-}
-.brand { font-size: 11px; letter-spacing: 3px; color: var(--muted); }
-.small-button { padding: 9px 12px; font-size: 11px; }
-main { max-width: 1000px; margin: auto; }
-.eyebrow { color: var(--muted); font-size: 10px; letter-spacing: 4px; }
-h1 { font-size: clamp(27px, 6vw, 42px); font-weight: 300; letter-spacing: 5px; margin: 18px 0; }
-h2 { font-size: 20px; font-weight: 400; letter-spacing: 2px; }
-.subtitle { font-size: 11px; color: var(--muted); letter-spacing: 2px; line-height: 1.9; }
-.menu {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 44px 0;
-}
-.menu button { min-height: 100px; font-size: 11px; letter-spacing: 2px; }
-.section { margin-top: 30px; }
-.section-head {
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
-}
-.panel {
-  border: 1px solid var(--line); background: var(--panel);
-  padding: 20px; margin: 16px 0;
-}
-.status { color: var(--muted); font-size: 12px; line-height: 1.8; }
-.status.error { color: #f0a5ad; }
-.status.success { color: #b8dfca; }
-.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.character-card {
-  border: 1px solid var(--line); background: var(--panel); overflow: hidden;
-  min-width: 0;
-}
-.character-card img {
-  display: block; width: 100%; max-height: 440px; aspect-ratio: 4 / 5;
-  object-fit: contain; background: rgba(0,0,0,.16);
-}
-.character-card .card-body { padding: 16px; }
-.character-card h3 { font-size: 17px; font-weight: 400; letter-spacing: 1px; margin: 0 0 12px; overflow-wrap: anywhere; }
-.profile-text { font-size: 13px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; color: #ded9e3; }
-.card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.card-actions button { font-size: 11px; padding: 9px 12px; }
-.empty {
-  border: 1px dashed var(--line); padding: 30px 18px;
-  color: var(--muted); text-align: center; font-size: 12px; line-height: 2;
-}
-hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
-.form-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.primary { background: rgba(220,214,239,.15); border-color: rgba(220,214,239,.4); }
-.danger { color: #f0a5ad; }
-footer { max-width: 1000px; margin: 55px auto 0; color: #77717f; font-size: 10px; letter-spacing: 2px; text-align: center; }
-
-@media (max-width: 520px) {
-  #app { padding: 16px 14px 45px; }
-  .menu { gap: 7px; }
-  .menu button { padding: 12px 5px; font-size: 10px; letter-spacing: 1px; }
-  .cards { grid-template-columns: 1fr; }
-  .character-card img { max-height: 500px; }
-  .panel { padding: 16px; }
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;font-family:Georgia,"Times New Roman",serif;color:var(--ink)}
+body{background:radial-gradient(ellipse at 15% 10%,rgba(255,255,255,.98),transparent 38%),radial-gradient(ellipse at 85% 20%,rgba(190,229,251,.6),transparent 42%),linear-gradient(145deg,#faffff,#e7f6ff 55%,#f8fdff)}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #83c5ec;outline-offset:3px}
+.hidden{display:none!important}
+#opening{position:fixed;inset:0;height:100svh;overflow:hidden;background:#edf8ff;cursor:pointer}
+#scene{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.opening-fallback{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:30px;background:linear-gradient(160deg,#fbfeff,#dff3ff);color:#6b9ab9}
+.opening-fallback .halo{font-size:42px;letter-spacing:8px;margin-bottom:18px;color:#9bcde9}
+.opening-fallback p{font-size:12px;letter-spacing:4px}
+#tapHint{position:absolute;bottom:8%;left:0;right:0;text-align:center;color:#fff;text-shadow:0 1px 8px #5c829a;letter-spacing:4px;font-size:12px;pointer-events:none}
+#keyScreen{position:fixed;inset:0;height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:30px;background:radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.98),transparent 48%),linear-gradient(145deg,#fbfeff,#e5f5ff 58%,#f8fdff);cursor:pointer;text-align:center;overflow:hidden}
+#keyScreen:before{content:"";position:absolute;inset:13px;border:1px solid rgba(255,255,255,.9);outline:1px solid rgba(137,188,217,.3);pointer-events:none}
+.key-angel{font-size:15px;letter-spacing:5px;color:#a1c9e3}
+.key-title{margin:0;color:#668ba5;font-size:clamp(17px,4.5vw,23px);font-weight:normal;letter-spacing:3px;text-shadow:0 1px 10px rgba(255,255,255,.8)}
+.key-circle{width:48px;height:48px;border:1px solid #b6d7eb;border-radius:50%;display:grid;place-items:center;color:#8db8d4;background:rgba(255,255,255,.5);box-shadow:0 5px 20px rgba(130,180,210,.13)}
+.key-circle svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.35}
+.key-caption{margin:0;color:#9ab5c8;font:10px sans-serif;letter-spacing:2px}
+#lobby{position:fixed;inset:0;height:100svh;padding:calc(36px + env(safe-area-inset-top)) 22px calc(48px + env(safe-area-inset-bottom));text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+#lobby:before,.page:before{content:"";position:absolute;inset:12px;border:1px solid rgba(255,255,255,.78);pointer-events:none}
+.eyebrow{font-size:11px;letter-spacing:5px;color:#8da9bd;margin:0 0 76px}
+#lobby h1{font-size:clamp(34px,8vw,48px);font-weight:normal;letter-spacing:10px;margin:0 0 20px;color:#5a7b94}
+.subtitle{font-size:10px;letter-spacing:2.4px;color:#91a9bb;margin:0 0 52px}
+nav{width:min(100%,420px);display:grid;gap:14px}
+.menu-button,.soft-button{width:100%;padding:20px 14px;border:1px solid var(--line);color:#6587a0;background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(222,243,255,.58));box-shadow:var(--shadow);letter-spacing:4px;font-size:13px}
+.menu-button{min-height:76px}
+.menu-button:active,.soft-button:active{transform:translateY(1px)}
+.angel-mark{position:absolute;top:25px;right:28px;color:#a5d6f2;font-size:22px}
+.page{position:fixed;inset:0;height:100svh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:30px 18px calc(45px + env(safe-area-inset-bottom))}
+.page-inner{position:relative;z-index:1;width:min(100%,900px);margin:0 auto}
+.page-header{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.back-button{border:1px solid var(--line);background:rgba(255,255,255,.7);color:#6386a0;padding:10px 13px;font-size:11px;letter-spacing:1px;white-space:nowrap}
+.page-title{margin:0;font-size:25px;font-weight:normal;letter-spacing:5px;color:#5c7e97}
+.page-subtitle{margin:7px 0 0;font:10px/1.6 sans-serif;letter-spacing:1.2px;color:#91aabd}
+.glass-card{background:var(--glass);border:1px solid rgba(255,255,255,.95);outline:1px solid rgba(137,188,217,.28);box-shadow:var(--shadow);backdrop-filter:blur(12px);border-radius:3px;padding:18px;margin-bottom:18px}
+.form-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.field label{display:block;font:10px sans-serif;letter-spacing:1.4px;color:#7d9db3;margin:0 0 7px}
+.field input,.field textarea{width:100%;border:1px solid rgba(137,181,208,.55);background:rgba(255,255,255,.78);color:#4b6276;padding:12px;border-radius:2px;font:13px/1.6 sans-serif}
+.field textarea{min-height:100px;resize:vertical}
+.file-note,.editor-help{font:10px/1.7 sans-serif;color:#8ba5b8;margin:7px 0 0}
+.form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.soft-button{width:auto;min-width:120px;padding:12px 15px;font:11px sans-serif;letter-spacing:1.4px}
+.soft-button.primary{background:linear-gradient(135deg,#d9f1ff,#fdfefe);border-color:#9ccce8}
+.soft-button.danger{color:#a16e7a;border-color:rgba(202,155,171,.65);background:rgba(255,247,250,.8)}
+.status{font:11px/1.6 sans-serif;color:#7097b0;margin:10px 0 0;overflow-wrap:anywhere}
+.character-toolbar{display:flex;justify-content:flex-end;margin:0 0 18px}
+.character-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.character-tile{display:block;width:100%;padding:10px;border:1px solid rgba(255,255,255,.95);outline:1px solid rgba(137,188,217,.28);background:var(--glass);box-shadow:var(--shadow);text-align:left;color:var(--ink);min-width:0}
+.character-tile:active{transform:translateY(1px)}
+.tile-image{display:block;width:100%;aspect-ratio:1/1.12;object-fit:cover;object-position:center;border:1px solid rgba(137,188,217,.4);background:#eaf7ff}
+.tile-image.empty{display:grid;place-items:center;color:#9fc8e2;font-size:38px}
+.tile-name{display:block;font-size:clamp(15px,4vw,20px);letter-spacing:1px;margin:11px 2px 4px;overflow-wrap:anywhere}
+.tile-meta{display:block;font:10px/1.6 sans-serif;color:#829db1;margin:0 2px 3px;overflow-wrap:anywhere}
+.detail-hero{display:grid;grid-template-columns:minmax(110px,38%) 1fr;gap:18px;align-items:start}
+.detail-image{width:100%;aspect-ratio:3/4;object-fit:cover;border:1px solid rgba(137,188,217,.5);background:#eaf7ff}
+.detail-image.empty{display:grid;place-items:center;color:#9fc8e2;font-size:42px}
+.detail-name{font-size:clamp(22px,5vw,34px);font-weight:normal;letter-spacing:2px;overflow-wrap:anywhere;margin:0 0 12px}
+.detail-meta{font:12px/1.9 sans-serif;color:#7895aa;white-space:pre-wrap;overflow-wrap:anywhere}
+.detail-section{margin-top:18px}
+.detail-section h3{font-size:12px;font-weight:normal;letter-spacing:2px;color:#7b9db4;margin:0 0 9px}
+.markdown-content{font:13px/1.9 sans-serif;color:#536f83;overflow-wrap:anywhere;word-break:break-word}
+.markdown-content h1,.markdown-content h2,.markdown-content h3{font-family:Georgia,"Times New Roman",serif;font-weight:normal;letter-spacing:1px;color:#5b7e97;line-height:1.5;margin:16px 0 8px}
+.markdown-content h1{font-size:22px}.markdown-content h2{font-size:19px}.markdown-content h3{font-size:16px}
+.markdown-content p{margin:7px 0;white-space:pre-wrap}
+.markdown-content ul{padding-left:22px;margin:8px 0}.markdown-content li{margin:3px 0}
+.markdown-content blockquote{margin:10px 0;padding:5px 12px;border-left:2px solid #b8d9ec;color:#7b96aa;background:rgba(232,246,255,.45)}
+.markdown-content hr{border:0;border-top:1px solid #cfe3f1;margin:14px 0}
+.markdown-content strong{color:#3f627e}.markdown-content em{color:#6689a2}
+.editor-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.editor-toolbar button{border:1px solid rgba(137,181,208,.55);background:#f8fcff;color:#6287a1;padding:7px 10px;font:11px sans-serif;min-width:34px}
+.empty-state{text-align:center;padding:30px 12px;color:#8aa7bb;font:12px/1.8 sans-serif;letter-spacing:1px}
+.notice{font:11px/1.8 sans-serif;color:#7894a9}
+.auth-panel{margin-bottom:18px}
+.auth-panel input{width:100%;border:1px solid rgba(137,181,208,.55);background:rgba(255,255,255,.78);color:#4b6276;padding:12px;margin:5px 0;font:13px sans-serif}
+.auth-heading{font-size:12px;letter-spacing:2px;color:#668ba5;margin:0 0 10px}
+@media(min-width:650px){
+ .form-grid{grid-template-columns:1fr 1fr}.field.wide{grid-column:1/-1}
+ .character-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+ .glass-card{padding:22px}.eyebrow{margin-bottom:90px}.detail-hero{grid-template-columns:240px 1fr}
 }
 </style>
 </head>
-
 <body>
-
-<section id="opening">
-  <img id="scene" alt="">
-  <button id="appleTarget" aria-label="りんごをタップ"></button>
+<section id="opening" aria-label="オープニング">
+  <img id="scene" alt="オープニング画像" src="IMG_3320.png">
+  <div id="openingFallback" class="opening-fallback hidden">
+    <div class="halo">✧  ♡  ✧</div>
+    <div style="letter-spacing:5px;font-size:22px">PRIVATE COLLECTION</div>
+    <p>TOUCH TO CONTINUE</p>
+  </div>
+  <div id="tapHint">TAP TO CONTINUE　✧</div>
+</section>
+<section id="keyScreen" class="hidden" aria-label="アーカイブを開く">
+  <div class="key-angel">✧　༺ ♱ ༻　✧</div>
+  <h2 class="key-title">UNLOCK YOUR ARCHIVE</h2>
+  <div class="key-circle" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"></circle><path d="M11 12 20 3l2 2-2 2 2 2-3 3-2-2-3 3"></path></svg>
+  </div>
+  <p class="key-caption">TOUCH TO ENTER</p>
+</section>
+<section id="lobby" class="hidden">
+  <div class="angel-mark">✧</div>
+  <p class="eyebrow">PRIVATE COLLECTION</p>
+  <h1>ARCHIVE</h1>
+  <p class="subtitle">CHARACTERS / STORIES / WORLDS</p>
+  <nav aria-label="メニュー">
+    <button class="menu-button" id="charactersButton">CHARACTERS</button>
+    <button class="menu-button" id="storiesButton">STORIES</button>
+    <button class="menu-button" id="worldsButton">WORLDS</button>
+  </nav>
 </section>
 
-<div id="app">
-  <header class="topbar">
-    <button id="homeButton" class="small-button">← HOME</button>
-    <span class="brand">ARCHIVE / PRIVATE COLLECTION</span>
-    <button id="authButton" class="small-button">LOGIN</button>
-  </header>
+<section id="charactersPage" class="page hidden">
+  <div class="page-inner">
+    <header class="page-header">
+      <button class="back-button" id="backToLobby">← HOME</button>
+      <div><h2 class="page-title">CHARACTERS</h2><p class="page-subtitle">CHARACTER ARCHIVE　✧</p></div>
+    </header>
 
-  <main>
-    <section id="lobby">
-      <p class="eyebrow">PRIVATE COLLECTION</p>
-      <h1>ARCHIVE</h1>
-      <p class="subtitle">CHARACTERS / STORIES / WORLDS</p>
-
-      <nav class="menu">
-        <button id="charactersButton">CHARACTERS</button>
-        <button id="storiesButton">STORIES</button>
-        <button id="worldsButton">WORLDS</button>
-      </nav>
-
-      <p class="status">A private collection of characters and worlds.</p>
-    </section>
-
-    <section id="charactersPage" class="hidden">
-      <p class="eyebrow">CHARACTER ARCHIVE</p>
-      <h1>CHARACTERS</h1>
-      <p class="subtitle">CHARACTER FILES / COLLECTION</p>
-
-      <div class="section-head">
-        <button id="backToLobby">← BACK</button>
-        <button id="newCharacterButton" class="primary hidden">＋ NEW FILE</button>
+    <div class="glass-card auth-panel" id="authPanel">
+      <p class="auth-heading">OWNER ACCESS　✧</p>
+      <div id="signedOutPanel">
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="メールアドレス">
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="パスワード">
+        <button class="soft-button primary" type="button" id="loginButton">OWNER LOGIN</button>
       </div>
-
-      <div id="loginNotice" class="panel">
-        <p class="status">閲覧モード — キャラクター資料を閲覧できます。</p>
+      <div id="signedInPanel" class="hidden">
+        <p class="status">オーナーとしてログイン中です。</p>
+        <button class="soft-button" type="button" id="logoutButton">LOG OUT</button>
       </div>
+      <p id="authStatus" class="status" aria-live="polite">キャラクターを読み込んでいます…</p>
+    </div>
 
-      <div id="characterStatus" class="status" role="status" aria-live="polite"></div>
-      <div id="characterList" class="cards"></div>
+    <div class="character-toolbar">
+      <button class="soft-button primary hidden" type="button" id="addCharacter">＋ NEW CHARACTER</button>
+    </div>
+    <div id="characterList" class="character-grid"></div>
+    <div class="glass-card notice" style="margin-top:22px">※ キャラクター情報はオンラインに保存されます。公開された情報は、サイトを見られる人なら誰でも閲覧できます。</div>
+  </div>
+</section>
 
-      <section id="editor" class="panel hidden">
-        <h2 id="editorTitle">NEW CHARACTER</h2>
-        <p class="status">資料は Supabase に保存され、公開ページから閲覧できます。</p>
+<section id="characterDetailPage" class="page hidden">
+  <div class="page-inner">
+    <header class="page-header">
+      <button class="back-button" id="backToCharacters">← CHARACTERS</button>
+      <div><h2 class="page-title">CHARACTER FILE</h2><p class="page-subtitle">PRIVATE COLLECTION　✧</p></div>
+    </header>
+    <div id="characterDetail"></div>
+  </div>
+</section>
 
-        <form id="characterForm">
-          <input type="hidden" id="characterId">
+<section id="characterEditorPage" class="page hidden">
+  <div class="page-inner">
+    <header class="page-header">
+      <button class="back-button" id="cancelEditor">← BACK</button>
+      <div><h2 class="page-title" id="editorHeading">NEW CHARACTER</h2><p class="page-subtitle">EDIT YOUR CHARACTER FILE　✧</p></div>
+    </header>
+    <div class="glass-card">
+      <form id="characterForm">
+        <input type="hidden" id="editId">
+        <div class="form-grid">
+          <div class="field"><label for="name">NAME / 名前 *</label><input id="name" required maxlength="100" placeholder="キャラクター名"></div>
+          <div class="field"><label for="age">AGE / 年齢</label><input id="age" maxlength="100" placeholder="例：18歳"></div>
+          <div class="field"><label for="birthday">BIRTHDAY / 誕生日</label><input id="birthday" maxlength="100" placeholder="例：4月12日"></div>
+          <div class="field"><label for="relationships">RELATIONSHIPS / 関係性</label><input id="relationships" maxlength="500" placeholder="関係する人物など"></div>
 
-          <div class="field">
-            <label for="characterName">NAME</label>
-            <input id="characterName" maxlength="200" required placeholder="キャラクター名">
+          <div class="field wide">
+            <label for="profile">PROFILE / プロフィール</label>
+            <div class="editor-toolbar" data-target="profile">
+              <button type="button" data-md="bold"><b>B</b></button><button type="button" data-md="italic"><i>I</i></button>
+              <button type="button" data-md="h2">見出し</button><button type="button" data-md="list">箇条書き</button>
+              <button type="button" data-md="quote">引用</button><button type="button" data-md="hr">区切り線</button>
+            </div>
+            <textarea id="profile" maxlength="10000" placeholder="プロフィール、外見、背景など"></textarea>
+            <p class="editor-help">文字を選択してボタンを押すと書式を付けられます。</p>
           </div>
 
-          <div class="field">
-            <label for="characterProfile">PROFILE / DESCRIPTION</label>
-            <textarea id="characterProfile" maxlength="50000" placeholder="プロフィールや設定"></textarea>
+          <div class="field wide">
+            <label for="personality">PERSONALITY / 性格・設定</label>
+            <div class="editor-toolbar" data-target="personality">
+              <button type="button" data-md="bold"><b>B</b></button><button type="button" data-md="italic"><i>I</i></button>
+              <button type="button" data-md="h2">見出し</button><button type="button" data-md="list">箇条書き</button>
+              <button type="button" data-md="quote">引用</button><button type="button" data-md="hr">区切り線</button>
+            </div>
+            <textarea id="personality" maxlength="10000" placeholder="性格、口調、設定など"></textarea>
           </div>
 
-          <div class="field">
-            <label for="characterImage">IMAGE</label>
-            <input id="characterImage" type="file" accept="image/*">
-            <p class="status">画像を変更しない場合は、ファイルを選択せずに保存してね。</p>
-            <img id="imagePreview" class="hidden" alt="画像プレビュー"
-              style="max-width:100%;max-height:300px;object-fit:contain;margin-top:12px;">
+          <div class="field wide">
+            <label for="extra">OTHER NOTES / その他</label>
+            <div class="editor-toolbar" data-target="extra">
+              <button type="button" data-md="bold"><b>B</b></button><button type="button" data-md="italic"><i>I</i></button>
+              <button type="button" data-md="h2">見出し</button><button type="button" data-md="list">箇条書き</button>
+              <button type="button" data-md="quote">引用</button><button type="button" data-md="hr">区切り線</button>
+            </div>
+            <textarea id="extra" maxlength="10000" placeholder="自由に使える追加項目"></textarea>
           </div>
 
-          <div class="form-actions">
-            <button type="submit" id="saveCharacterButton" class="primary">SAVE</button>
-            <button type="button" id="cancelEditorButton">CANCEL</button>
+          <div class="field wide">
+            <label for="imageFile">IMAGE / アイコン画像</label>
+            <input id="imageFile" type="file" accept="image/*">
+            <p class="file-note">画像はオンラインストレージに保存されます。1枚1.5MB以下にしてください。</p>
           </div>
-          <p id="editorStatus" class="status" role="status" aria-live="polite"></p>
-        </form>
-      </section>
-    </section>
+        </div>
+        <div class="form-actions">
+          <button class="soft-button primary" type="submit" id="saveButton">SAVE FILE</button>
+          <button class="soft-button" type="button" id="clearForm">CLEAR</button>
+        </div>
+        <p id="formStatus" class="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
 
-    <section id="placeholderPage" class="hidden">
-      <p class="eyebrow" id="placeholderEyebrow">ARCHIVE</p>
-      <h1 id="placeholderTitle">STORIES</h1>
-      <p class="subtitle">COMING SOON</p>
-      <div class="panel">
-        <p class="status">このページはまだ準備中です。</p>
-        <button id="placeholderBack">← BACK</button>
-      </div>
-    </section>
+<section id="placeholderPage" class="page hidden">
+  <div class="page-inner">
+    <header class="page-header">
+      <button class="back-button" id="backPlaceholder">← HOME</button>
+      <div><h2 id="placeholderTitle" class="page-title">STORIES</h2><p class="page-subtitle">PRIVATE COLLECTION</p></div>
+    </header>
+    <div class="glass-card empty-state">この棚は準備中です。<br>✧</div>
+  </div>
+</section>
 
-    <section id="loginPage" class="hidden">
-      <p class="eyebrow">OWNER ACCESS</p>
-      <h1>LOGIN</h1>
-      <p class="subtitle">OWNER ONLY / EDIT ACCESS</p>
-
-      <div class="panel">
-        <form id="loginForm">
-          <div class="field">
-            <label for="loginEmail">EMAIL</label>
-            <input id="loginEmail" type="email" autocomplete="username" required>
-          </div>
-          <div class="field">
-            <label for="loginPassword">PASSWORD</label>
-            <input id="loginPassword" type="password" autocomplete="current-password" required>
-          </div>
-          <div class="form-actions">
-            <button id="loginSubmit" class="primary" type="submit">LOGIN</button>
-            <button id="loginCancel" type="button">CANCEL</button>
-          </div>
-          <p id="loginStatus" class="status" role="status" aria-live="polite"></p>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <footer>ARCHIVE — PRIVATE COLLECTION</footer>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-"use strict";
+(() => {
+  "use strict";
 
-/*
-  Supabase connection
-  Project URL: Supabase の Project URL
-  Publishable key: sb_publishable_ から始まる公開用キー
-  sb_secret_ のキーは絶対にここへ入れないこと。
-*/
-const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "ここにsb_publishable_から始まるキーを貼り付け";
+  const $ = id => document.getElementById(id);
 
-const OWNER_ID = "4acb95a4-3680-4a0d-9d0f-92aec7661bb6";
-const STORAGE_BUCKET = "character-images";
+  // Supabase接続設定（公開用のpublishable key）
+  const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_6Qbg-igLVVploBHb6SH51Q_G8V7DTyG";
 
-const supabaseReady =
-  window.supabase &&
-  SUPABASE_URL.startsWith("https://") &&
-  SUPABASE_PUBLISHABLE_KEY.startsWith("sb_publishable_") &&
-  !SUPABASE_PUBLISHABLE_KEY.includes("ここに");
+  // オーナーのユーザーID
+  const OWNER_ID = "4acb95a4-3680-4a0d-9d0f-92aec7661bb6";
+  const TABLE = "characters";
+  const BUCKET = "character-images";
+  const STORAGE_KEY = "archive_character_files_ice_v1";
 
-const db = supabaseReady
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
-  : null;
-
-const images = [
-  "IMG_3320.png",
-  "無題290_20261027070018.png",
-  "無題290_20261027075250.png",
-  "無題290_20261027081745.png"
-];
-
-const $ = id => document.getElementById(id);
-
-const opening = $("opening");
-const scene = $("scene");
-const appleTarget = $("appleTarget");
-const app = $("app");
-const lobby = $("lobby");
-const charactersPage = $("charactersPage");
-const placeholderPage = $("placeholderPage");
-const loginPage = $("loginPage");
-
-let currentImageIndex = 0;
-let openingLoading = true;
-let currentUser = null;
-let currentCharacters = [];
-let editingImagePath = null;
-let previewObjectUrl = null;
-let busy = false;
-
-function setStatus(element, message, type = "") {
-  element.textContent = message;
-  element.className = "status" + (type ? " " + type : "");
-}
-
-function showPage(page) {
-  [lobby, charactersPage, placeholderPage, loginPage].forEach(section => {
-    section.classList.add("hidden");
-  });
-  page.classList.remove("hidden");
-  window.scrollTo(0, 0);
-}
-
-function loadOpeningImage(index) {
-  openingLoading = true;
-  appleTarget.disabled = true;
-
-  scene.onload = () => {
-    openingLoading = false;
-    appleTarget.disabled = false;
-  };
-
-  scene.onerror = () => {
-    openingLoading = false;
-    appleTarget.disabled = false;
-    console.error("Opening image failed:", images[index]);
-  };
-
-  scene.src = images[index];
-}
-
-appleTarget.addEventListener("click", event => {
-  event.preventDefault();
-  if (openingLoading) return;
-
-  if (currentImageIndex < images.length - 1) {
-    currentImageIndex++;
-    loadOpeningImage(currentImageIndex);
-  } else {
-    opening.style.display = "none";
-    app.style.display = "block";
-    showPage(lobby);
-  }
-});
-
-$("homeButton").addEventListener("click", () => {
-  app.style.display = "none";
-  opening.style.display = "block";
-  currentImageIndex = 0;
-  loadOpeningImage(currentImageIndex);
-});
-
-$("charactersButton").addEventListener("click", openCharacters);
-$("backToLobby").addEventListener("click", () => showPage(lobby));
-$("storiesButton").addEventListener("click", () => showPlaceholder("STORIES"));
-$("worldsButton").addEventListener("click", () => showPlaceholder("WORLDS"));
-$("placeholderBack").addEventListener("click", () => showPage(lobby));
-
-function showPlaceholder(name) {
-  $("placeholderTitle").textContent = name;
-  $("placeholderEyebrow").textContent = "ARCHIVE / " + name;
-  showPage(placeholderPage);
-}
-
-$("authButton").addEventListener("click", () => {
-  if (currentUser) {
-    signOut();
-  } else {
-    $("loginEmail").value = "";
-    $("loginPassword").value = "";
-    setStatus($("loginStatus"), "");
-    showPage(loginPage);
-  }
-});
-
-$("loginCancel").addEventListener("click", () => showPage(lobby));
-$("newCharacterButton").addEventListener("click", () => openEditor());
-$("cancelEditorButton").addEventListener("click", closeEditor);
-
-async function openCharacters() {
-  showPage(charactersPage);
-
-  if (!db) {
-    setStatus(
-      $("characterStatus"),
-      "Supabase の接続設定がまだ完了していません。コード内の公開用キーを設定してください。",
-      "error"
-    );
-    return;
-  }
-
-  await loadCharacters();
-}
-
-async function loadCharacters() {
-  setStatus($("characterStatus"), "資料を読み込んでいます…");
-  $("characterList").replaceChildren();
-
-  const { data, error } = await db
-    .from("characters")
-    .select("id, owner_id, name, profile, image_path, created_at, updated_at")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error(error);
-    setStatus(
-      $("characterStatus"),
-      "資料を読み込めませんでした。Supabase の Data API と SELECT ポリシーを確認してください。",
-      "error"
-    );
-    return;
-  }
-
-  currentCharacters = data || [];
-  renderCharacters();
-  setStatus(
-    $("characterStatus"),
-    currentCharacters.length
-      ? `${currentCharacters.length} FILE${currentCharacters.length === 1 ? "" : "S"}`
-      : "まだキャラクター資料はありません。"
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
   );
-}
 
-function renderCharacters() {
-  const list = $("characterList");
-  list.replaceChildren();
+  const opening = $("opening");
+  const scene = $("scene");
+  const keyScreen = $("keyScreen");
+  const lobby = $("lobby");
+  const charactersPage = $("charactersPage");
+  const detailPage = $("characterDetailPage");
+  const editorPage = $("characterEditorPage");
+  const placeholderPage = $("placeholderPage");
 
-  $("newCharacterButton").classList.toggle("hidden", !isOwner());
-  $("loginNotice").classList.toggle("hidden", isOwner());
+  const signedOutPanel = $("signedOutPanel");
+  const signedInPanel = $("signedInPanel");
+  const addCharacterButton = $("addCharacter");
 
-  if (!currentCharacters.length) {
-    const empty = document.createElement("div");
-    empty.className = "empty";
-    empty.style.gridColumn = "1 / -1";
-    empty.textContent = isOwner()
-      ? "まだ資料がありません。NEW FILE から追加できます。"
-      : "公開されているキャラクター資料はまだありません。";
-    list.appendChild(empty);
-    return;
+  let stage = 0;
+  let currentImageFile = null;
+  let editorReturn = "list";
+  let selectedCharacterId = "";
+  let currentUser = null;
+  let characters = [];
+
+  scene.addEventListener("error", () => {
+    scene.classList.add("hidden");
+    $("openingFallback").classList.remove("hidden");
+  });
+
+  scene.addEventListener("load", () => {
+    scene.classList.remove("hidden");
+    $("openingFallback").classList.add("hidden");
+  });
+
+  opening.addEventListener("click", () => {
+    if (stage === 0) {
+      stage = 1;
+      scene.src = "無題290_20261027070018.png";
+      $("tapHint").textContent = "TAP TO CONTINUE　✧";
+    } else {
+      opening.classList.add("hidden");
+      keyScreen.classList.remove("hidden");
+      stage = 2;
+    }
+  });
+
+  keyScreen.addEventListener("click", () => {
+    keyScreen.classList.add("hidden");
+    lobby.classList.remove("hidden");
+  });
+
+  function hideAllPages() {
+    [lobby, charactersPage, detailPage, editorPage, placeholderPage]
+      .forEach(el => el.classList.add("hidden"));
   }
 
-  for (const character of currentCharacters) {
-    const card = document.createElement("article");
-    card.className = "character-card";
+  function showLobby() {
+    hideAllPages();
+    lobby.classList.remove("hidden");
+  }
 
-    if (character.image_path) {
-      const image = document.createElement("img");
-      image.alt = character.name || "Character";
-      image.loading = "lazy";
-      image.src = getPublicImageUrl(character.image_path);
-      image.onerror = () => {
-        image.removeAttribute("src");
-        image.alt = "画像を読み込めませんでした";
-      };
-      card.appendChild(image);
+  function showCharacterList() {
+    hideAllPages();
+    charactersPage.classList.remove("hidden");
+    renderCharacters();
+    charactersPage.scrollTop = 0;
+  }
+
+  function showDetail(id) {
+    const item = characters.find(entry => entry.id === id);
+    if (!item) {
+      showCharacterList();
+      return;
+    }
+    selectedCharacterId = id;
+    hideAllPages();
+    detailPage.classList.remove("hidden");
+    renderDetail(item);
+    detailPage.scrollTop = 0;
+  }
+
+  function showEditor(mode, item = null) {
+    if (!isOwner()) {
+      $("authStatus").textContent = "編集するにはオーナーログインが必要です。";
+      return;
     }
 
-    const body = document.createElement("div");
-    body.className = "card-body";
+    editorReturn = mode;
+    resetForm();
 
-    const heading = document.createElement("h3");
-    heading.textContent = character.name || "UNTITLED";
-    body.appendChild(heading);
-
-    const profile = document.createElement("div");
-    profile.className = "profile-text";
-    profile.textContent = character.profile || "プロフィールはありません。";
-    body.appendChild(profile);
-
-    if (isOwner()) {
-      const actions = document.createElement("div");
-      actions.className = "card-actions";
-
-      const editButton = document.createElement("button");
-      editButton.textContent = "EDIT";
-      editButton.addEventListener("click", () => openEditor(character));
-
-      const deleteButton = document.createElement("button");
-      deleteButton.textContent = "DELETE";
-      deleteButton.className = "danger";
-      deleteButton.addEventListener("click", () => deleteCharacter(character));
-
-      actions.append(editButton, deleteButton);
-      body.appendChild(actions);
+    if (item) {
+      $("editId").value = item.id;
+      ["name", "age", "birthday", "relationships", "profile", "personality", "extra"]
+        .forEach(key => $(key).value = item[key] || "");
+      $("saveButton").textContent = "UPDATE FILE";
+      $("editorHeading").textContent = "EDIT CHARACTER";
+      $("formStatus").textContent = "画像を選び直さなければ、今の画像が残ります。";
+    } else {
+      $("editorHeading").textContent = "NEW CHARACTER";
     }
 
-    card.appendChild(body);
-    list.appendChild(card);
-  }
-}
-
-function getPublicImageUrl(path) {
-  const { data } = db.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-  return data.publicUrl;
-}
-
-function isOwner() {
-  return !!currentUser && currentUser.id === OWNER_ID;
-}
-
-function openEditor(character = null) {
-  if (!isOwner()) {
-    alert("編集するにはオーナーとしてログインしてください。");
-    return;
+    hideAllPages();
+    editorPage.classList.remove("hidden");
+    editorPage.scrollTop = 0;
   }
 
-  $("characterForm").reset();
-  $("characterId").value = character?.id || "";
-  $("characterName").value = character?.name || "";
-  $("characterProfile").value = character?.profile || "";
-  $("editorTitle").textContent = character ? "EDIT CHARACTER" : "NEW CHARACTER";
-  editingImagePath = character?.image_path || null;
-  $("imagePreview").classList.add("hidden");
-  $("imagePreview").removeAttribute("src");
-  setStatus($("editorStatus"), "");
-
-  if (character?.image_path) {
-    $("imagePreview").src = getPublicImageUrl(character.image_path);
-    $("imagePreview").classList.remove("hidden");
+  function showPlaceholder(title) {
+    $("placeholderTitle").textContent = title;
+    hideAllPages();
+    placeholderPage.classList.remove("hidden");
   }
 
-  if (previewObjectUrl) {
-    URL.revokeObjectURL(previewObjectUrl);
-    previewObjectUrl = null;
+  $("charactersButton").addEventListener("click", showCharacterList);
+  $("storiesButton").addEventListener("click", () => showPlaceholder("STORIES"));
+  $("worldsButton").addEventListener("click", () => showPlaceholder("WORLDS"));
+  $("backToLobby").addEventListener("click", showLobby);
+  $("backPlaceholder").addEventListener("click", showLobby);
+  $("backToCharacters").addEventListener("click", showCharacterList);
+  $("addCharacter").addEventListener("click", () => showEditor("list"));
+
+  $("cancelEditor").addEventListener("click", () => {
+    if (editorReturn === "detail") showDetail(selectedCharacterId);
+    else showCharacterList();
+  });
+
+  function isOwner() {
+    return Boolean(currentUser && currentUser.id === OWNER_ID);
   }
 
-  $("editor").classList.remove("hidden");
-  $("editor").scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function closeEditor() {
-  $("editor").classList.add("hidden");
-  $("characterForm").reset();
-
-  if (previewObjectUrl) {
-    URL.revokeObjectURL(previewObjectUrl);
-    previewObjectUrl = null;
+  function updateAuthUI() {
+    const owner = isOwner();
+    signedOutPanel.classList.toggle("hidden", owner);
+    signedInPanel.classList.toggle("hidden", !owner);
+    addCharacterButton.classList.toggle("hidden", !owner);
+    $("authStatus").textContent = owner
+      ? "オーナーとしてログイン中です。編集・追加・削除ができます。"
+      : "閲覧モードです。オーナーのみ編集できます。";
+    renderCharacters();
   }
 
-  $("imagePreview").classList.add("hidden");
-  $("imagePreview").removeAttribute("src");
-  editingImagePath = null;
-  setStatus($("editorStatus"), "");
-}
+  async function login() {
+    const email = $("loginEmail").value.trim();
+    const password = $("loginPassword").value;
 
-$("characterImage").addEventListener("change", () => {
-  const file = $("characterImage").files[0];
-  if (!file) return;
+    if (!email || !password) {
+      $("authStatus").textContent = "メールアドレスとパスワードを入力してください。";
+      return;
+    }
 
-  if (!file.type.startsWith("image/")) {
-    setStatus($("editorStatus"), "画像ファイルを選択してください。", "error");
-    $("characterImage").value = "";
-    return;
-  }
+    $("loginButton").disabled = true;
+    $("authStatus").textContent = "ログインしています…";
 
-  if (file.size > 10 * 1024 * 1024) {
-    setStatus($("editorStatus"), "画像は10MB以下にしてください。", "error");
-    $("characterImage").value = "";
-    return;
-  }
-
-  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-  previewObjectUrl = URL.createObjectURL(file);
-  $("imagePreview").src = previewObjectUrl;
-  $("imagePreview").classList.remove("hidden");
-});
-
-async function uploadCharacterImage(file) {
-  const extension = (file.name.split(".").pop() || "png")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "") || "png";
-
-  const path = `${currentUser.id}/${crypto.randomUUID()}.${extension}`;
-
-  const { error } = await db.storage
-    .from(STORAGE_BUCKET)
-    .upload(path, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
     });
 
-  if (error) throw error;
-  return path;
-}
+    $("loginButton").disabled = false;
 
-$("characterForm").addEventListener("submit", async event => {
-  event.preventDefault();
-
-  if (!isOwner() || busy) return;
-
-  const name = $("characterName").value.trim();
-  const profile = $("characterProfile").value;
-  const id = $("characterId").value;
-  const file = $("characterImage").files[0];
-
-  if (!name) {
-    setStatus($("editorStatus"), "名前を入力してください。", "error");
-    return;
-  }
-
-  busy = true;
-  $("saveCharacterButton").disabled = true;
-  setStatus($("editorStatus"), "保存しています…");
-
-  let newImagePath = null;
-
-  try {
-    if (file) {
-      newImagePath = await uploadCharacterImage(file);
-    }
-
-    const previous = id
-      ? currentCharacters.find(item => item.id === id)
-      : null;
-
-    const record = {
-      name,
-      profile,
-      owner_id: currentUser.id,
-      image_path: newImagePath || previous?.image_path || null,
-      updated_at: new Date().toISOString()
-    };
-
-    let result;
-
-    if (id) {
-      result = await db
-        .from("characters")
-        .update(record)
-        .eq("id", id)
-        .eq("owner_id", currentUser.id)
-        .select("id")
-        .maybeSingle();
-    } else {
-      result = await db
-        .from("characters")
-        .insert(record)
-        .select("id")
-        .single();
-    }
-
-    if (result.error) throw result.error;
-
-    if (id && !result.data) {
-      throw new Error("更新できませんでした。権限または対象データを確認してください。");
-    }
-
-    if (file && previous?.image_path) {
-      const { error: deleteOldError } = await db.storage
-        .from(STORAGE_BUCKET)
-        .remove([previous.image_path]);
-
-      if (deleteOldError) {
-        console.warn("古い画像の削除に失敗しました:", deleteOldError);
-      }
-    }
-
-    closeEditor();
-    await loadCharacters();
-    setStatus($("characterStatus"), "保存しました。", "success");
-
-  } catch (error) {
-    console.error(error);
-
-    if (newImagePath) {
-      await db.storage.from(STORAGE_BUCKET).remove([newImagePath]);
-    }
-
-    setStatus(
-      $("editorStatus"),
-      "保存できませんでした。接続、テーブル権限、画像ポリシーを確認してください。",
-      "error"
-    );
-  } finally {
-    busy = false;
-    $("saveCharacterButton").disabled = false;
-  }
-});
-
-async function deleteCharacter(character) {
-  if (!isOwner() || busy) return;
-
-  const confirmed = confirm(
-    `「${character.name}」を削除しますか？\nこの操作は取り消せません。`
-  );
-  if (!confirmed) return;
-
-  busy = true;
-
-  try {
-    const { data, error } = await db
-      .from("characters")
-      .delete()
-      .eq("id", character.id)
-      .eq("owner_id", currentUser.id)
-      .select("id");
-
-    if (error) throw error;
-    if (!data || data.length === 0) {
-      throw new Error("削除できませんでした。権限を確認してください。");
-    }
-
-    if (character.image_path) {
-      const { error: storageError } = await db.storage
-        .from(STORAGE_BUCKET)
-        .remove([character.image_path]);
-
-      if (storageError) {
-        console.warn("画像の削除に失敗しました:", storageError);
-      }
-    }
-
-    await loadCharacters();
-    setStatus($("characterStatus"), "削除しました。", "success");
-
-  } catch (error) {
-    console.error(error);
-    setStatus($("characterStatus"), "削除できませんでした。権限設定を確認してください。", "error");
-  } finally {
-    busy = false;
-  }
-}
-
-$("loginForm").addEventListener("submit", async event => {
-  event.preventDefault();
-
-  if (!db) {
-    setStatus($("loginStatus"), "Supabase の公開用キーが設定されていません。", "error");
-    return;
-  }
-
-  const email = $("loginEmail").value.trim();
-  const password = $("loginPassword").value;
-
-  $("loginSubmit").disabled = true;
-  setStatus($("loginStatus"), "ログインしています…");
-
-  try {
-    const { data, error } = await db.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-
-    if (!data.user || data.user.id !== OWNER_ID) {
-      await db.auth.signOut();
-      currentUser = null;
-      updateAuthUI();
-      throw new Error("このアカウントには編集権限がありません。");
+    if (error) {
+      $("authStatus").textContent = "ログインできませんでした。入力内容を確認してください。";
+      return;
     }
 
     currentUser = data.user;
     updateAuthUI();
-    showPage(lobby);
-
-  } catch (error) {
-    console.error(error);
-    setStatus(
-      $("loginStatus"),
-      "ログインできませんでした。メールアドレスとパスワードを確認してください。",
-      "error"
-    );
-  } finally {
-    $("loginSubmit").disabled = false;
-  }
-});
-
-async function signOut() {
-  if (!db) return;
-
-  const { error } = await db.auth.signOut();
-  if (error) {
-    console.error(error);
-    alert("ログアウトできませんでした。");
-    return;
+    await loadCharacters();
   }
 
-  currentUser = null;
-  updateAuthUI();
+  $("loginButton").addEventListener("click", login);
+  $("loginPassword").addEventListener("keydown", event => {
+    if (event.key === "Enter") login();
+  });
 
-  if (!charactersPage.classList.contains("hidden")) {
-    renderCharacters();
-  }
-}
+  $("logoutButton").addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    currentUser = null;
+    updateAuthUI();
+    await loadCharacters();
+  });
 
-function updateAuthUI() {
-  $("authButton").textContent = currentUser ? "LOGOUT" : "LOGIN";
-  $("newCharacterButton").classList.toggle("hidden", !isOwner());
-  $("loginNotice").classList.toggle("hidden", isOwner());
-
-  if (!charactersPage.classList.contains("hidden")) {
-    renderCharacters();
-  }
-}
-
-async function initializeAuth() {
-  if (!db) {
-    $("authButton").disabled = true;
-    return;
-  }
-
-  const { data, error } = await db.auth.getSession();
-
-  if (error) console.error(error);
-
-  const sessionUser = data?.session?.user || null;
-  currentUser = sessionUser?.id === OWNER_ID ? sessionUser : null;
-
-  if (sessionUser && !currentUser) {
-    await db.auth.signOut();
-  }
-
-  updateAuthUI();
-
-  db.auth.onAuthStateChange((_event, session) => {
-    const user = session?.user || null;
-    currentUser = user?.id === OWNER_ID ? user : null;
+  supabase.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user || null;
     updateAuthUI();
   });
-}
 
-loadOpeningImage(currentImageIndex);
-initializeAuth();
+  function parseRow(row) {
+    let details = {};
+    try {
+      details = JSON.parse(row.profile || "{}");
+    } catch {
+      details = { profile: row.profile || "" };
+    }
+
+    const image = row.image_path
+      ? supabase.storage.from(BUCKET).getPublicUrl(row.image_path).data.publicUrl
+      : "";
+
+    return {
+      id: row.id,
+      owner_id: row.owner_id,
+      name: row.name || "",
+      age: details.age || "",
+      birthday: details.birthday || "",
+      relationships: details.relationships || "",
+      profile: details.profile || "",
+      personality: details.personality || "",
+      extra: details.extra || "",
+      image,
+      image_path: row.image_path || ""
+    };
+  }
+
+  async function loadCharacters() {
+    $("authStatus").textContent = "キャラクターを読み込んでいます…";
+
+    const { data, error } = await supabase
+      .from(TABLE)
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      $("authStatus").textContent =
+        "読み込みに失敗しました。Supabaseのテーブル・RLS設定を確認してください。";
+      $("characterList").replaceChildren(
+        makeText("div", "glass-card empty-state", "データを読み込めませんでした。")
+      );
+      return;
+    }
+
+    characters = (data || []).map(parseRow);
+    renderCharacters();
+    updateAuthUI();
+
+    if (!characters.length) {
+      $("authStatus").textContent =
+        "まだオンラインのキャラクターがいません。オーナーログイン後に追加できます。";
+    }
+  }
+
+  function value(id) {
+    return $(id).value.trim();
+  }
+
+  function resetForm() {
+    $("characterForm").reset();
+    $("editId").value = "";
+    currentImageFile = null;
+    $("saveButton").textContent = "SAVE FILE";
+    $("formStatus").textContent = "";
+  }
+
+  $("clearForm").addEventListener("click", resetForm);
+
+  $("imageFile").addEventListener("change", event => {
+    const file = event.target.files && event.target.files[0];
+    currentImageFile = null;
+
+    if (!file) return;
+
+    if (file.size > 1.5 * 1024 * 1024) {
+      event.target.value = "";
+      $("formStatus").textContent = "画像が大きすぎます。1.5MB以下の画像を選んでください。";
+      return;
+    }
+
+    currentImageFile = file;
+    $("formStatus").textContent = "画像を選択しました。保存ボタンを押してください。";
+  });
+
+  async function uploadImage(file, existingPath) {
+    if (!file) return existingPath || null;
+
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const path = OWNER_ID + "/" + crypto.randomUUID() + "." + ext;
+
+    const { error } = await supabase.storage
+      .from(BUCKET)
+      .upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: file.type || "image/jpeg"
+      });
+
+    if (error) throw error;
+    return path;
+  }
+
+  $("characterForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!isOwner()) {
+      $("formStatus").textContent = "保存するにはオーナーログインが必要です。";
+      return;
+    }
+
+    const id = $("editId").value;
+    const old = id ? characters.find(item => item.id === id) : null;
+    const saveButton = $("saveButton");
+
+    saveButton.disabled = true;
+    $("formStatus").textContent = "保存しています…";
+
+    try {
+      const imagePath = await uploadImage(
+        currentImageFile,
+        old ? old.image_path : null
+      );
+
+      const details = {
+        age: value("age"),
+        birthday: value("birthday"),
+        relationships: value("relationships"),
+        profile: value("profile"),
+        personality: value("personality"),
+        extra: value("extra")
+      };
+
+      const payload = {
+        owner_id: OWNER_ID,
+        name: value("name"),
+        profile: JSON.stringify(details),
+        image_path: imagePath,
+        updated_at: new Date().toISOString()
+      };
+
+      let result;
+
+      if (id) {
+        result = await supabase
+          .from(TABLE)
+          .update(payload)
+          .eq("id", id)
+          .eq("owner_id", OWNER_ID)
+          .select()
+          .single();
+      } else {
+        result = await supabase
+          .from(TABLE)
+          .insert(payload)
+          .select()
+          .single();
+      }
+
+      if (result.error) throw result.error;
+
+      if (old && currentImageFile && old.image_path) {
+        await supabase.storage.from(BUCKET).remove([old.image_path]);
+      }
+
+      resetForm();
+      await loadCharacters();
+
+      if (editorReturn === "detail") showDetail(result.data.id);
+      else showCharacterList();
+    } catch (error) {
+      console.error(error);
+      $("formStatus").textContent =
+        "保存できませんでした。ログイン状態、テーブル設定、画像ストレージの権限を確認してください。";
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
+
+  function makeText(tag, className, text) {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    el.textContent = text || "";
+    return el;
+  }
+
+  function renderMarkdown(source) {
+    const root = document.createElement("div");
+    root.className = "markdown-content";
+    const lines = String(source || "").replace(/\r/g, "").split("\n");
+    let paragraph = [];
+    let list = null;
+
+    function inline(text) {
+      const frag = document.createDocumentFragment();
+      const re = /\*\*(.+?)\*\*|\*(.+?)\*|`([^`]+)`/g;
+      let last = 0, match;
+
+      while ((match = re.exec(text))) {
+        frag.append(document.createTextNode(text.slice(last, match.index)));
+        let el;
+
+        if (match[1] !== undefined) {
+          el = document.createElement("strong");
+          el.textContent = match[1];
+        } else if (match[2] !== undefined) {
+          el = document.createElement("em");
+          el.textContent = match[2];
+        } else {
+          el = document.createElement("code");
+          el.textContent = match[3];
+        }
+
+        frag.append(el);
+        last = re.lastIndex;
+      }
+
+      frag.append(document.createTextNode(text.slice(last)));
+      return frag;
+    }
+
+    function flushParagraph() {
+      if (!paragraph.length) return;
+      const p = document.createElement("p");
+      p.append(inline(paragraph.join("\n")));
+      root.append(p);
+      paragraph = [];
+    }
+
+    function closeList() {
+      list = null;
+    }
+
+    for (const line of lines) {
+      const heading = line.match(/^(#{1,3})\s+(.+)$/);
+
+      if (heading) {
+        flushParagraph();
+        closeList();
+        const h = document.createElement("h" + heading[1].length);
+        h.append(inline(heading[2]));
+        root.append(h);
+        continue;
+      }
+
+      if (/^\s*[-*]\s+/.test(line)) {
+        flushParagraph();
+        if (!list) {
+          list = document.createElement("ul");
+          root.append(list);
+        }
+        const li = document.createElement("li");
+        li.append(inline(line.replace(/^\s*[-*]\s+/, "")));
+        list.append(li);
+        continue;
+      } else {
+        closeList();
+      }
+
+      if (/^>\s?/.test(line)) {
+        flushParagraph();
+        const quote = document.createElement("blockquote");
+        quote.append(inline(line.replace(/^>\s?/, "")));
+        root.append(quote);
+        continue;
+      }
+
+      if (/^---+$/.test(line.trim())) {
+        flushParagraph();
+        root.append(document.createElement("hr"));
+        continue;
+      }
+
+      if (!line.trim()) {
+        flushParagraph();
+        continue;
+      }
+
+      paragraph.push(line);
+    }
+
+    flushParagraph();
+    return root;
+  }
+
+  function imageElement(item, className) {
+    if (item.image) {
+      const img = document.createElement("img");
+      img.className = className;
+      img.src = item.image;
+      img.alt = item.name + "のアイコン";
+      return img;
+    }
+    return makeText("div", className + " empty", "✧");
+  }
+
+  function renderCharacters() {
+    const list = $("characterList");
+    list.replaceChildren();
+
+    if (!characters.length) {
+      list.append(makeText(
+        "div",
+        "glass-card empty-state",
+        isOwner()
+          ? "まだキャラクターがいません。「＋ NEW CHARACTER」から追加してね。 ✧"
+          : "まだ公開されているキャラクターがいません。 ✧"
+      ));
+      return;
+    }
+
+    characters.forEach(item => {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "character-tile";
+      card.setAttribute("aria-label", item.name + "の詳細を開く");
+      card.append(imageElement(item, "tile-image"));
+      card.append(makeText("span", "tile-name", item.name));
+
+      const meta = [item.age, item.birthday].filter(Boolean).join("　/ ");
+      if (meta) card.append(makeText("span", "tile-meta", meta));
+
+      card.addEventListener("click", () => showDetail(item.id));
+      list.append(card);
+    });
+  }
+
+  function addDetailSection(container, title, content) {
+    if (!content) return;
+    const section = document.createElement("section");
+    section.className = "detail-section";
+    section.append(makeText("h3", "", title));
+    section.append(renderMarkdown(content));
+    container.append(section);
+  }
+
+  function renderDetail(item) {
+    const root = $("characterDetail");
+    root.replaceChildren();
+
+    const hero = makeText("div", "glass-card detail-hero", "");
+    hero.append(imageElement(item, "detail-image"));
+
+    const info = document.createElement("div");
+    info.append(makeText("h1", "detail-name", item.name));
+
+    const meta = [
+      item.age && "年齢：" + item.age,
+      item.birthday && "誕生日：" + item.birthday,
+      item.relationships && "関係性：" + item.relationships
+    ].filter(Boolean).join("\n");
+
+    info.append(makeText("div", "detail-meta", meta || "PROFILE FILE　✧"));
+    hero.append(info);
+    root.append(hero);
+
+    addDetailSection(root, "PROFILE / プロフィール", item.profile);
+    addDetailSection(root, "PERSONALITY / 性格・設定", item.personality);
+    addDetailSection(root, "OTHER NOTES / その他", item.extra);
+
+    if (!item.profile && !item.personality && !item.extra) {
+      root.append(makeText(
+        "div",
+        "glass-card empty-state",
+        "詳細はまだ登録されていません。"
+      ));
+    }
+
+    if (!isOwner()) return;
+
+    const actions = makeText("div", "form-actions", "");
+
+    const edit = makeText("button", "soft-button primary", "EDIT CHARACTER");
+    edit.type = "button";
+    edit.addEventListener("click", () => showEditor("detail", item));
+
+    const del = makeText("button", "soft-button danger", "DELETE CHARACTER");
+    del.type = "button";
+    del.addEventListener("click", async () => {
+      if (!confirm("「" + item.name + "」を削除する？")) return;
+
+      del.disabled = true;
+
+      const { error } = await supabase
+        .from(TABLE)
+        .delete()
+        .eq("id", item.id)
+        .eq("owner_id", OWNER_ID);
+
+      if (error) {
+        alert("削除できませんでした。設定を確認してください。");
+        del.disabled = false;
+        return;
+      }
+
+      if (item.image_path) {
+        await supabase.storage.from(BUCKET).remove([item.image_path]);
+      }
+
+      await loadCharacters();
+      showCharacterList();
+    });
+
+    actions.append(edit, del);
+    root.append(actions);
+  }
+
+  document.querySelectorAll(".editor-toolbar button").forEach(button => {
+    button.addEventListener("click", () => {
+      const toolbar = button.closest(".editor-toolbar");
+      const field = $(toolbar.dataset.target);
+      const type = button.dataset.md;
+
+      field.focus();
+
+      const start = field.selectionStart;
+      const end = field.selectionEnd;
+      const selected = field.value.slice(start, end);
+      const before = field.value.slice(0, start);
+      const after = field.value.slice(end);
+      let insert = "", cursorStart = start, cursorEnd = end;
+
+      if (type === "bold") {
+        const text = selected || "太字";
+        insert = "**" + text + "**";
+        cursorStart = start + 2;
+        cursorEnd = cursorStart + text.length;
+      } else if (type === "italic") {
+        const text = selected || "斜体";
+        insert = "*" + text + "*";
+        cursorStart = start + 1;
+        cursorEnd = cursorStart + text.length;
+      } else if (type === "h2") {
+        const prefix = before.endsWith("\n") || start === 0 ? "" : "\n";
+        const text = selected || "見出し";
+        insert = prefix + "## " + text + "\n";
+        cursorStart = start + prefix.length + 3;
+        cursorEnd = cursorStart + text.length;
+      } else if (type === "list") {
+        insert = (selected || "項目").split("\n").map(line => "- " + line).join("\n");
+        cursorStart = start;
+        cursorEnd = start + insert.length;
+      } else if (type === "quote") {
+        insert = (selected || "引用文").split("\n").map(line => "> " + line).join("\n");
+        cursorStart = start;
+        cursorEnd = start + insert.length;
+      } else {
+        insert = (start === 0 || before.endsWith("\n") ? "" : "\n") + "---\n";
+        cursorStart = start + insert.length;
+        cursorEnd = cursorStart;
+      }
+
+      field.value = before + insert + after;
+      field.setSelectionRange(cursorStart, cursorEnd);
+      field.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  });
+
+  async function start() {
+    const { data } = await supabase.auth.getSession();
+    currentUser = data.session?.user || null;
+    updateAuthUI();
+    await loadCharacters();
+  }
+
+  start();
+})();
 </script>
 </body>
 </html>
