@@ -1,30 +1,30 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#eaf7ff">
 <title>ARCHIVE</title>
 <style>
-:root{--ink:#4b6276;--muted:#8298aa;--ice:#eaf7ff;--line:rgba(117,166,198,.42);--glass:rgba(255,255,255,.8);--blue:#a8d9f4}
+:root{--ink:#4b6276;--muted:#8298aa;--ice:#eaf7ff;--line:rgba(117,166,198,.42);--glass:rgba(255,255,255,.8);--blue:#a8d9f4;--pink:#e9a6c4;--pink-line:rgba(221,139,176,.5)}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,"Times New Roman",serif;background:linear-gradient(145deg,#fbfeff,#eaf7ff 60%,#f8fdff)}
+html{overscroll-behavior:none;-webkit-text-size-adjust:100%;touch-action:pan-y}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,"Times New Roman",serif;background:linear-gradient(145deg,#fbfeff,#eaf7ff 60%,#f8fdff);overscroll-behavior-y:none}
 button,input,textarea{font:inherit}
-button{cursor:pointer;color:#6386a0;border:1px solid var(--line);background:#ffffffd9;padding:10px 14px;border-radius:2px}
+button{cursor:pointer;color:#6386a0;border:1px solid var(--line);background:#ffffffd9;padding:10px 14px;border-radius:2px;touch-action:manipulation}
 input,textarea{width:100%;padding:11px;color:var(--ink);border:1px solid var(--line);background:#ffffffed;border-radius:2px}
 textarea{min-height:90px;resize:vertical}
 label{display:block;margin-bottom:6px;color:#7896ac;font:11px sans-serif;letter-spacing:.6px}
 .hidden{display:none!important}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #83c5ec;outline-offset:2px}
-#opening{height:100svh;min-height:420px;position:relative;overflow:hidden;cursor:pointer;background:var(--ice)}
-#scene{width:100%;height:100%;object-fit:cover}
+#opening{height:100svh;min-height:420px;position:relative;overflow:hidden;cursor:pointer;background:var(--ice);touch-action:manipulation}
+#scene{width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
 #openingFallback{position:absolute;inset:0;display:grid;place-content:center;text-align:center;background:linear-gradient(145deg,#fbfeff,#e4f5ff);color:#6b9ab9}
 #openingFallback p{font:10px sans-serif;letter-spacing:3px}
 #tapHint{position:absolute;bottom:8%;left:0;right:0;text-align:center;color:white;font:11px sans-serif;letter-spacing:2px;text-shadow:0 1px 7px #54768c;pointer-events:none}
 #lobby{min-height:100svh;padding:70px 20px 35px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
 .top-actions{position:absolute;top:18px;right:18px;display:flex;gap:8px}
-.icon-button{width:42px;height:42px;padding:0;color:#83c5ec;font:25px sans-serif}
+.icon-button{width:42px;height:42px;padding:0;color:var(--pink);border-color:var(--pink-line);font:25px sans-serif;background:#fffafd}
 .eyebrow{margin-bottom:35px;color:#8da9bd;font:10px sans-serif;letter-spacing:4px}
 h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;letter-spacing:8px}
 .subtitle{margin:15px 0 38px;color:#91a9bb;font:10px sans-serif;letter-spacing:1.5px}
@@ -49,23 +49,19 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .section-heading p{margin:5px 0;color:var(--muted);font:10px sans-serif}
 .character-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .character-card{min-width:0;padding:7px;border:1px solid #89bcd740;background:#ffffffbd}
-.character-photo{display:block;width:100%;height:clamp(180px,58vw,360px);object-fit:contain;object-position:center;background:#eaf7ff55;border:1px solid #89bcd72e;cursor:zoom-in}
-.no-image{display:grid;place-items:center;color:#9fc8e2;font:12px sans-serif;cursor:default}
+.character-photo{display:block;width:100%;height:clamp(180px,58vw,360px);object-fit:contain;object-position:center;background:#eaf7ff55;border:1px solid #89bcd72e;-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+.no-image{display:grid;place-items:center;color:#9fc8e2;font:12px sans-serif}
 .card-name{margin:10px 2px 5px;font-size:15px;font-weight:normal;overflow-wrap:anywhere}
 .card-summary{margin:0 2px;color:#7995a9;font:10px/1.7 sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
 .card-actions{display:flex;flex-wrap:wrap;gap:5px;margin:10px 2px 2px}
 .card-actions button{padding:7px 9px;font:10px sans-serif}
 .empty{padding:25px 12px;color:#8aa7bb;text-align:center;font:12px/1.8 sans-serif}
-#lightbox{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:12px;background:#1e304ff0;cursor:zoom-out}
-#lightbox img{display:block;max-width:100%;max-height:90svh;object-fit:contain}
-#lightboxClose{position:absolute;top:12px;right:12px;width:42px;height:42px;color:white;background:#ffffff20;border-color:#ffffff80;font:22px sans-serif}
 .file-list{display:grid;gap:8px}
 .file-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);background:#ffffffb3}
 .file-row-name{min-width:0;overflow-wrap:anywhere;font-size:13px}
 .file-row small{display:block;margin-top:4px;color:var(--muted);font:10px sans-serif}
 .file-row-actions{display:flex;flex-wrap:wrap;gap:5px}
 .file-row-actions button{font:10px sans-serif}
-#siteFixedBadge{position:fixed;z-index:20;left:10px;bottom:10px;padding:7px 10px;color:#6386a0;background:#fffffff0;border:1px solid var(--line);font:10px sans-serif}
 @media(min-width:650px){.page{padding:30px 24px 50px}.form-grid{grid-template-columns:1fr 1fr}.panel{padding:22px}.character-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.character-photo{height:340px}}
 @media(min-width:1000px){.character-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.character-photo{height:360px}}
 @media(max-width:360px){.character-grid{grid-template-columns:1fr}.character-photo{height:min(100vw,420px)}}
@@ -74,7 +70,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 <body>
 
 <section id="opening">
-  <img id="scene" src="IMG_3320.png" alt="ARCHIVE">
+  <img id="scene" src="IMG_3320.png" alt="ARCHIVE" draggable="false">
   <div id="openingFallback" class="hidden"><div>ARCHIVE</div><p>PRIVATE COLLECTION</p></div>
   <div id="tapHint">TAP TO CONTINUE</div>
 </section>
@@ -102,12 +98,10 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
       <div><h2 class="page-title">CHARACTERS</h2><p class="note">CHARACTER ARCHIVE</p></div>
     </header>
 
-    <!-- 一覧を先に表示 -->
     <div class="actions" style="margin-bottom:20px">
       <button class="primary" id="addCharacter">＋ ADD CHARACTER</button>
     </div>
 
-    <!-- 追加・編集時だけ開くフォーム -->
     <div id="formPanel" class="panel hidden">
       <h3 class="panel-title" id="formTitle">NEW FILE</h3>
       <form id="characterForm">
@@ -171,12 +165,6 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   <div class="inner">
     <header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">SETTINGS</h2></header>
     <div class="panel">
-      <h3 class="panel-title">SITE FIX</h3>
-      <p class="note">サイト内の固定表示を切り替えます。</p>
-      <button class="primary" id="toggleFixed">サイト固定：OFF</button>
-      <p class="note">この設定はブラウザ内で保存されます。ブラウザ自体の固定やアクセス制限を行うものではありません。</p>
-    </div>
-    <div class="panel">
       <h3 class="panel-title">ADMIN LOGIN</h3>
       <p class="note">サンプルの管理人ログインです。公開サイトを安全に保護する認証ではありません。</p>
       <form id="adminForm">
@@ -206,26 +194,16 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   </div>
 </section>
 
-<!-- タップで画像を拡大 -->
-<div id="lightbox" class="hidden" role="dialog" aria-label="拡大画像">
-  <button id="lightboxClose" aria-label="閉じる">×</button>
-  <img id="lightboxImage" alt="拡大画像">
-</div>
-
-<div id="siteFixedBadge" class="hidden">SITE FIXED</div>
-
 <script>
 (() => {
 "use strict";
 const $ = id => document.getElementById(id);
 const STORAGE_KEY = "archive_character_files_ice_v1";
-const FIXED_KEY = "archive_site_fixed_ice_v1";
 const ADMIN_PASSWORD = "change-this-password";
-const pages = ["opening","lobby","charactersPage","storiesPage","worldsPage","filesPage","settingsPage","adminPage"];
 let stage = 0, selectedImage = "", adminLoggedIn = false;
 
 function showOnly(id) {
-  pages.forEach(p => $(p).classList.add("hidden"));
+  ["opening","lobby","charactersPage","storiesPage","worldsPage","filesPage","settingsPage","adminPage"].forEach(p => $(p).classList.add("hidden"));
   $(id).classList.remove("hidden");
   window.scrollTo({top:0,behavior:"auto"});
 }
@@ -243,11 +221,6 @@ function el(tag,cls,text){
 }
 function button(parent,label,fn,cls=""){
   const b=el("button",cls,label);b.type="button";b.addEventListener("click",fn);parent.append(b);return b;
-}
-function updateFixed(){
-  const on=localStorage.getItem(FIXED_KEY)==="true";
-  $("toggleFixed").textContent="サイト固定："+(on?"ON":"OFF");
-  $("siteFixedBadge").classList.toggle("hidden",!on);
 }
 function clearForm(){
   $("characterForm").reset();
@@ -293,15 +266,10 @@ document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",(
   if(b.dataset.page==="filesPage")renderFiles();
 }));
 document.querySelectorAll("[data-home]").forEach(b=>b.addEventListener("click",home));
-$("settingsShortcut").addEventListener("click",()=>{updateFixed();showOnly("settingsPage");});
+$("settingsShortcut").addEventListener("click",()=>showOnly("settingsPage"));
 $("filesShortcut").addEventListener("click",()=>{renderFiles();showOnly("filesPage");});
 $("addCharacter").addEventListener("click",()=>openForm());
 $("cancelForm").addEventListener("click",clearForm);
-
-$("toggleFixed").addEventListener("click",()=>{
-  localStorage.setItem(FIXED_KEY,String(localStorage.getItem(FIXED_KEY)!=="true"));
-  updateFixed();
-});
 
 $("imageFile").addEventListener("change",async e=>{
   const file=e.target.files&&e.target.files[0];
@@ -341,29 +309,15 @@ $("characterForm").addEventListener("submit",e=>{
   }
 });
 
-function openImage(src,alt){
-  if(!src)return;
-  $("lightboxImage").src=src;
-  $("lightboxImage").alt=alt||"拡大画像";
-  $("lightbox").classList.remove("hidden");
-}
-function closeImage(){
-  $("lightbox").classList.add("hidden");
-  $("lightboxImage").src="";
-}
-$("lightbox").addEventListener("click",e=>{
-  if(e.target===$("lightbox")||e.target===$("lightboxClose"))closeImage();
-});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeImage();});
-
 function details(item){
   const old=$("detailPanel");if(old)old.remove();
   const panel=el("div","panel");panel.id="detailPanel";
   panel.append(el("h3","panel-title",item.name));
   if(item.image){
     const img=el("img");img.src=item.image;img.alt=item.name;
-    img.style.cssText="width:100%;max-height:75svh;object-fit:contain;cursor:zoom-in";
-    img.addEventListener("click",()=>openImage(item.image,item.name));panel.append(img);
+    img.draggable=false;
+    img.style.cssText="width:100%;max-height:75svh;object-fit:contain;user-select:none;-webkit-user-select:none;-webkit-user-drag:none";
+    panel.append(img);
   }
   [["年齢",item.age],["誕生日",item.birthday],["関係性",item.relationships],
    ["プロフィール",item.profile],["性格・設定",item.personality],["その他",item.extra]]
@@ -392,8 +346,7 @@ function renderCharacters(){
   data.forEach(item=>{
     const card=el("article","character-card");
     if(item.image){
-      const img=el("img","character-photo");img.src=item.image;img.alt=item.name+"の画像";img.loading="lazy";
-      img.addEventListener("click",()=>openImage(item.image,item.name));
+      const img=el("img","character-photo");img.src=item.image;img.alt=item.name+"の画像";img.loading="lazy";img.draggable=false;
       card.append(img);
     }else card.append(el("div","character-photo no-image","NO IMAGE"));
     card.append(el("h3","card-name",item.name));
@@ -457,8 +410,6 @@ $("clearAllData").addEventListener("click",()=>{
   localStorage.removeItem(STORAGE_KEY);clearForm();renderCharacters();renderFiles();
   $("settingsStatus").textContent="キャラクターデータを削除しました。";
 });
-
-updateFixed();
 })();
 </script>
 </body>
