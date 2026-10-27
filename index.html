@@ -2,1015 +2,1077 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ARCHIVE — Private Collection</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eaf7ff">
+<title>ARCHIVE</title>
 <style>
-:root{
-  --ink:#4b6276;
-  --muted:#8298aa;
-  --ice:#eaf7ff;
-  --ice2:#d7efff;
-  --line:rgba(117,166,198,.55);
-  --glass:rgba(255,255,255,.68);
-  --blue:#a8d9f4;
-  --white:#fbfeff;
-  --shadow:0 12px 34px rgba(104,157,190,.16);
-}
+:root{--ink:#4b6276;--muted:#8298aa;--ice:#eaf7ff;--line:rgba(117,166,198,.42);--glass:rgba(255,255,255,.8);--blue:#a8d9f4;--pink:#e9a6c4;--pink-line:rgba(221,139,176,.5)}
 *{box-sizing:border-box}
-html,body{
-  margin:0;
-  min-height:100%;
-  font-family:Georgia,"Times New Roman",serif;
-  color:var(--ink);
-}
-body{
-  background:
-    radial-gradient(ellipse at 15% 10%,rgba(255,255,255,.98),transparent 38%),
-    radial-gradient(ellipse at 85% 20%,rgba(190,229,251,.6),transparent 42%),
-    linear-gradient(145deg,#faffff,#e7f6ff 55%,#f8fdff);
-  min-height:100svh;
-}
+html{overscroll-behavior:none;-webkit-text-size-adjust:100%;touch-action:pan-y}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Georgia,"Times New Roman",serif;background:linear-gradient(145deg,#fbfeff,#eaf7ff 60%,#f8fdff);overscroll-behavior-y:none}
 button,input,textarea{font:inherit}
-button{cursor:pointer}
-button:focus-visible,input:focus-visible,textarea:focus-visible{
-  outline:2px solid #83c5ec;
-  outline-offset:3px;
-}
+button{cursor:pointer;color:#6386a0;border:1px solid var(--line);background:#ffffffd9;padding:10px 14px;border-radius:2px;touch-action:manipulation}
+input,textarea{width:100%;padding:11px;color:var(--ink);border:1px solid var(--line);background:#ffffffed;border-radius:2px}
+textarea{min-height:90px;resize:vertical}
+label{display:block;margin-bottom:6px;color:#7896ac;font:11px sans-serif;letter-spacing:.6px}
 .hidden{display:none!important}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #83c5ec;outline-offset:2px}
+#opening{height:100svh;min-height:420px;position:relative;overflow:hidden;cursor:pointer;background:var(--ice);touch-action:manipulation}
+#scene{width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+#openingFallback{position:absolute;inset:0;display:grid;place-content:center;text-align:center;background:linear-gradient(145deg,#fbfeff,#e4f5ff);color:#6b9ab9}
+#openingFallback p{font:10px sans-serif;letter-spacing:3px}
+#tapHint{position:absolute;bottom:8%;left:0;right:0;text-align:center;color:white;font:11px sans-serif;letter-spacing:2px;text-shadow:0 1px 7px #54768c;pointer-events:none}
+#lobby{min-height:100svh;padding:70px 20px 35px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
+.top-actions{position:absolute;top:18px;right:18px;display:flex;gap:8px}
+.icon-button{width:42px;height:42px;padding:0;color:var(--pink);border-color:var(--pink-line);background:#fffafd;display:grid;place-items:center}
+.icon-button svg{width:24px;height:24px;display:block}
+.eyebrow{margin-bottom:35px;color:#8da9bd;font:10px sans-serif;letter-spacing:4px}
+h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;letter-spacing:8px}
+.subtitle{margin:15px 0 38px;color:#91a9bb;font:10px sans-serif;letter-spacing:1.5px}
+.main-menu{width:min(100%,410px);display:grid;gap:10px}
+.menu-button{min-height:58px;font:12px sans-serif;letter-spacing:3px}
+.page{min-height:100svh;padding:24px 15px 40px}
+.inner{width:min(100%,1050px);margin:auto}
+.page-header{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.back{white-space:nowrap;font:10px sans-serif}
+.page-title{margin:0;font-size:22px;font-weight:normal;letter-spacing:3px}
+.note{color:#7894a9;font:11px/1.7 sans-serif;overflow-wrap:anywhere}
+.panel{margin-bottom:16px;padding:16px;background:var(--glass);border:1px solid white;outline:1px solid #89bcd733;box-shadow:0 5px 18px #689dbe17}
+.panel-title{margin:0 0 15px;font-size:14px;font-weight:normal;letter-spacing:1.5px}
+.form-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.wide{grid-column:1/-1}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.primary{background:linear-gradient(135deg,#d9f1ff,#fbfeff);border-color:#9ccce8}
+.danger{color:#a16e7a;border-color:#ca9bab80}
+.status{min-height:1em;color:#7894a9;font:11px/1.7 sans-serif;overflow-wrap:anywhere}
+.section-heading{margin:24px 0 12px}
+.section-heading h3{margin:0;font-size:18px;font-weight:normal;letter-spacing:2px}
+.section-heading p{margin:5px 0;color:var(--muted);font:10px sans-serif}
+.character-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.character-card{min-width:0;padding:7px;border:1px solid #89bcd740;background:#ffffffbd;cursor:pointer;transition:background .18s,border-color .18s}
+.character-card:hover{background:#ffffffed;border-color:#e9a6c4}
+.character-card:focus-visible{outline:2px solid #e9a6c4;outline-offset:3px}
 
-#opening{
-  position:relative;
-  height:100svh;
-  min-height:500px;
-  overflow:hidden;
-  background:#edf8ff;
-  cursor:pointer;
-}
-#scene{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center;
-}
-.opening-fallback{
-  position:absolute;
-  inset:0;
-  display:grid;
-  place-content:center;
-  text-align:center;
-  padding:30px;
-  background:linear-gradient(160deg,#fbfeff,#dff3ff);
-  color:#6b9ab9;
-}
-.opening-fallback .halo{
-  font-size:42px;
-  letter-spacing:8px;
-  margin-bottom:18px;
-  color:#9bcde9;
-}
-.opening-fallback p{
-  font-size:12px;
-  letter-spacing:4px;
-}
-#tapHint{
-  position:absolute;
-  bottom:8%;
-  left:0;
-  right:0;
-  text-align:center;
-  color:#fff;
-  text-shadow:0 1px 8px #5c829a;
-  letter-spacing:4px;
-  font-size:12px;
-  pointer-events:none;
-}
-
-#keyScreen{
-  position:relative;
-  min-height:100svh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:26px;
-  padding:30px;
-  background:
-    radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.98),transparent 48%),
-    linear-gradient(145deg,#fbfeff,#e5f5ff 58%,#f8fdff);
-  cursor:pointer;
-  text-align:center;
-  overflow:hidden;
-}
-#keyScreen:before{
-  content:"";
-  position:absolute;
-  inset:13px;
-  border:1px solid rgba(255,255,255,.9);
-  outline:1px solid rgba(137,188,217,.3);
-  pointer-events:none;
-}
-.key-angel{
-  font-size:15px;
-  letter-spacing:5px;
-  color:#a1c9e3;
-}
-.key-title{
-  margin:0;
-  color:#668ba5;
-  font-size:clamp(17px,4.5vw,23px);
-  font-weight:normal;
-  letter-spacing:3px;
-  text-shadow:0 1px 10px rgba(255,255,255,.8);
-}
-.key-circle{
-  width:48px;
-  height:48px;
-  border:1px solid #b6d7eb;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  color:#8db8d4;
-  background:rgba(255,255,255,.5);
-  box-shadow:0 5px 20px rgba(130,180,210,.13);
-}
-.key-circle svg{
-  width:21px;
-  height:21px;
-  stroke:currentColor;
-  fill:none;
-  stroke-width:1.35;
-}
-.key-caption{
-  margin:0;
-  color:#9ab5c8;
-  font:10px sans-serif;
-  letter-spacing:2px;
-}
-
-#lobby{
-  min-height:100svh;
-  padding:calc(36px + env(safe-area-inset-top)) 22px calc(48px + env(safe-area-inset-bottom));
-  text-align:center;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
-}
-#lobby:before,.page:before{
-  content:"";
-  position:absolute;
-  inset:12px;
-  border:1px solid rgba(255,255,255,.78);
-  pointer-events:none;
-}
-.eyebrow{
-  font-size:11px;
-  letter-spacing:5px;
-  color:#8da9bd;
-  margin:0 0 76px;
-}
-#lobby h1{
-  font-size:clamp(34px,8vw,48px);
-  font-weight:normal;
-  letter-spacing:10px;
-  margin:0 0 20px;
-  color:#5a7b94;
-}
-.subtitle{
-  font-size:10px;
-  letter-spacing:2.4px;
-  color:#91a9bb;
-  margin:0 0 52px;
-}
-nav{
-  width:min(100%,420px);
-  display:grid;
-  gap:14px;
-}
-.menu-button,.soft-button{
-  width:100%;
-  padding:20px 14px;
-  border:1px solid var(--line);
-  color:#6587a0;
-  background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(222,243,255,.58));
-  box-shadow:var(--shadow);
-  letter-spacing:4px;
-  font-size:13px;
-}
-.menu-button{min-height:76px}
-.menu-button:active,.soft-button:active{transform:translateY(1px)}
-.angel-mark{
-  position:absolute;
-  top:25px;
-  right:28px;
-  color:#a5d6f2;
-  font-size:22px;
-}
-
-.page{
-  position:relative;
-  min-height:100svh;
-  padding:30px 18px calc(45px + env(safe-area-inset-bottom));
-}
-.page-inner{
-  position:relative;
-  z-index:1;
-  width:min(100%,900px);
-  margin:0 auto;
-}
-.page-header{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  margin-bottom:26px;
-}
-.back-button{
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.7);
-  color:#6386a0;
-  padding:10px 13px;
-  font-size:11px;
-  letter-spacing:1px;
-  white-space:nowrap;
-}
-.page-title{
-  margin:0;
-  font-size:25px;
-  font-weight:normal;
-  letter-spacing:5px;
-  color:#5c7e97;
-  overflow-wrap:anywhere;
-}
-.page-subtitle{
-  margin:7px 0 0;
-  font:10px/1.6 sans-serif;
-  letter-spacing:1.2px;
-  color:#91aabd;
-}
-.glass-card{
-  background:var(--glass);
-  border:1px solid rgba(255,255,255,.95);
-  outline:1px solid rgba(137,188,217,.28);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(12px);
-  border-radius:3px;
-  padding:18px;
-  margin-bottom:18px;
-}
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:12px;
-}
-.field label{
-  display:block;
-  font:10px sans-serif;
-  letter-spacing:1.4px;
-  color:#7d9db3;
-  margin:0 0 7px;
-}
-.field input,.field textarea{
-  width:100%;
-  border:1px solid rgba(137,181,208,.55);
-  background:rgba(255,255,255,.78);
-  color:#4b6276;
-  padding:12px;
-  border-radius:2px;
-  font:13px/1.6 sans-serif;
-}
-.field textarea{min-height:84px;resize:vertical}
-.file-note{
-  font:10px/1.7 sans-serif;
-  color:#8ba5b8;
-  margin:8px 0 0;
-}
-.form-actions{
-  display:flex;
-  gap:9px;
-  flex-wrap:wrap;
-  margin-top:14px;
-}
-.soft-button{
-  width:auto;
-  min-width:120px;
-  padding:12px 15px;
-  font:11px sans-serif;
-  letter-spacing:1.4px;
-}
-.soft-button.primary{
-  background:linear-gradient(135deg,#d9f1ff,#fdfefe);
-  border-color:#9ccce8;
-}
-.soft-button.danger{
-  color:#a16e7a;
-  border-color:rgba(202,155,171,.65);
-  background:rgba(255,247,250,.8);
-}
-.status{
-  font:11px/1.6 sans-serif;
-  color:#7097b0;
-  margin:10px 0 0;
-}
-.character-add-row{
-  display:flex;
-  justify-content:flex-end;
-  margin:0 0 18px;
-}
-.character-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:14px;
-}
-.character-card{
-  display:flex;
-  flex-direction:column;
-  min-width:0;
-}
-
-/* 一覧の画像：画像の実寸比率を保ち、枠を画像に合わせる */
+/* キャラクター画像：画像の縦横比に合わせて枠の高さを調整 */
 .character-photo-frame{
-  display:table;
-  width:fit-content;
-  max-width:100%;
-  margin:0 auto 16px;
+  display:block;
+  width:100%;
+  min-width:0;
   overflow:hidden;
-  background:#f5fbff;
-  border:1px solid rgba(137,188,217,.45);
+  background:#eaf7ff55;
+  border:1px solid #89bcd72e;
   line-height:0;
 }
+
+/* 画像全体を表示し、元の縦横比を維持 */
 .character-photo{
   display:block;
-  width:auto;
+  width:100%;
   height:auto;
   max-width:100%;
-  max-height:440px;
-  margin:0;
+  margin:0 auto;
   object-fit:contain;
+  object-position:center;
+  -webkit-user-drag:none;
+  user-select:none;
+  -webkit-user-select:none;
+  pointer-events:none;
 }
-.no-image{
-  display:grid;
-  place-items:center;
-  min-width:180px;
-  min-height:160px;
-  color:#9fc8e2;
-  font-size:25px;
-  line-height:1.4;
-}
+.no-image{display:grid;place-items:center;min-height:160px;color:#9fc8e2;font:12px sans-serif;line-height:normal}
+.card-number{margin:10px 2px 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1px}
+.card-name{margin:0 2px 7px;font-size:17px;font-weight:normal;overflow-wrap:anywhere}
+.card-basic-info{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:0 2px;color:#7995a9;font:10px/1.7 sans-serif}
+.card-basic-info span{min-width:0;overflow-wrap:anywhere}
+.card-hint{margin:9px 2px 0;color:#b58aa1;font:9px sans-serif;letter-spacing:.5px}
+.card-actions{display:flex;flex-wrap:wrap;gap:5px;margin:10px 2px 2px}
+.card-actions button{padding:7px 9px;font:10px sans-serif}
+.empty{padding:25px 12px;color:#8aa7bb;text-align:center;font:12px/1.8 sans-serif}
+.detail-panel{margin:20px 0 16px;padding:16px;background:var(--glass);border:1px solid white;outline:1px solid #89bcd733;box-shadow:0 5px 18px #689dbe17}
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:15px}
+.detail-number{margin:0 0 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1.5px}
+.detail-title{margin:0;font-size:22px;font-weight:normal;overflow-wrap:anywhere}
+.detail-photo{display:block;width:100%;height:min(72svh,650px);min-height:260px;object-fit:contain;object-position:center;background:#eaf7ff55;border:1px solid #89bcd72e;margin-bottom:22px;pointer-events:none}
+.detail-basic-info{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 28px;margin:0 0 22px;padding:12px 14px;background:#eaf7ff66;border:1px solid #89bcd72e}
+.detail-basic-item{min-width:0;flex:0 1 auto;max-width:100%}
+.detail-field{margin:0 0 18px}
+.detail-field-label{margin:0 0 6px;color:#b58aa1;font:11px sans-serif;letter-spacing:.5px}
+.detail-field-value{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9;font-size:13px}
+.detail-empty{padding:18px 10px;text-align:center;color:#8aa7bb;font:11px/1.8 sans-serif}
+.detail-panel .actions{margin-top:20px}
+.file-list{display:grid;gap:8px}
+.file-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);background:#ffffffb3}
+.file-row-name{min-width:0;overflow-wrap:anywhere;font-size:13px}
+.file-row small{display:block;margin-top:4px;color:var(--muted);font:10px sans-serif}
+.file-row-actions{display:flex;flex-wrap:wrap;gap:5px}
+.file-row-actions button{font:10px sans-serif}
 
-/* 詳細画面の画像も同じく、画像のサイズに枠を合わせる */
-.detail-photo-frame{
-  display:table;
-  width:fit-content;
-  max-width:100%;
-  margin:0 auto 22px;
-  overflow:hidden;
-  background:#f5fbff;
-  border:1px solid rgba(137,188,217,.45);
-  line-height:0;
-}
-.detail-photo{
-  display:block;
-  width:auto;
-  height:auto;
-  max-width:100%;
-  max-height:72svh;
-  object-fit:contain;
-}
-.detail-content{
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-  font:13px/1.9 sans-serif;
-  color:#68869b;
-}
-.character-name{
-  font-size:19px;
-  letter-spacing:2px;
-  margin:0 0 8px;
-  overflow-wrap:anywhere;
-}
-.character-meta{
-  font:11px/1.7 sans-serif;
-  color:#7995a9;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-.card-actions{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-.card-actions button{
-  font:10px sans-serif;
-  letter-spacing:1px;
-  padding:8px 10px;
-  border:1px solid var(--line);
-  background:#f9fdff;
-  color:#6b8ca4;
-}
-.empty-state{
-  text-align:center;
-  padding:30px 12px;
-  color:#8aa7bb;
-  font:12px/1.8 sans-serif;
-  letter-spacing:1px;
-}
-.notice{
-  font:11px/1.8 sans-serif;
-  color:#7894a9;
-}
-#settingsButton{
-  position:absolute;
-  top:22px;
-  left:22px;
-  width:42px;
-  height:42px;
-  display:grid;
-  place-items:center;
-  border:1px solid rgba(117,166,198,.65);
-  background:rgba(255,255,255,.72);
-  color:#8bc8ed;
-  border-radius:50%;
-  z-index:3;
-}
-#settingsButton svg{
-  width:21px;
-  height:21px;
-  stroke:currentColor;
-  fill:none;
-  stroke-width:1.8;
-}
-#imageLightbox{
-  position:fixed;
-  inset:0;
-  background:rgba(29,53,70,.82);
-  z-index:1000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  cursor:zoom-out;
-}
-#imageLightbox img{
-  max-width:96vw;
-  max-height:90svh;
-  object-fit:contain;
-  border:1px solid rgba(255,255,255,.65);
-  box-shadow:0 10px 45px rgba(0,0,0,.25);
-}
-#settingsPanel{
-  position:fixed;
-  inset:0;
-  background:rgba(65,96,117,.35);
-  z-index:900;
-  display:grid;
-  place-items:center;
-  padding:20px;
-}
-.settings-box{
-  width:min(100%,420px);
-  background:rgba(250,254,255,.98);
-  border:1px solid #b8dced;
-  padding:24px;
-  box-shadow:0 15px 45px rgba(60,110,145,.2);
-}
 @media(min-width:650px){
+  .page{padding:30px 24px 50px}
   .form-grid{grid-template-columns:1fr 1fr}
-  .field.wide{grid-column:1/-1}
-  .character-grid{grid-template-columns:1fr 1fr}
-  .glass-card{padding:22px}
-  .eyebrow{margin-bottom:90px}
+  .panel,.detail-panel{padding:22px}
+  .character-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .detail-photo{height:min(75vh,760px)}
+}
+@media(min-width:1000px){
+  .character-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:360px){
+  .character-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<section id="opening" aria-label="オープニング">
-  <img id="scene" alt="オープニング画像" src="IMG_3320.png">
-  <div id="openingFallback" class="opening-fallback hidden">
-    <div class="halo">✧  ♡  ✧</div>
-    <div style="letter-spacing:5px;font-size:22px">PRIVATE COLLECTION</div>
-    <p>TOUCH TO CONTINUE</p>
-  </div>
-  <div id="tapHint">TAP TO CONTINUE　✧</div>
-</section>
-
-<section id="keyScreen" class="hidden" aria-label="アーカイブを開く">
-  <div class="key-angel">✧　༺ ♱ ༻　✧</div>
-  <h2 class="key-title">UNLOCK YOUR ARCHIVE</h2>
-  <div class="key-circle" aria-hidden="true">
-    <svg viewBox="0 0 24 24">
-      <circle cx="8" cy="15" r="4"></circle>
-      <path d="M11 12 20 3l2 2-2 2 2 2-3 3-2-2-3 3"></path>
-    </svg>
-  </div>
-  <p class="key-caption">TOUCH TO ENTER</p>
+<section id="opening">
+  <img id="scene" src="IMG_3320.png" alt="ARCHIVE" draggable="false">
+  <div id="openingFallback" class="hidden"><div>ARCHIVE</div><p>PRIVATE COLLECTION</p></div>
+  <div id="tapHint">TAP TO CONTINUE</div>
 </section>
 
 <section id="lobby" class="hidden">
-  <button id="settingsButton" type="button" aria-label="設定" title="設定">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.7 2.94-.09-.03a1.7 1.7 0 0 0-1.8.38l-.06.06h-3.4l-.02-.09a1.7 1.7 0 0 0-1.3-1.3l-.09-.02-2.94-1.7.03-.09a1.7 1.7 0 0 0-.38-1.8L8 15.23v-3.4l.09-.02a1.7 1.7 0 0 0 1.3-1.3l.02-.09 1.7-2.94.09.03a1.7 1.7 0 0 0 1.8-.38l.06-.06h3.4l.02.09a1.7 1.7 0 0 0 1.3 1.3l.09.02 2.94 1.7-.03.09a1.7 1.7 0 0 0 .38 1.8l.06.06v3.4z" transform="translate(-3 -3) scale(1.25)"></path>
-    </svg>
-  </button>
-  <div class="angel-mark">✧</div>
+  <div class="top-actions">
+    <button class="icon-button" id="filesShortcut" aria-label="FILES" title="FILES">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 4.5h14v15H5z"/>
+        <path d="M8 8h8M8 12h8M8 16h8"/>
+      </svg>
+    </button>
+    <button class="icon-button" id="settingsShortcut" aria-label="設定" title="SETTINGS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.09a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+    </button>
+  </div>
   <p class="eyebrow">PRIVATE COLLECTION</p>
   <h1>ARCHIVE</h1>
   <p class="subtitle">CHARACTERS / STORIES / WORLDS</p>
-  <nav aria-label="メニュー">
-    <button class="menu-button" id="charactersButton">CHARACTERS</button>
-    <button class="menu-button" id="storiesButton">STORIES</button>
-    <button class="menu-button" id="worldsButton">WORLDS</button>
+  <nav class="main-menu">
+    <button class="menu-button" data-page="charactersPage">CHARACTERS</button>
+    <button class="menu-button" data-page="storiesPage">STORIES</button>
+    <button class="menu-button" data-page="worldsPage">WORLDS</button>
+    <button class="menu-button" data-page="filesPage">FILES</button>
   </nav>
 </section>
 
 <section id="charactersPage" class="page hidden">
-  <div class="page-inner">
+  <div class="inner">
     <header class="page-header">
-      <button class="back-button" id="backToLobby">← HOME</button>
+      <button class="back" data-home>← HOME</button>
       <div>
         <h2 class="page-title">CHARACTERS</h2>
-        <p class="page-subtitle">CHARACTER ARCHIVE　✧</p>
+        <p class="note">CHARACTER ARCHIVE</p>
       </div>
     </header>
-
-    <div class="character-add-row">
-      <button class="soft-button primary" id="addCharacterButton" type="button">＋ ADD CHARACTER</button>
+    <p id="connectionStatus" class="status" aria-live="polite">Supabaseに接続しています…</p>
+    <div class="actions" id="addActions" style="margin-bottom:20px">
+      <button class="primary" id="addCharacter">＋ ADD CHARACTER</button>
     </div>
 
-    <div class="glass-card hidden" id="characterFormCard">
-      <h3 id="formHeading" style="font-weight:normal;letter-spacing:2px;margin:0 0 18px">NEW / EDIT FILE</h3>
+    <div id="formPanel" class="panel hidden">
+      <h3 class="panel-title" id="formTitle">NEW FILE</h3>
       <form id="characterForm">
         <input type="hidden" id="editId">
         <div class="form-grid">
-          <div class="field"><label for="name">NAME / 名前 *</label><input id="name" required maxlength="100" placeholder="キャラクター名"></div>
-          <div class="field"><label for="age">AGE / 年齢</label><input id="age" maxlength="100" placeholder="例：18歳"></div>
-          <div class="field"><label for="birthday">BIRTHDAY / 誕生日</label><input id="birthday" maxlength="100" placeholder="例：4月12日"></div>
-          <div class="field"><label for="relationships">RELATIONSHIPS / 関係性</label><input id="relationships" maxlength="300" placeholder="関係する人物など"></div>
-          <div class="field wide"><label for="profile">PROFILE / プロフィール</label><textarea id="profile" maxlength="5000" placeholder="プロフィール、外見、背景など"></textarea></div>
-          <div class="field wide"><label for="personality">PERSONALITY / 性格・設定</label><textarea id="personality" maxlength="5000" placeholder="性格、口調、設定など"></textarea></div>
-          <div class="field wide"><label for="extra">OTHER NOTES / その他</label><textarea id="extra" maxlength="5000" placeholder="自由に使える追加項目"></textarea></div>
-          <div class="field wide">
+          <div>
+            <label for="name">NAME / 名前 *</label>
+            <input id="name" maxlength="100" required>
+          </div>
+          <div>
+            <label for="age">AGE / 年齢</label>
+            <input id="age" maxlength="100">
+          </div>
+          <div>
+            <label for="birthday">BIRTHDAY / 誕生日</label>
+            <input id="birthday" maxlength="100">
+          </div>
+          <div>
+            <label for="relationships">RELATIONSHIPS / 関係性</label>
+            <input id="relationships" maxlength="500">
+          </div>
+          <div class="wide">
+            <label for="profile">PROFILE / プロフィール</label>
+            <textarea id="profile" maxlength="10000"></textarea>
+          </div>
+          <div class="wide">
+            <label for="personality">PERSONALITY / 性格・設定</label>
+            <textarea id="personality" maxlength="10000"></textarea>
+          </div>
+          <div class="wide">
+            <label for="extra">OTHER NOTES / その他</label>
+            <textarea id="extra" maxlength="10000"></textarea>
+          </div>
+          <div class="wide">
             <label for="imageFile">IMAGE / 画像</label>
             <input id="imageFile" type="file" accept="image/*">
-            <p class="file-note">画像は小さめがおすすめ。1枚1MB程度を目安にしてね。</p>
+            <p class="note">画像を変更しない場合は選び直さなくて大丈夫です。画像はデータベースに保存されます。画像サイズは2MBまでです。</p>
           </div>
         </div>
-        <div class="form-actions">
-          <button class="soft-button primary" type="submit" id="saveButton">SAVE FILE</button>
-          <button class="soft-button" type="button" id="clearForm">CLEAR</button>
+        <div class="actions">
+          <button class="primary" type="submit" id="saveButton">SAVE FILE</button>
+          <button type="button" id="cancelForm">CANCEL</button>
         </div>
-        <p id="formStatus" class="status" aria-live="polite"></p>
+        <p class="status" id="formStatus" aria-live="polite"></p>
       </form>
     </div>
 
+    <div class="section-heading">
+      <h3>SAVED FILES</h3>
+      <p id="characterCount">0 FILES</p>
+    </div>
     <div id="characterList" class="character-grid"></div>
-    <p id="connectionStatus" class="status" role="status">接続中…</p>
+    <div id="detailContainer"></div>
   </div>
 </section>
 
-<section id="placeholderPage" class="page hidden">
-  <div class="page-inner">
+<section id="storiesPage" class="page hidden">
+  <div class="inner">
     <header class="page-header">
-      <button class="back-button" id="backPlaceholder">← HOME</button>
-      <div>
-        <h2 id="placeholderTitle" class="page-title">STORIES</h2>
-        <p class="page-subtitle">PRIVATE COLLECTION</p>
-      </div>
+      <button class="back" data-home>← HOME</button>
+      <h2 class="page-title">STORIES</h2>
     </header>
-    <div class="glass-card empty-state">この棚は準備中です。<br>✧</div>
-  </div>
-</section>
-
-<section id="detailPage" class="page hidden">
-  <div class="page-inner">
-    <header class="page-header">
-      <button class="back-button" id="backToCharacters">← FILES</button>
-      <div>
-        <h2 class="page-title">CHARACTER FILE</h2>
-        <p class="page-subtitle">ARCHIVE DETAIL　✧</p>
-      </div>
-    </header>
-    <div class="glass-card" id="detailPanel"></div>
-  </div>
-</section>
-
-<div id="imageLightbox" class="hidden" role="dialog" aria-label="画像拡大">
-  <img id="lightboxImage" alt="拡大画像">
-</div>
-
-<div id="settingsPanel" class="hidden" role="dialog" aria-modal="true" aria-label="設定">
-  <div class="settings-box">
-    <h2 style="font-weight:normal;letter-spacing:3px;margin-top:0">SETTINGS</h2>
-    <p class="notice">ARCHIVE　✧</p>
-    <div class="form-actions">
-      <button class="soft-button" type="button" id="closeSettings">CLOSE</button>
+    <div class="panel">
+      <h3 class="panel-title">STORIES</h3>
+      <p class="note">ストーリー機能は準備中です。</p>
     </div>
   </div>
-</div>
+</section>
 
+<section id="worldsPage" class="page hidden">
+  <div class="inner">
+    <header class="page-header">
+      <button class="back" data-home>← HOME</button>
+      <h2 class="page-title">WORLDS</h2>
+    </header>
+    <div class="panel">
+      <h3 class="panel-title">WORLDS</h3>
+      <p class="note">ワールド機能は準備中です。</p>
+    </div>
+  </div>
+</section>
+
+<section id="filesPage" class="page hidden">
+  <div class="inner">
+    <header class="page-header">
+      <button class="back" data-home>← HOME</button>
+      <h2 class="page-title">FILES</h2>
+    </header>
+    <div class="panel">
+      <h3 class="panel-title">FILE MANAGEMENT</h3>
+      <p class="note">バックアップを書き出したり、保存済みデータを復元できます。インポートは管理人ログインが必要です。</p>
+      <div class="actions">
+        <button class="primary" id="exportData">EXPORT BACKUP</button>
+        <button id="importButton">IMPORT BACKUP</button>
+        <input id="importFile" class="hidden" type="file" accept=".json,application/json">
+      </div>
+      <p id="fileStatus" class="status" aria-live="polite"></p>
+    </div>
+    <div class="section-heading">
+      <h3>ALL FILES</h3>
+      <p id="fileCount">0 FILES</p>
+    </div>
+    <div id="fileList" class="file-list"></div>
+  </div>
+</section>
+
+<section id="settingsPage" class="page hidden">
+  <div class="inner">
+    <header class="page-header">
+      <button class="back" data-home>← HOME</button>
+      <h2 class="page-title">SETTINGS</h2>
+    </header>
+    <div class="panel">
+      <h3 class="panel-title">ADMIN LOGIN</h3>
+      <p class="note">Supabaseの管理人アカウントでログインします。アカウントはSupabaseのAuthenticationから作成してください。</p>
+      <form id="adminForm">
+        <label for="adminEmail">EMAIL</label>
+        <input id="adminEmail" type="email" autocomplete="username" required placeholder="管理人メールアドレス">
+        <label for="adminPassword" style="margin-top:12px">PASSWORD</label>
+        <input id="adminPassword" type="password" autocomplete="current-password" required placeholder="管理人パスワード">
+        <div class="actions">
+          <button class="primary" type="submit" id="loginButton">LOGIN</button>
+          <button type="button" id="adminLogout">LOG OUT</button>
+        </div>
+      </form>
+      <p id="adminStatus" class="status" aria-live="polite"></p>
+    </div>
+    <div class="panel">
+      <h3 class="panel-title">ACCOUNT STATUS</h3>
+      <p id="accountStatus" class="note">未ログイン</p>
+    </div>
+  </div>
+</section>
+
+<section id="adminPage" class="page hidden">
+  <div class="inner">
+    <header class="page-header">
+      <button class="back" data-home>← HOME</button>
+      <h2 class="page-title">ADMIN</h2>
+    </header>
+    <div class="panel">
+      <h3 class="panel-title">ADMIN PANEL</h3>
+      <p class="note">Supabaseにログイン中です。</p>
+      <div class="actions">
+        <button id="adminToFiles">OPEN FILES</button>
+        <button id="adminToCharacters">OPEN CHARACTERS</button>
+        <button id="adminLogout2">LOG OUT</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
-  "use strict";
+"use strict";
 
-  const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_6Qbg-igLVVploBH6SH51Q_G8V7DTyG";
-  const TABLE = "characters";
+const $ = id => document.getElementById(id);
 
-  const $ = id => document.getElementById(id);
-  const opening = $("opening");
-  const scene = $("scene");
-  const keyScreen = $("keyScreen");
-  const lobby = $("lobby");
-  const charactersPage = $("charactersPage");
-  const placeholderPage = $("placeholderPage");
-  const detailPage = $("detailPage");
+/* ARCHIVEのSupabase接続情報 */
+const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
+const SUPABASE_KEY = "sb_publishable_6Qbg-igLVVploBH6SH51Q_G8V7DTyG";
+const TABLE = "characters";
 
-  let stage = 0;
-  let currentImageData = "";
-  let characters = [];
-  let activeCharacterId = null;
-  let db = null;
+let supabase = null;
+let stage = 0;
+let selectedImage = "";
+let currentUser = null;
+let characters = [];
+let busy = false;
 
-  const bittenImage = "無題290_20261027070018.png";
+/* 接続エラーを画面に分かりやすく表示 */
+function explainError(error){
+  const raw = error && error.message ? error.message : String(error || "不明なエラー");
+  const lower = raw.toLowerCase();
 
-  function setStatus(message) {
-    $("connectionStatus").textContent = message;
+  if(
+    lower.includes("invalid api key") ||
+    lower.includes("invalidapikey") ||
+    lower.includes("api key is invalid")
+  ){
+    return "SupabaseのAPIキーが無効と判定されました。設定しているProject URLとPublishable keyが同じプロジェクトのものか確認してください。";
   }
 
-  function showPage(page) {
-    [opening,keyScreen,lobby,charactersPage,placeholderPage,detailPage]
-      .forEach(el => el.classList.add("hidden"));
-    page.classList.remove("hidden");
-    window.scrollTo({top:0,behavior:"instant"});
+  if(
+    lower.includes("failed to fetch") ||
+    lower.includes("networkerror") ||
+    lower.includes("load failed")
+  ){
+    return "通信に失敗しました。インターネット接続とSupabaseの状態を確認してください。";
   }
 
-  scene.addEventListener("error", () => {
-    scene.classList.add("hidden");
-    $("openingFallback").classList.remove("hidden");
-  });
+  if(
+    lower.includes("permission denied") ||
+    lower.includes("row-level security") ||
+    lower.includes("rls")
+  ){
+    return "データベースのアクセス権限で拒否されました。charactersテーブルのRLSポリシーとログイン状態を確認してください。";
+  }
 
-  scene.addEventListener("load", () => {
-    scene.classList.remove("hidden");
-    $("openingFallback").classList.add("hidden");
-  });
+  if(lower.includes("relation") && lower.includes("does not exist")){
+    return "charactersテーブルが見つかりません。Supabaseのテーブル名を確認してください。";
+  }
 
-  opening.addEventListener("click", () => {
-    if(stage === 0) {
-      stage = 1;
-      scene.src = bittenImage;
-    } else {
-      showPage(keyScreen);
-      stage = 2;
+  return raw;
+}
+
+function showOnly(id) {
+  ["opening","lobby","charactersPage","storiesPage","worldsPage","filesPage","settingsPage","adminPage"].forEach(p => $(p).classList.add("hidden"));
+  $(id).classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"auto"});
+}
+
+function home(){showOnly("lobby");}
+function isAdmin(){return !!currentUser;}
+function message(id,text){$(id).textContent=text;}
+
+function el(tag,cls,text){
+  const e=document.createElement(tag);
+  if(cls)e.className=cls;
+  if(text!==undefined)e.textContent=text;
+  return e;
+}
+
+function button(parent,label,fn,cls=""){
+  const b=el("button",cls,label);
+  b.type="button";
+  b.addEventListener("click",e=>{
+    e.stopPropagation();
+    fn();
+  });
+  parent.append(b);
+  return b;
+}
+
+function characterNumber(item){
+  const index=characters.findIndex(x=>String(x.id)===String(item.id));
+  return index>=0?index+1:"—";
+}
+
+function normalizeRow(row){
+  return {
+    id:row.id,
+    owner_id:row.owner_id,
+    name:row.name||"",
+    age:row.age||"",
+    birthday:row.birthday||"",
+    relationships:row.relationships||"",
+    profile:row.profile||"",
+    personality:row.personality||"",
+    extra:row.extra||"",
+    image:row.image||"",
+    updatedAt:row.updated_at||row.updatedAt||""
+  };
+}
+
+function updateAdminUI(){
+  $("addActions").classList.toggle("hidden",!isAdmin());
+  $("accountStatus").textContent=currentUser
+    ? "ログイン中："+currentUser.email
+    : "未ログイン。キャラクターの閲覧はできますが、追加・編集・削除はできません。";
+  $("adminStatus").textContent=currentUser
+    ? "ログイン済み："+currentUser.email
+    : "";
+  renderCharacters();
+  renderFiles();
+}
+
+async function loadCharacters(){
+  if(!supabase){
+    message("connectionStatus","Supabaseのライブラリを読み込めませんでした。ページを再読み込みしてください。");
+    return;
+  }
+
+  message("connectionStatus","Supabaseからデータを読み込んでいます…");
+
+  try{
+    const {data,error}=await supabase.from(TABLE).select("*").order("id",{ascending:true});
+    if(error)throw error;
+
+    characters=(data||[]).map(normalizeRow);
+    message("connectionStatus","Supabaseに接続しました。");
+    renderCharacters();
+    renderFiles();
+  }catch(error){
+    console.error("ARCHIVE load error:",error);
+    characters=[];
+    renderCharacters();
+    renderFiles();
+    message("connectionStatus","接続エラー："+explainError(error));
+  }
+}
+
+function clearForm(){
+  $("characterForm").reset();
+  $("editId").value="";
+  selectedImage="";
+  $("formTitle").textContent="NEW FILE";
+  $("saveButton").textContent="SAVE FILE";
+  message("formStatus","");
+  $("formPanel").classList.add("hidden");
+}
+
+function openForm(item=null){
+  if(!isAdmin()){
+    alert("編集するには管理人ログインが必要です。");
+    return;
+  }
+
+  clearForm();
+  $("formPanel").classList.remove("hidden");
+
+  if(item){
+    $("formTitle").textContent="EDIT FILE";
+    $("saveButton").textContent="UPDATE FILE";
+    $("editId").value=String(item.id);
+    ["name","age","birthday","relationships","profile","personality","extra"].forEach(k=>$(k).value=item[k]||"");
+  }else{
+    $("formTitle").textContent="NEW FILE";
+  }
+
+  $("formPanel").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+$("scene").addEventListener("error",()=>{
+  $("scene").classList.add("hidden");
+  $("openingFallback").classList.remove("hidden");
+});
+
+$("opening").addEventListener("click",()=>{
+  if(stage===0){
+    stage=1;
+    $("scene").src="無題290_20261027070018.png";
+    $("tapHint").textContent="TAP TO ENTER";
+  }else{
+    stage=2;
+    showOnly("lobby");
+    loadCharacters();
+  }
+});
+
+document.querySelectorAll("[data-page]").forEach(b=>{
+  b.addEventListener("click",()=>{
+    showOnly(b.dataset.page);
+    if(b.dataset.page==="charactersPage")loadCharacters();
+    if(b.dataset.page==="filesPage")renderFiles();
+  });
+});
+
+document.querySelectorAll("[data-home]").forEach(b=>b.addEventListener("click",home));
+
+$("settingsShortcut").addEventListener("click",()=>showOnly("settingsPage"));
+
+$("filesShortcut").addEventListener("click",()=>{
+  renderFiles();
+  showOnly("filesPage");
+});
+
+$("addCharacter").addEventListener("click",()=>openForm());
+$("cancelForm").addEventListener("click",clearForm);
+
+/* 画像は2MBまで選択可能 */
+$("imageFile").addEventListener("change",async e=>{
+  const file=e.target.files&&e.target.files[0];
+
+  if(!file){
+    selectedImage="";
+    return;
+  }
+
+  selectedImage="";
+
+  if(!file.type.startsWith("image/")){
+    message("formStatus","画像ファイルを選んでください。");
+    return;
+  }
+
+  const maxSize=2*1024*1024;
+
+  if(file.size>maxSize){
+    message("formStatus","画像は2MB以下にしてください。");
+    e.target.value="";
+    return;
+  }
+
+  message("formStatus","画像を読み込んでいます…");
+
+  try{
+    selectedImage=await new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve(String(reader.result));
+      reader.onerror=()=>reject(new Error("画像を読み込めませんでした。"));
+      reader.readAsDataURL(file);
+    });
+
+    message("formStatus","画像を読み込みました。保存してください。");
+  }catch(error){
+    console.error(error);
+    selectedImage="";
+    message("formStatus",error.message||"画像を読み込めませんでした。");
+  }
+});
+
+$("characterForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  if(!isAdmin()){
+    message("formStatus","先に管理人ログインをしてください。");
+    return;
+  }
+
+  if(!supabase){
+    message("formStatus","Supabaseに接続できていません。");
+    return;
+  }
+
+  if(busy)return;
+
+  const name=$("name").value.trim();
+
+  if(!name){
+    message("formStatus","名前を入力してください。");
+    return;
+  }
+
+  const editId=$("editId").value;
+  const old=characters.find(x=>String(x.id)===String(editId));
+
+  const item={
+    name,
+    age:$("age").value.trim(),
+    birthday:$("birthday").value.trim(),
+    relationships:$("relationships").value.trim(),
+    profile:$("profile").value.trim(),
+    personality:$("personality").value.trim(),
+    extra:$("extra").value.trim(),
+    image:selectedImage||(old&&old.image)||"",
+    updated_at:new Date().toISOString()
+  };
+
+  busy=true;
+  $("saveButton").disabled=true;
+  message("formStatus","Supabaseに保存しています…");
+
+  try{
+    let result;
+
+    if(editId){
+      result=await supabase.from(TABLE)
+        .update(item)
+        .eq("id",old?old.id:editId)
+        .eq("owner_id",currentUser.id)
+        .select();
+    }else{
+      result=await supabase.from(TABLE)
+        .insert({...item,owner_id:currentUser.id})
+        .select();
     }
-  });
 
-  keyScreen.addEventListener("click", () => {
-    showPage(lobby);
-  });
+    if(result.error)throw result.error;
 
-  $("charactersButton").addEventListener("click", async () => {
-    showPage(charactersPage);
+    if(editId&&(!result.data||result.data.length===0)){
+      throw new Error("更新できませんでした。owner_idとRLSポリシーを確認してください。");
+    }
+
+    clearForm();
     await loadCharacters();
-  });
+    message("connectionStatus","保存しました。Supabaseに反映されています。");
+  }catch(error){
+    console.error("ARCHIVE save error:",error);
+    message("formStatus","保存エラー："+explainError(error));
+  }finally{
+    busy=false;
+    $("saveButton").disabled=false;
+  }
+});
 
-  $("storiesButton").addEventListener("click", () => showPlaceholder("STORIES"));
-  $("worldsButton").addEventListener("click", () => showPlaceholder("WORLDS"));
-  $("backToLobby").addEventListener("click", () => showPage(lobby));
-  $("backPlaceholder").addEventListener("click", () => showPage(lobby));
-  $("backToCharacters").addEventListener("click", () => showPage(charactersPage));
+function details(item){
+  const container=$("detailContainer");
+  container.replaceChildren();
 
-  function showPlaceholder(title) {
-    $("placeholderTitle").textContent = title;
-    showPage(placeholderPage);
+  const panel=el("section","detail-panel");
+  const header=el("div","detail-header");
+  const titleGroup=el("div","");
+
+  titleGroup.append(
+    el("p","detail-number","No."+characterNumber(item)),
+    el("h3","detail-title",item.name)
+  );
+
+  header.append(titleGroup);
+  button(header,"CLOSE",()=>panel.remove());
+  panel.append(header);
+
+  if(item.image){
+    const img=el("img","detail-photo");
+    img.src=item.image;
+    img.alt=item.name+"の画像";
+    img.draggable=false;
+    panel.append(img);
+  }else{
+    panel.append(el("div","detail-photo no-image","NO IMAGE"));
   }
 
-  $("settingsButton").addEventListener("click", () => {
-    $("settingsPanel").classList.remove("hidden");
-  });
+  let hasDetails=false;
 
-  $("closeSettings").addEventListener("click", () => {
-    $("settingsPanel").classList.add("hidden");
-  });
+  if(item.age||item.birthday){
+    const basic=el("div","detail-basic-info");
 
-  $("settingsPanel").addEventListener("click", event => {
-    if(event.target === $("settingsPanel")) {
-      $("settingsPanel").classList.add("hidden");
-    }
-  });
-
-  $("imageLightbox").addEventListener("click", () => {
-    $("imageLightbox").classList.add("hidden");
-  });
-
-  document.addEventListener("keydown", event => {
-    if(event.key === "Escape") {
-      $("imageLightbox").classList.add("hidden");
-      $("settingsPanel").classList.add("hidden");
-    }
-  });
-
-  function makeText(tag, className, text) {
-    const el = document.createElement(tag);
-    if(className) el.className = className;
-    el.textContent = text || "";
-    return el;
-  }
-
-  function resetForm() {
-    $("characterForm").reset();
-    $("editId").value = "";
-    currentImageData = "";
-    $("saveButton").textContent = "SAVE FILE";
-    $("formStatus").textContent = "";
-    $("formHeading").textContent = "NEW / EDIT FILE";
-    $("characterFormCard").classList.add("hidden");
-  }
-
-  $("addCharacterButton").addEventListener("click", () => {
-    resetForm();
-    $("formHeading").textContent = "NEW CHARACTER FILE";
-    $("characterFormCard").classList.remove("hidden");
-    window.scrollTo({top:0,behavior:"smooth"});
-  });
-
-  $("clearForm").addEventListener("click", resetForm);
-
-  $("imageFile").addEventListener("change", async event => {
-    const file = event.target.files && event.target.files[0];
-
-    if(!file) {
-      currentImageData = "";
-      return;
-    }
-
-    if(file.size > 1.5 * 1024 * 1024) {
-      event.target.value = "";
-      currentImageData = "";
-      $("formStatus").textContent = "画像が大きすぎます。1.5MB以下の画像を選んでね。";
-      return;
-    }
-
-    try {
-      currentImageData = await new Promise((resolve,reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-      $("formStatus").textContent = "画像を読み込みました。保存ボタンを押してね。";
-    } catch(error) {
-      currentImageData = "";
-      $("formStatus").textContent = "画像を読み込めませんでした。別の画像を試してね。";
-    }
-  });
-
-  async function loadCharacters() {
-    setStatus("データを読み込み中…");
-
-    try {
-      const {data,error} = await db
-        .from(TABLE)
-        .select("*")
-        .order("id",{ascending:true});
-
-      if(error) throw error;
-
-      characters = data || [];
-      renderCharacters();
-      setStatus("接続しました。");
-    } catch(error) {
-      console.error("ARCHIVE load error:",error);
-      renderCharacters();
-      setStatus(
-        error.message && error.message.toLowerCase().includes("api key")
-          ? "接続エラー：APIキーが無効です。Supabaseの接続設定を確認してください。"
-          : "接続エラー：" + (error.message || "データを読み込めませんでした。")
+    if(item.age){
+      const group=el("div","detail-basic-item");
+      group.append(
+        el("p","detail-field-label","年齢"),
+        el("p","detail-field-value",item.age)
       );
+      basic.append(group);
+      hasDetails=true;
     }
-  }
 
-  function getField(item,key) {
-    return item[key] == null ? "" : String(item[key]);
-  }
-
-  function renderCharacters() {
-    const list = $("characterList");
-    list.replaceChildren();
-
-    if(!characters.length) {
-      list.append(
-        makeText("div","glass-card empty-state","まだファイルがありません。＋ ADD CHARACTER から追加してね。 ✧")
+    if(item.birthday){
+      const group=el("div","detail-basic-item");
+      group.append(
+        el("p","detail-field-label","誕生日"),
+        el("p","detail-field-value",item.birthday)
       );
-      return;
+      basic.append(group);
+      hasDetails=true;
     }
 
-    characters.forEach(item => {
-      const card = makeText("article","glass-card character-card","");
-      const frame = makeText("div","character-photo-frame","");
-
-      if(item.image) {
-        const img = document.createElement("img");
-        img.className = "character-photo";
-        img.src = item.image;
-        img.alt = getField(item,"name") + "の画像";
-        img.addEventListener("click", () => {
-          $("lightboxImage").src = item.image;
-          $("lightboxImage").alt = getField(item,"name") + "の拡大画像";
-          $("imageLightbox").classList.remove("hidden");
-        });
-        frame.append(img);
-      } else {
-        frame.append(makeText("div","no-image","✧"));
-      }
-
-      const details = document.createElement("div");
-      details.append(makeText("h3","character-name",getField(item,"name")));
-
-      const lines = [
-        item.age && "年齢：" + item.age,
-        item.birthday && "誕生日：" + item.birthday,
-        item.relationships && "関係性：" + item.relationships,
-        item.profile && "プロフィール：" + item.profile,
-        item.personality && "性格・設定：" + item.personality,
-        item.extra && "その他：" + item.extra
-      ].filter(Boolean).join("\n\n");
-
-      details.append(makeText("div","character-meta",lines || "詳細未登録"));
-
-      const actions = makeText("div","card-actions","");
-      const view = makeText("button","","VIEW");
-      view.type = "button";
-      view.addEventListener("click", () => showDetails(item));
-
-      const edit = makeText("button","","EDIT");
-      edit.type = "button";
-      edit.addEventListener("click", () => editCharacter(item));
-
-      const del = makeText("button","","DELETE");
-      del.type = "button";
-      del.addEventListener("click", () => deleteCharacter(item));
-
-      actions.append(view,edit,del);
-      card.append(frame,details,actions);
-      list.append(card);
-    });
+    panel.append(basic);
   }
 
-  function showDetails(item) {
-    activeCharacterId = item.id;
-    const panel = $("detailPanel");
-    panel.replaceChildren();
+  [["関係性",item.relationships],["プロフィール",item.profile],["性格・設定",item.personality],["その他",item.extra]].forEach(([label,value])=>{
+    if(!value)return;
 
-    if(item.image) {
-      const frame = makeText("div","detail-photo-frame","");
-      const img = document.createElement("img");
-      img.className = "detail-photo";
-      img.src = item.image;
-      img.alt = getField(item,"name") + "の画像";
-      img.addEventListener("click", () => {
-        $("lightboxImage").src = item.image;
-        $("lightboxImage").alt = getField(item,"name") + "の拡大画像";
-        $("imageLightbox").classList.remove("hidden");
-      });
+    hasDetails=true;
+
+    const group=el("div","detail-field");
+    group.append(
+      el("p","detail-field-label",label),
+      el("p","detail-field-value",value)
+    );
+    panel.append(group);
+  });
+
+  if(!hasDetails){
+    panel.append(el("p","detail-empty","詳しい設定はまだ登録されていません。"));
+  }
+
+  if(isAdmin()){
+    const actions=el("div","actions");
+
+    button(actions,"EDIT FILE",()=>{
+      panel.remove();
+      openForm(item);
+    },"primary");
+
+    button(actions,"DELETE FILE",()=>{
+      panel.remove();
+      removeCharacter(item.id);
+    },"danger");
+
+    panel.append(actions);
+  }
+
+  container.append(panel);
+  panel.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+async function removeCharacter(id){
+  if(!isAdmin()){
+    alert("管理人ログインが必要です。");
+    return;
+  }
+
+  const item=characters.find(x=>String(x.id)===String(id));
+
+  if(!item||!confirm("「"+item.name+"」を削除しますか？"))return;
+
+  try{
+    const {error}=await supabase.from(TABLE)
+      .delete()
+      .eq("id",item.id)
+      .eq("owner_id",currentUser.id);
+
+    if(error)throw error;
+
+    $("detailContainer").replaceChildren();
+    await loadCharacters();
+    message("connectionStatus","削除しました。");
+  }catch(error){
+    console.error("ARCHIVE delete error:",error);
+    alert("削除エラー："+explainError(error));
+  }
+}
+
+function renderCharacters(){
+  const list=$("characterList");
+  list.replaceChildren();
+  $("detailContainer").replaceChildren();
+  $("characterCount").textContent=characters.length+" FILES";
+
+  if(!characters.length){
+    list.append(
+      el("div","empty","まだキャラクターがありません。"+(isAdmin()?"「＋ ADD CHARACTER」から追加してください。":""))
+    );
+    return;
+  }
+
+  characters.forEach((item,index)=>{
+    const card=el("article","character-card");
+    card.tabIndex=0;
+    card.setAttribute("role","button");
+    card.setAttribute("aria-label","No."+(index+1)+" "+item.name+"の詳細を表示");
+
+    /* 画像に合わせて高さが変わる枠 */
+    const frame=el("div","character-photo-frame");
+
+    if(item.image){
+      const img=el("img","character-photo");
+      img.src=item.image;
+      img.alt=item.name+"の画像";
+      img.loading="lazy";
+      img.draggable=false;
       frame.append(img);
-      panel.append(frame);
-    } else {
-      const frame = makeText("div","detail-photo-frame","");
-      frame.append(makeText("div","no-image","✧"));
-      panel.append(frame);
+    }else{
+      const placeholder=el("div","character-photo no-image","NO IMAGE");
+      frame.append(placeholder);
     }
 
-    panel.append(makeText("h2","character-name",getField(item,"name")));
+    card.append(frame);
 
-    const fields = [
-      ["年齢",item.age],
-      ["誕生日",item.birthday],
-      ["関係性",item.relationships],
-      ["プロフィール",item.profile],
-      ["性格・設定",item.personality],
-      ["その他",item.extra]
-    ];
+    card.append(
+      el("p","card-number","No."+(index+1)),
+      el("h3","card-name",item.name)
+    );
 
-    fields.forEach(([label,value]) => {
-      if(value) {
-        const heading = makeText("h3","",label);
-        heading.style.cssText = "font-weight:normal;letter-spacing:2px;margin:22px 0 8px;";
-        panel.append(heading);
-        panel.append(makeText("div","detail-content",value));
+    if(item.age||item.birthday){
+      const basic=el("div","card-basic-info");
+
+      if(item.age){
+        basic.append(el("span","","年齢："+item.age));
+      }
+
+      if(item.birthday){
+        basic.append(el("span","","誕生日："+item.birthday));
+      }
+
+      card.append(basic);
+    }
+
+    card.append(el("p","card-hint","TAP TO VIEW DETAILS"));
+
+    if(isAdmin()){
+      const actions=el("div","card-actions");
+      button(actions,"EDIT",()=>openForm(item));
+      button(actions,"DELETE",()=>removeCharacter(item.id),"danger");
+      card.append(actions);
+    }
+
+    card.addEventListener("click",()=>details(item));
+
+    card.addEventListener("keydown",e=>{
+      if(e.target===card&&(e.key==="Enter"||e.key===" ")){
+        e.preventDefault();
+        details(item);
       }
     });
 
-    showPage(detailPage);
-  }
-
-  function editCharacter(item) {
-    $("editId").value = item.id;
-    ["name","age","birthday","relationships","profile","personality","extra"]
-      .forEach(key => $(key).value = item[key] || "");
-
-    currentImageData = "";
-    $("imageFile").value = "";
-    $("saveButton").textContent = "UPDATE FILE";
-    $("formHeading").textContent = "EDIT CHARACTER FILE";
-    $("formStatus").textContent = "画像を選び直さなければ今の画像が残ります。";
-    $("characterFormCard").classList.remove("hidden");
-    showPage(charactersPage);
-    window.scrollTo({top:0,behavior:"smooth"});
-  }
-
-  async function deleteCharacter(item) {
-    if(!confirm("「" + getField(item,"name") + "」を削除する？")) return;
-
-    try {
-      const {error} = await db
-        .from(TABLE)
-        .delete()
-        .eq("id",item.id);
-
-      if(error) throw error;
-
-      characters = characters.filter(entry => entry.id !== item.id);
-      renderCharacters();
-      setStatus("削除しました。");
-    } catch(error) {
-      console.error("ARCHIVE delete error:",error);
-      setStatus("削除エラー：" + (error.message || "削除できませんでした。"));
-    }
-  }
-
-  $("characterForm").addEventListener("submit",async event => {
-    event.preventDefault();
-
-    const id = $("editId").value;
-    const old = characters.find(item => String(item.id) === String(id));
-
-    const item = {
-      name:$("name").value.trim(),
-      age:$("age").value.trim(),
-      birthday:$("birthday").value.trim(),
-      relationships:$("relationships").value.trim(),
-      profile:$("profile").value.trim(),
-      personality:$("personality").value.trim(),
-      extra:$("extra").value.trim()
-    };
-
-    if(currentImageData) {
-      item.image = currentImageData;
-    } else if(old) {
-      item.image = old.image || "";
-    }
-
-    $("saveButton").disabled = true;
-    $("formStatus").textContent = "保存中…";
-
-    try {
-      let result;
-
-      if(id) {
-        result = await db
-          .from(TABLE)
-          .update(item)
-          .eq("id",id)
-          .select()
-          .single();
-      } else {
-        result = await db
-          .from(TABLE)
-          .insert(item)
-          .select()
-          .single();
-      }
-
-      if(result.error) throw result.error;
-
-      resetForm();
-      await loadCharacters();
-      $("formStatus").textContent = "保存しました。";
-    } catch(error) {
-      console.error("ARCHIVE save error:",error);
-      $("formStatus").textContent = "保存エラー：" + (error.message || "保存できませんでした。");
-    } finally {
-      $("saveButton").disabled = false;
-    }
+    list.append(card);
   });
+}
 
-  try {
-    if(!window.supabase || typeof window.supabase.createClient !== "function") {
-      throw new Error("Supabaseライブラリを読み込めませんでした。");
+function renderFiles(){
+  const list=$("fileList");
+  list.replaceChildren();
+  $("fileCount").textContent=characters.length+" FILES";
+
+  if(!characters.length){
+    list.append(el("div","empty","ファイルはまだありません。"));
+    return;
+  }
+
+  characters.forEach(item=>{
+    const row=el("div","file-row");
+    const info=el("div","file-row-name",item.name);
+
+    info.append(el("small","",item.image?"IMAGE INCLUDED":"TEXT FILE"));
+    row.append(info);
+
+    const actions=el("div","file-row-actions");
+
+    button(actions,"OPEN",()=>{
+      showOnly("charactersPage");
+      renderCharacters();
+      details(item);
+    });
+
+    if(isAdmin()){
+      button(actions,"EDIT",()=>{
+        showOnly("charactersPage");
+        openForm(item);
+      });
     }
 
-    db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-    setStatus("接続準備ができました。");
-  } catch(error) {
-    console.error("ARCHIVE setup error:",error);
-    setStatus("接続設定エラー：" + error.message);
+    row.append(actions);
+    list.append(row);
+  });
+}
+
+$("exportData").addEventListener("click",()=>{
+  const blob=new Blob(
+    [JSON.stringify({app:"ARCHIVE",version:2,characters},null,2)],
+    {type:"application/json"}
+  );
+
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+
+  a.href=url;
+  a.download="archive-backup.json";
+  a.click();
+
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  message("fileStatus","バックアップを作成しました。");
+});
+
+$("importButton").addEventListener("click",()=>{
+  if(!isAdmin()){
+    message("fileStatus","インポートには管理人ログインが必要です。");
+    return;
   }
+
+  $("importFile").click();
+});
+
+$("importFile").addEventListener("change",async e=>{
+  const file=e.target.files&&e.target.files[0];
+
+  if(!file)return;
+
+  if(!isAdmin()){
+    message("fileStatus","管理人ログインが必要です。");
+    e.target.value="";
+    return;
+  }
+
+  try{
+    const parsed=JSON.parse(await file.text());
+    const items=Array.isArray(parsed)?parsed:parsed.characters;
+
+    if(!Array.isArray(items)||!items.every(x=>x&&typeof x.name==="string")){
+      throw Error("バックアップ形式が違います。");
+    }
+
+    const append=confirm("OK：現在のデータに追加\nキャンセル：現在のデータを置き換え");
+    const source=items;
+
+    if(!append&&!confirm("現在のキャラクターをすべて削除して置き換えます。続けますか？")){
+      return;
+    }
+
+    if(!append){
+      const {error}=await supabase.from(TABLE)
+        .delete()
+        .eq("owner_id",currentUser.id);
+
+      if(error)throw error;
+    }
+
+    const rows=source.map(x=>({
+      owner_id:currentUser.id,
+      name:x.name||"",
+      age:x.age||"",
+      birthday:x.birthday||"",
+      relationships:x.relationships||"",
+      profile:x.profile||"",
+      personality:x.personality||"",
+      extra:x.extra||"",
+      image:x.image||"",
+      updated_at:new Date().toISOString()
+    }));
+
+    if(rows.length){
+      const {error}=await supabase.from(TABLE).insert(rows);
+      if(error)throw error;
+    }
+
+    await loadCharacters();
+    message("fileStatus","バックアップをSupabaseに読み込みました。");
+  }catch(error){
+    console.error("ARCHIVE import error:",error);
+    message("fileStatus","読み込みエラー："+explainError(error));
+  }finally{
+    e.target.value="";
+  }
+});
+
+$("adminForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  if(!supabase){
+    message("adminStatus","Supabaseのライブラリを読み込めていません。ページを再読み込みしてください。");
+    return;
+  }
+
+  const email=$("adminEmail").value.trim();
+  const password=$("adminPassword").value;
+
+  $("loginButton").disabled=true;
+  message("adminStatus","ログインしています…");
+
+  try{
+    const {data,error}=await supabase.auth.signInWithPassword({email,password});
+
+    if(error)throw error;
+
+    currentUser=data.user;
+    $("adminPassword").value="";
+    updateAdminUI();
+    showOnly("adminPage");
+    message("adminStatus","ログインしました。");
+  }catch(error){
+    console.error("ARCHIVE login error:",error);
+    message("adminStatus","ログインできませんでした："+explainError(error));
+  }finally{
+    $("loginButton").disabled=false;
+  }
+});
+
+async function logout(){
+  if(!supabase){
+    message("adminStatus","Supabaseに接続できていません。");
+    return;
+  }
+
+  const {error}=await supabase.auth.signOut();
+
+  if(error){
+    message("adminStatus","ログアウトエラー："+explainError(error));
+    return;
+  }
+
+  currentUser=null;
+  updateAdminUI();
+  showOnly("settingsPage");
+  message("adminStatus","ログアウトしました。");
+}
+
+$("adminLogout").addEventListener("click",logout);
+$("adminLogout2").addEventListener("click",logout);
+
+$("adminToFiles").addEventListener("click",()=>{
+  renderFiles();
+  showOnly("filesPage");
+});
+
+$("adminToCharacters").addEventListener("click",()=>{
+  loadCharacters();
+  showOnly("charactersPage");
+});
+
+/* Supabaseの読み込み確認 */
+if(!window.supabase || typeof window.supabase.createClient!=="function"){
+  message("connectionStatus","Supabaseのライブラリを読み込めませんでした。インターネット接続を確認してページを再読み込みしてください。");
+  message("adminStatus","Supabaseのライブラリを読み込めていません。");
+  $("addActions").classList.add("hidden");
+  console.error("Supabase JS SDK is unavailable.");
+  return;
+}
+
+/* クライアントの初期化 */
+try{
+  supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+}catch(error){
+  console.error("Supabase initialization error:",error);
+  message("connectionStatus","Supabaseの初期化に失敗しました："+explainError(error));
+  message("adminStatus","Supabaseの初期化に失敗しました："+explainError(error));
+  $("addActions").classList.add("hidden");
+  return;
+}
+
+/* ログイン状態の監視 */
+supabase.auth.onAuthStateChange((_event,session)=>{
+  currentUser=session?.user||null;
+  updateAdminUI();
+});
+
+/* 起動時にログイン状態を確認してデータを読み込む */
+(async()=>{
+  try{
+    const {data,error}=await supabase.auth.getSession();
+
+    if(error)throw error;
+
+    currentUser=data.session?.user||null;
+    updateAdminUI();
+    await loadCharacters();
+  }catch(error){
+    console.error("ARCHIVE startup error:",error);
+    message("connectionStatus","接続できませんでした："+explainError(error));
+  }
+})();
+
 })();
 </script>
 </body>
