@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CHARACTERS | ARCHIVE</title>
+<style>
+:root {
+  --blue: #a8d9f2;
+  --deep-blue: #6caed2;
+  --silver: #d9e8f0;
+  --ink: #456477;
+  --white: #fbfdff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: Georgia, "Yu Mincho", serif;
+  background:
+    radial-gradient(ellipse at top, #ffffff 0%, #edf8ff 45%, #d8effb 100%);
+  min-height: 100vh;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+header {
+  padding: 34px 22px 25px;
+  text-align: center;
+  border-bottom: 1px solid #c4dce9;
+  background: #ffffffaa;
+}
+.eyebrow {
+  letter-spacing: .35em;
+  font-size: 11px;
+  color: #79b5d5;
+}
+h1 {
+  font-size: clamp(30px, 7vw, 46px);
+  font-weight: normal;
+  letter-spacing: .12em;
+  margin: 14px 0 8px;
+}
+.subtitle {
+  font-size: 12px;
+  letter-spacing: .15em;
+  color: #91afc0;
+}
+main {
+  width: min(960px, 100%);
+  padding: 25px 17px 60px;
+  margin: auto;
+}
+.panel {
+  background: #ffffffbd;
+  border: 1px solid #c8dfeb;
+  outline: 1px solid #ffffff;
+  outline-offset: -5px;
+  padding: 22px 18px;
+  margin-bottom: 22px;
+  box-shadow: 0 12px 35px #9acbe51c;
+}
+h2 {
+  font-size: 20px;
+  font-weight: normal;
+  letter-spacing: .1em;
+  margin: 0 0 18px;
+}
+h2::before {
+  content: "✧ ";
+  color: #8bc7e7;
+}
+label {
+  display: block;
+  font-size: 13px;
+  letter-spacing: .06em;
+  margin: 17px 0 7px;
+}
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  color: #405e70;
+  background: #fafdff;
+  border: 1px solid #c8dfe9;
+  border-radius: 2px;
+  outline: none;
+}
+input:focus, textarea:focus {
+  border-color: #7cbadd;
+  box-shadow: 0 0 0 3px #c8eaff55;
+}
+textarea {
+  min-height: 115px;
+  resize: vertical;
+  line-height: 1.8;
+}
+button {
+  border: 1px solid #a9cfe2;
+  color: #42677d;
+  background: linear-gradient(135deg, #fff, #e6f6ff);
+  padding: 11px 16px;
+  transition: .2s;
+}
+button:active { transform: scale(.98); }
+.primary {
+  background: linear-gradient(135deg, #a7d9f2, #d9effb);
+  border-color: #90c5e1;
+}
+.danger {
+  background: #fff5f7;
+  border-color: #e7bdc9;
+  color: #a45f76;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 20px;
+}
+.note {
+  font-size: 12px;
+  line-height: 1.9;
+  color: #8ba8b9;
+}
+#characterList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 15px;
+}
+.character-card {
+  border: 1px solid #c9e0eb;
+  background: #ffffffd9;
+  padding: 10px;
+  min-width: 0;
+}
+.character-card img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #edf8ff;
+  display: block;
+}
+.character-card h3 {
+  font-weight: normal;
+  font-size: 17px;
+  margin: 12px 0 6px;
+  overflow-wrap: anywhere;
+}
+.character-card p {
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.card-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.card-buttons button {
+  padding: 8px;
+  font-size: 12px;
+}
+#editor { scroll-margin-top: 15px; }
+#empty {
+  color: #9bb7c6;
+  text-align: center;
+  padding: 30px 5px;
+  font-size: 13px;
+}
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.extra-item {
+  border: 1px solid #d6e8f0;
+  background: #f8fcff;
+  padding: 12px;
+  margin-top: 12px;
+}
+.extra-item textarea { min-height: 75px; }
+footer {
+  text-align: center;
+  padding: 24px;
+  color: #8fb2c6;
+  font-size: 11px;
+  letter-spacing: .2em;
+  border-top: 1px solid #c8dfe9;
+}
+@media(max-width: 430px) {
+  .panel { padding: 20px 14px; }
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">✧ PRIVATE COLLECTION ✧</div>
+  <h1>CHARACTERS</h1>
+  <div class="subtitle">ANGELIC ARCHIVE · CHARACTER FILES</div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>CHARACTER INDEX</h2>
+    <p class="note">
+      登録したキャラクターの資料を整理する場所。<br>
+      名前を選んで、いつでも編集できます。
+    </p>
+    <div id="characterList"></div>
+    <div id="empty">✧ まだキャラクターが登録されていません ✧</div>
+  </section>
+
+  <section class="panel" id="editor">
+    <h2 id="formTitle">NEW CHARACTER</h2>
+
+    <form id="characterForm">
+      <input type="hidden" id="editId">
+
+      <label for="image">PORTRAIT / 画像</label>
+      <input id="image" type="file" accept="image/*">
+      <p class="note">画像はこのブラウザ内に保存されます。大きな画像は保存できない場合があります。</p>
+      <img id="preview" alt="" hidden
+        style="width:130px;max-height:180px;object-fit:cover;margin-top:12px;border:1px solid #c8dfe9">
+
+      <label for="name">NAME / 名前 *</label>
+      <input id="name" required maxlength="200" placeholder="キャラクターの名前">
+
+      <div class="field-row">
+        <div>
+          <label for="age">AGE / 年齢</label>
+          <input id="age" placeholder="例：25歳">
+        </div>
+        <div>
+          <label for="birthday">BIRTHDAY / 誕生日</label>
+          <input id="birthday" placeholder="例：4月12日">
+        </div>
+      </div>
+
+      <label for="profile">PROFILE / プロフィール</label>
+      <textarea id="profile" placeholder="基本プロフィール、外見、所属など"></textarea>
+
+      <label for="personality">PERSONALITY / 性格・設定</label>
+      <textarea id="personality" placeholder="性格、口調、過去、秘密、行動の特徴など"></textarea>
+
+      <label for="relationships">RELATIONSHIPS / 交友関係</label>
+      <textarea id="relationships" placeholder="他のキャラクターとの関係"></textarea>
+
+      <label>EXTRA DATA / 自由項目</label>
+      <div id="extraFields"></div>
+      <div class="actions">
+        <button type="button" id="addExtra">＋ 項目を追加</button>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="submit">SAVE CHARACTER</button>
+        <button type="button" id="clearForm">CLEAR</button>
+      </div>
+    </form>
+  </section>
+
+  <p class="note">
+    ✧ この試作版は、登録データを現在のブラウザに保存します。<br>
+    別の端末や友達の公開サイトには自動反映されません。<br>
+    パスワード認証はまだ実装していません。
+  </p>
+</main>
+
+<footer>ARCHIVE · PRIVATE CHARACTER FILES</footer>
+
+<script>
+const STORAGE_KEY = "archive_character_files_v1";
+let characters = [];
+let currentImage = "";
+let nextId = 1;
+
+const $ = id => document.getElementById(id);
+
+function loadCharacters() {
+  try {
+    characters = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    nextId = Math.max(0, ...characters.map(c => Number(c.id) || 0)) + 1;
+  } catch {
+    characters = [];
+  }
+  renderCharacters();
+}
+
+function persist() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
+    return true;
+  } catch {
+    alert("保存できませんでした。画像のサイズを小さくして、もう一度試してください。");
+    return false;
+  }
+}
+
+function renderCharacters() {
+  const list = $("characterList");
+  list.replaceChildren();
+  $("empty").hidden = characters.length > 0;
+
+  characters.forEach(c => {
+    const card = document.createElement("article");
+    card.className = "character-card";
+
+    const img = document.createElement("img");
+    img.alt = c.name || "Character";
+    if (c.image) img.src = c.image;
+    else img.style.background =
+      "linear-gradient(145deg,#e7f7ff,#fff)";
+
+    const title = document.createElement("h3");
+    title.textContent = c.name || "Unnamed";
+
+    const description = document.createElement("p");
+    description.textContent = (c.profile || "").slice(0, 140);
+
+    const buttons = document.createElement("div");
+    buttons.className = "card-buttons";
+
+    const edit = document.createElement("button");
+    edit.textContent = "EDIT";
+    edit.addEventListener("click", () => editCharacter(c.id));
+
+    const remove = document.createElement("button");
+    remove.textContent = "DELETE";
+    remove.className = "danger";
+    remove.addEventListener("click", () => deleteCharacter(c.id));
+
+    buttons.append(edit, remove);
+    card.append(img, title, description, buttons);
+    list.append(card);
+  });
+}
+
+function addExtraField(title = "", value = "") {
+  const box = document.createElement("div");
+  box.className = "extra-item";
+
+  const label = document.createElement("label");
+  label.textContent = "項目名";
+  const nameInput = document.createElement("input");
+  nameInput.className = "extra-name";
+  nameInput.value = title;
+  nameInput.placeholder = "例：好きなもの";
+
+  const valueLabel = document.createElement("label");
+  valueLabel.textContent = "内容";
+  const valueInput = document.createElement("textarea");
+  valueInput.className = "extra-value";
+  valueInput.value = value;
+  valueInput.placeholder = "自由に設定を書けます";
+
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.className = "danger";
+  remove.textContent = "この項目を削除";
+  remove.style.marginTop = "10px";
+  remove.addEventListener("click", () => box.remove());
+
+  box.append(label, nameInput, valueLabel, valueInput, remove);
+  $("extraFields").append(box);
+}
+
+$("addExtra").addEventListener("click", () => addExtraField());
+
+$("image").addEventListener("change", event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    alert("画像ファイルを選んでね。");
+    event.target.value = "";
+    return;
+  }
+
+  if (file.size > 1200000) {
+    alert("画像が大きいみたい。1.2MB以下の画像を選んでね。");
+    event.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    currentImage = reader.result;
+    $("preview").src = currentImage;
+    $("preview").hidden = false;
+  };
+  reader.readAsDataURL(file);
+});
+
+$("characterForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const id = $("editId").value;
+  const existing = characters.find(c => String(c.id) === id);
+
+  const extras = [...document.querySelectorAll(".extra-item")].map(box => ({
+    title: box.querySelector(".extra-name").value,
+    value: box.querySelector(".extra-value").value
+  }));
+
+  const character = {
+    id: existing ? existing.id : nextId++,
+    name: $("name").value.trim(),
+    age: $("age").value,
+    birthday: $("birthday").value,
+    profile: $("profile").value,
+    personality: $("personality").value,
+    relationships: $("relationships").value,
+    image: currentImage || (existing ? existing.image : ""),
+    extras
+  };
+
+  const oldCharacters = [...characters];
+
+  if (existing) {
+    characters = characters.map(c => c.id === existing.id ? character : c);
+  } else {
+    characters.push(character);
+  }
+
+  if (persist()) {
+    renderCharacters();
+    resetForm();
+    alert("キャラクターを保存しました！");
+  } else {
+    characters = oldCharacters;
+  }
+});
+
+function editCharacter(id) {
+  const c = characters.find(item => item.id === id);
+  if (!c) return;
+
+  $("editId").value = c.id;
+  $("name").value = c.name || "";
+  $("age").value = c.age || "";
+  $("birthday").value = c.birthday || "";
+  $("profile").value = c.profile || "";
+  $("personality").value = c.personality || "";
+  $("relationships").value = c.relationships || "";
+
+  currentImage = c.image || "";
+  $("preview").hidden = !currentImage;
+  if (currentImage) $("preview").src = currentImage;
+
+  $("image").value = "";
+  $("extraFields").replaceChildren();
+  (c.extras || []).forEach(item => addExtraField(item.title, item.value));
+
+  $("formTitle").textContent = "EDIT CHARACTER";
+  $("editor").scrollIntoView({ behavior: "smooth" });
+}
+
+function deleteCharacter(id) {
+  const c = characters.find(item => item.id === id);
+  if (!c || !confirm(`「${c.name}」を削除しますか？`)) return;
+
+  const oldCharacters = [...characters];
+  characters = characters.filter(item => item.id !== id);
+
+  if (persist()) {
+    renderCharacters();
+    if ($("editId").value == id) resetForm();
+  } else {
+    characters = oldCharacters;
+  }
+}
+
+function resetForm() {
+  $("characterForm").reset();
+  $("editId").value = "";
+  $("extraFields").replaceChildren();
+  $("preview").hidden = true;
+  $("preview").removeAttribute("src");
+  $("formTitle").textContent = "NEW CHARACTER";
+  currentImage = "";
+}
+
+$("clearForm").addEventListener("click", resetForm);
+
+loadCharacters();
+</script>
+</body>
+</html>
