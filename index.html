@@ -58,12 +58,24 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .character-card:focus-visible{outline:2px solid #e9a6c4;outline-offset:3px}
 .character-photo{display:block;width:100%;height:clamp(180px,58vw,360px);object-fit:contain;object-position:center;background:#eaf7ff55;border:1px solid #89bcd72e;-webkit-user-drag:none;user-select:none;-webkit-user-select:none;pointer-events:none}
 .no-image{display:grid;place-items:center;color:#9fc8e2;font:12px sans-serif}
-.card-name{margin:10px 2px 5px;font-size:15px;font-weight:normal;overflow-wrap:anywhere}
+.card-number{margin:10px 2px 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1px}
+.card-name{margin:0 2px 7px;font-size:17px;font-weight:normal;overflow-wrap:anywhere}
 .card-summary{margin:0 2px;color:#7995a9;font:10px/1.7 sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
-.card-hint{margin:8px 2px 0;color:#b58aa1;font:9px sans-serif;letter-spacing:.5px}
+.card-hint{margin:9px 2px 0;color:#b58aa1;font:9px sans-serif;letter-spacing:.5px}
 .card-actions{display:flex;flex-wrap:wrap;gap:5px;margin:10px 2px 2px}
 .card-actions button{padding:7px 9px;font:10px sans-serif}
 .empty{padding:25px 12px;color:#8aa7bb;text-align:center;font:12px/1.8 sans-serif}
+
+.detail-panel{margin:20px 0 16px;padding:16px;background:var(--glass);border:1px solid white;outline:1px solid #89bcd733;box-shadow:0 5px 18px #689dbe17}
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:15px}
+.detail-number{margin:0 0 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1.5px}
+.detail-title{margin:0;font-size:22px;font-weight:normal;overflow-wrap:anywhere}
+.detail-photo{display:block;width:100%;height:min(72svh,650px);min-height:260px;object-fit:contain;object-position:center;background:#eaf7ff55;border:1px solid #89bcd72e;margin-bottom:22px;-webkit-user-drag:none;user-select:none;-webkit-user-select:none;pointer-events:none}
+.detail-field{margin:0 0 18px}
+.detail-field-label{margin:0 0 6px;color:#b58aa1;font:11px sans-serif;letter-spacing:.5px}
+.detail-field-value{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9;font-size:13px}
+.detail-empty{padding:18px 10px;text-align:center;color:#8aa7bb;font:11px/1.8 sans-serif}
+.detail-panel .actions{margin-top:20px}
 
 .file-list{display:grid;gap:8px}
 .file-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);background:#ffffffb3}
@@ -75,9 +87,10 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 @media(min-width:650px){
 .page{padding:30px 24px 50px}
 .form-grid{grid-template-columns:1fr 1fr}
-.panel{padding:22px}
+.panel,.detail-panel{padding:22px}
 .character-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .character-photo{height:340px}
+.detail-photo{height:min(75vh,760px)}
 }
 @media(min-width:1000px){
 .character-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -108,9 +121,9 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
       </svg>
     </button>
     <button class="icon-button" id="settingsShortcut" aria-label="設定" title="SETTINGS">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M9.7 2.8h4.6l.6 2.3c.5.2 1 .4 1.4.8l2.3-.7 2.3 4-1.7 1.7c.1.6.1 1.1 0 1.7l1.7 1.7-2.3 4-2.3-.7c-.4.4-.9.6-1.4.8l-.6 2.3H9.7l-.6-2.3c-.5-.2-1-.4-1.4-.8l-2.3.7-2.3-4 1.7-1.7a7 7 0 0 1 0-1.7L3.1 9.2l2.3-4 2.3.7c.4-.4.9-.6 1.4-.8z" transform="translate(0 .2) scale(.94) translate(.8 0)"/>
-        <circle cx="12" cy="12" r="3.2"/>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9.35 2.75h5.3l.55 2.1c.57.2 1.1.51 1.57.91l2.08-.65 2.65 4.59-1.55 1.52a6.8 6.8 0 0 1 0 1.82l1.55 1.52-2.65 4.59-2.08-.65c-.47.4-1 .71-1.57.91l-.55 2.1h-5.3l-.55-2.1a6.8 6.8 0 0 1-1.57-.91l-2.08.65L2.5 14.56l1.55-1.52a6.8 6.8 0 0 1 0-1.82L2.5 9.7l2.65-4.59 2.08.65c.47-.4 1-.71 1.57-.91z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="12" cy="12" r="3.05" fill="none" stroke="currentColor" stroke-width="1.5"/>
       </svg>
     </button>
   </div>
@@ -160,6 +173,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 
     <div class="section-heading"><h3>SAVED FILES</h3><p id="characterCount">0 FILES</p></div>
     <div id="characterList" class="character-grid"></div>
+    <div id="detailContainer"></div>
   </div>
 </section>
 
@@ -277,6 +291,11 @@ function button(parent,label,fn,cls=""){
   });
   parent.append(b);
   return b;
+}
+
+function characterNumber(item,data=getData()){
+  const index=data.findIndex(x=>x.id===item.id);
+  return index>=0?index+1:"—";
 }
 
 function clearForm(){
@@ -401,7 +420,7 @@ $("characterForm").addEventListener("submit",e=>{
     updatedAt:new Date().toISOString()
   };
 
-  const next=old?data.map(x=>x.id===id?item:x):[item,...data];
+  const next=old?data.map(x=>x.id===id?item:x):[...data,item];
 
   try{
     setData(next);
@@ -414,33 +433,35 @@ $("characterForm").addEventListener("submit",e=>{
   }
 });
 
-/* キャラクターをタップすると詳細を表示 */
+/* キャラクターをタップすると、画像と設定をまとめて一覧の下に表示 */
 function details(item){
-  const old=$("detailPanel");
-  if(old)old.remove();
+  const container=$("detailContainer");
+  container.replaceChildren();
 
-  const panel=el("div","panel");
+  const data=getData();
+  const panel=el("section","detail-panel");
   panel.id="detailPanel";
 
-  const header=el("div","");
-  header.style.cssText="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px";
-
-  const title=el("h3","panel-title",item.name);
-  title.style.margin="0";
-  header.append(title);
-
+  const header=el("div","detail-header");
+  const titleGroup=el("div","");
+  titleGroup.append(
+    el("p","detail-number","No."+characterNumber(item,data)),
+    el("h3","detail-title",item.name)
+  );
+  header.append(titleGroup);
   button(header,"CLOSE",()=>{
     panel.remove();
   });
   panel.append(header);
 
   if(item.image){
-    const img=el("img");
+    const img=el("img","detail-photo");
     img.src=item.image;
-    img.alt=item.name;
+    img.alt=item.name+"の画像";
     img.draggable=false;
-    img.style.cssText="display:block;width:100%;max-height:75svh;object-fit:contain;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;pointer-events:none;margin-bottom:18px";
     panel.append(img);
+  }else{
+    panel.append(el("div","detail-photo no-image","NO IMAGE"));
   }
 
   const fields=[
@@ -452,21 +473,21 @@ function details(item){
     ["その他",item.extra]
   ];
 
+  let hasDetails=false;
   fields.forEach(([label,value])=>{
     if(!value)return;
-
-    const group=el("div","");
-    group.style.cssText="margin:0 0 16px";
-
-    const heading=el("p","note",label);
-    heading.style.cssText="margin:0 0 5px;color:#b58aa1";
-
-    const content=el("div","",value);
-    content.style.cssText="white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9;font-size:13px";
-
-    group.append(heading,content);
+    hasDetails=true;
+    const group=el("div","detail-field");
+    group.append(
+      el("p","detail-field-label",label),
+      el("p","detail-field-value",value)
+    );
     panel.append(group);
   });
+
+  if(!hasDetails){
+    panel.append(el("p","detail-empty","詳しい設定はまだ登録されていません。EDIT FILEから追加できます。"));
+  }
 
   const actions=el("div","actions");
   button(actions,"EDIT FILE",()=>{
@@ -477,9 +498,9 @@ function details(item){
     panel.remove();
     removeCharacter(item.id);
   },"danger");
-
   panel.append(actions);
-  $("characterList").before(panel);
+
+  container.append(panel);
   panel.scrollIntoView({behavior:"smooth",block:"start"});
 }
 
@@ -503,21 +524,19 @@ function renderCharacters(){
   const data=getData();
 
   list.replaceChildren();
+  $("detailContainer").replaceChildren();
   $("characterCount").textContent=data.length+" FILES";
-
-  const old=$("detailPanel");
-  if(old)old.remove();
 
   if(!data.length){
     list.append(el("div","empty","まだキャラクターがありません。「＋ ADD CHARACTER」から追加してください。"));
     return;
   }
 
-  data.forEach(item=>{
+  data.forEach((item,index)=>{
     const card=el("article","character-card");
     card.tabIndex=0;
     card.setAttribute("role","button");
-    card.setAttribute("aria-label",item.name+"の詳細を表示");
+    card.setAttribute("aria-label","No."+(index+1)+" "+item.name+"の詳細を表示");
 
     if(item.image){
       const img=el("img","character-photo");
@@ -530,12 +549,12 @@ function renderCharacters(){
       card.append(el("div","character-photo no-image","NO IMAGE"));
     }
 
+    card.append(el("p","card-number","No."+(index+1)));
     card.append(el("h3","card-name",item.name));
 
     const summary=[
       item.age&&"年齢："+item.age,
-      item.birthday&&"誕生日："+item.birthday,
-      item.relationships&&"関係性："+item.relationships
+      item.birthday&&"誕生日："+item.birthday
     ].filter(Boolean).join("\n");
 
     if(summary)card.append(el("p","card-summary",summary));
@@ -543,15 +562,12 @@ function renderCharacters(){
     card.append(el("p","card-hint","TAP TO VIEW DETAILS"));
 
     const actions=el("div","card-actions");
-
     button(actions,"EDIT",()=>{
       openForm(item);
     });
-
     button(actions,"DELETE",()=>{
       removeCharacter(item.id);
     },"danger");
-
     card.append(actions);
 
     card.addEventListener("click",()=>{
@@ -677,10 +693,7 @@ $("clearAllData").addEventListener("click",()=>{
   if(!confirm("このブラウザのキャラクターデータをすべて削除しますか？"))return;
 
   localStorage.removeItem(STORAGE_KEY);
-
-  const detail=$("detailPanel");
-  if(detail)detail.remove();
-
+  $("detailContainer").replaceChildren();
   clearForm();
   renderCharacters();
   renderFiles();
