@@ -53,10 +53,12 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .character-card:hover{background:#ffffffed;border-color:#e9a6c4}
 .character-card:focus-visible{outline:2px solid #e9a6c4;outline-offset:3px}
 
-/* キャラクター画像：画像の縦横比に合わせて枠の高さを調整 */
+/* キャラクター画像：カードごとの画像枠を統一 */
 .character-photo-frame{
   display:block;
+  position:relative;
   width:100%;
+  aspect-ratio:3/4;
   min-width:0;
   overflow:hidden;
   background:#eaf7ff55;
@@ -64,11 +66,11 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   line-height:0;
 }
 
-/* 画像全体を表示し、元の縦横比を維持 */
+/* 画像全体を枠内に表示し、縦横比を維持 */
 .character-photo{
   display:block;
   width:100%;
-  height:auto;
+  height:100%;
   max-width:100%;
   margin:0 auto;
   object-fit:contain;
@@ -78,7 +80,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   -webkit-user-select:none;
   pointer-events:none;
 }
-.no-image{display:grid;place-items:center;min-height:160px;color:#9fc8e2;font:12px sans-serif;line-height:normal}
+.no-image{display:grid;place-items:center;width:100%;height:100%;min-height:0;color:#9fc8e2;font:12px sans-serif;line-height:normal}
 .card-number{margin:10px 2px 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1px}
 .card-name{margin:0 2px 7px;font-size:17px;font-weight:normal;overflow-wrap:anywhere}
 .card-basic-info{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:0 2px;color:#7995a9;font:10px/1.7 sans-serif}
@@ -330,7 +332,7 @@ const $ = id => document.getElementById(id);
 
 /* ARCHIVEのSupabase接続情報 */
 const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
-const SUPABASE_KEY = "sb_publishable_6Qbg-igLVVploBH6SH51Q_G8V7DTyG";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3eWd1Y2V0emVxYnpheWl5b2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwNTQ2MTYsImV4cCI6MjEwODYzMDYxNn0.gtq4-kqSOQYl9TyAsKmXLqK6jI9KJlvZPWppEMglCc8";
 const TABLE = "characters";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -729,7 +731,7 @@ function renderCharacters(){
     card.setAttribute("role","button");
     card.setAttribute("aria-label","No."+(index+1)+" "+item.name+"の詳細を表示");
 
-    /* 画像に合わせて高さが変わる枠 */
+    /* 全カードで統一した画像枠 */
     const frame=el("div","character-photo-frame");
 
     if(item.image){
@@ -870,7 +872,7 @@ $("importFile").addEventListener("change",async e=>{
     }
 
     const append=confirm("OK：現在のデータに追加\nキャンセル：現在のデータを置き換え");
-    const source=append?items:items;
+    const source=items;
 
     if(!append&&!confirm("現在のキャラクターをすべて削除して置き換えます。続けますか？")){
       return;
