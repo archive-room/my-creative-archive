@@ -70,8 +70,6 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 }
 .character-card:hover{background:#ffffffed;border-color:#e9a6c4}
 .character-card:focus-visible{outline:2px solid #e9a6c4;outline-offset:3px}
-
-/* 一覧画像の枠は正方形のまま */
 .character-photo-frame{
   display:block;
   position:relative;
@@ -85,8 +83,6 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   border:1px solid #89bcd72e;
   line-height:0;
 }
-
-/* 元の縦横比を維持して、ほんの少しだけ大きく見せる */
 .character-photo{
   display:block;
   width:100%;
@@ -133,8 +129,6 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .detail-number{margin:0 0 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1.5px}
 .detail-title{margin:0;font-size:22px;font-weight:normal;overflow-wrap:anywhere}
 .detail-furigana{margin:5px 0 0;color:#8298aa;font:12px/1.6 sans-serif;letter-spacing:1px;overflow-wrap:anywhere}
-
-/* 詳細画像も正方形にして、最大420pxに抑える */
 .detail-photo{
   display:block;
   width:100%;
@@ -154,7 +148,16 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   height:auto;
   aspect-ratio:1 / 1;
 }
-.detail-basic-info{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 28px;margin:0 0 22px;padding:12px 14px;background:#eaf7ff66;border:1px solid #89bcd72e}
+.detail-basic-info{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-start;
+  gap:8px 20px;
+  margin:0 0 18px;
+  padding:10px 12px;
+  background:#eaf7ff66;
+  border:1px solid #89bcd72e;
+}
 .detail-basic-item{min-width:0;flex:0 1 auto;max-width:100%}
 .detail-field{margin:0 0 18px}
 .detail-field-label{margin:0 0 6px;color:#b58aa1;font:11px sans-serif;letter-spacing:.5px}
@@ -243,6 +246,10 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
           <div>
             <label for="furigana">FURIGANA / ふりがな</label>
             <input id="furigana" maxlength="100" placeholder="名前のふりがな">
+          </div>
+          <div>
+            <label for="gender">GENDER / 性別</label>
+            <input id="gender" maxlength="100" placeholder="性別">
           </div>
           <div>
             <label for="age">AGE / 年齢</label>
@@ -394,7 +401,6 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 
 const $ = id => document.getElementById(id);
 
-/* ARCHIVEのSupabase接続情報 */
 const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3eWd1Y2V0emVxYnpheWl5b2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwNTQ2MTYsImV4cCI6MjEwODYzMDYxNn0.gtq4-kqSOQYl9TyAsKmXLqK6jI9KJlvZPWppEMglCc8";
 const TABLE = "characters";
@@ -445,6 +451,7 @@ function normalizeRow(row){
     owner_id:row.owner_id,
     name:row.name||"",
     furigana:row.furigana||"",
+    gender:row.gender||"",
     age:row.age||"",
     birthday:row.birthday||"",
     relationships:row.relationships||"",
@@ -507,7 +514,7 @@ function openForm(item=null){
     $("formTitle").textContent="EDIT FILE";
     $("saveButton").textContent="UPDATE FILE";
     $("editId").value=String(item.id);
-    ["name","furigana","age","birthday","relationships","profile","personality","extra"].forEach(k=>{
+    ["name","furigana","gender","age","birthday","relationships","profile","personality","extra"].forEach(k=>{
       $(k).value=item[k]||"";
     });
   }else{
@@ -614,6 +621,7 @@ $("characterForm").addEventListener("submit",async e=>{
   const item={
     name,
     furigana:$("furigana").value.trim(),
+    gender:$("gender").value.trim(),
     age:$("age").value.trim(),
     birthday:$("birthday").value.trim(),
     relationships:$("relationships").value.trim(),
@@ -694,33 +702,34 @@ function details(item){
 
   let hasDetails=false;
 
-  if(item.age||item.birthday){
-    const basic=el("div","detail-basic-info");
+  const basic=el("div","detail-basic-info");
 
-    if(item.age){
-      const group=el("div","detail-basic-item");
-      group.append(
-        el("p","detail-field-label","年齢"),
-        el("p","detail-field-value",item.age)
-      );
-      basic.append(group);
-      hasDetails=true;
-    }
+  [
+    ["性別",item.gender],
+    ["年齢",item.age],
+    ["誕生日",item.birthday],
+    ["関係性",item.relationships]
+  ].forEach(([label,value])=>{
+    if(!value)return;
 
-    if(item.birthday){
-      const group=el("div","detail-basic-item");
-      group.append(
-        el("p","detail-field-label","誕生日"),
-        el("p","detail-field-value",item.birthday)
-      );
-      basic.append(group);
-      hasDetails=true;
-    }
+    const group=el("div","detail-basic-item");
+    group.append(
+      el("p","detail-field-label",label),
+      el("p","detail-field-value",value)
+    );
+    basic.append(group);
+    hasDetails=true;
+  });
 
+  if(basic.children.length){
     panel.append(basic);
   }
 
-  [["関係性",item.relationships],["プロフィール",item.profile],["性格・設定",item.personality],["その他",item.extra]].forEach(([label,value])=>{
+  [
+    ["プロフィール",item.profile],
+    ["性格・設定",item.personality],
+    ["その他",item.extra]
+  ].forEach(([label,value])=>{
     if(!value)return;
 
     hasDetails=true;
@@ -824,15 +833,15 @@ function renderCharacters(){
       el("h3","card-name",item.name)
     );
 
-    if(item.age||item.birthday){
+    if(item.gender||item.age){
       const basic=el("div","card-basic-info");
+
+      if(item.gender){
+        basic.append(el("span","","性別："+item.gender));
+      }
 
       if(item.age){
         basic.append(el("span","","年齢："+item.age));
-      }
-
-      if(item.birthday){
-        basic.append(el("span","","誕生日："+item.birthday));
       }
 
       card.append(basic);
@@ -961,6 +970,7 @@ $("importFile").addEventListener("change",async e=>{
       owner_id:currentUser.id,
       name:x.name||"",
       furigana:x.furigana||"",
+      gender:x.gender||"",
       age:x.age||"",
       birthday:x.birthday||"",
       relationships:x.relationships||"",
