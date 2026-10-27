@@ -3,663 +3,254 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#eaf7ff">
-<title>ARCHIVE</title>
-
+<title>ARCHIVE — Private Collection</title>
 <style>
-:root {
-  --ink: #526f86;
-  --muted: #91aabc;
-  --line: rgba(134,184,213,.58);
-  --glass: rgba(255,255,255,.72);
-  --blue: #b8def4;
-  --pale: #edf8ff;
-  --shadow: 0 10px 30px rgba(102,155,188,.14);
+:root{
+  --ink:#4b6276;--muted:#8298aa;--ice:#eaf7ff;--ice2:#d7efff;
+  --line:rgba(117,166,198,.55);--glass:rgba(255,255,255,.68);
+  --blue:#a8d9f4;--white:#fbfeff;--shadow:0 12px 34px rgba(104,157,190,.16);
 }
-
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html, body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  overscroll-behavior: none;
-  font-family: Georgia, "Times New Roman", serif;
-  color: var(--ink);
-}
-
-body {
-  background:
-    radial-gradient(ellipse at 20% 10%, white, transparent 45%),
-    linear-gradient(145deg, #fbfeff, #e6f5ff 60%, #f8fdff);
-}
-
-button, input, textarea {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.hidden {
-  display: none !important;
-}
-
-/* ===== OPENING ===== */
-
-#opening {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #edf8ff;
-  cursor: pointer;
-}
-
-#scene {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center;
-}
-
-.opening-fallback {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  padding: 24px;
-  background: linear-gradient(145deg, #fff, #dff2ff);
-  color: #8ab6d3;
-}
-
-.opening-fallback .symbol {
-  font-size: 42px;
-  margin-bottom: 20px;
-}
-
-#tapHint {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 8%;
-  text-align: center;
-  color: white;
-  font: 11px Georgia, serif;
-  letter-spacing: 4px;
-  text-shadow: 0 1px 10px #547b95;
-  pointer-events: none;
-}
-
-/* ===== KEY SCREEN ===== */
-
-#keyScreen {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 27px;
-  padding: 30px;
-  background:
-    radial-gradient(ellipse at 50% 35%, #fff, transparent 55%),
-    linear-gradient(145deg, #fafdff, #e5f5ff 60%, #f9fdff);
-  text-align: center;
-  cursor: pointer;
-}
-
-#keyScreen::before {
-  content: "";
-  position: absolute;
-  inset: 13px;
-  border: 1px solid rgba(255,255,255,.95);
-  outline: 1px solid rgba(139,190,219,.28);
-  pointer-events: none;
-}
-
-.key-angel {
-  color: #9fc7e1;
-  font-size: 15px;
-  letter-spacing: 4px;
-}
-
-.key-title {
-  margin: 0;
-  color: #6688a1;
-  font-size: clamp(16px, 4.5vw, 22px);
-  font-weight: normal;
-  letter-spacing: 2.5px;
-}
-
-.key-circle {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  border: 1px solid #b7d8ec;
-  border-radius: 50%;
-  background: rgba(255,255,255,.55);
-  color: #8db8d4;
-}
-
-.key-circle svg {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.key-caption {
-  margin: 0;
-  color: #91afc3;
-  font: 10px sans-serif;
-  letter-spacing: 2px;
-}
-
-/* ===== LOBBY ===== */
-
-#lobby {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding:
-    calc(36px + env(safe-area-inset-top))
-    22px
-    calc(40px + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-#lobby::before {
-  content: "";
-  position: fixed;
-  inset: 12px;
-  border: 1px solid rgba(255,255,255,.85);
-  pointer-events: none;
-}
-
-.angel-mark {
-  position: absolute;
-  top: 26px;
-  right: 28px;
-  color: #9fcfe9;
-  font-size: 23px;
-}
-
-.eyebrow {
-  margin: 0 0 64px;
-  color: #91aabd;
-  font-size: 10px;
-  letter-spacing: 4px;
-}
-
-#lobby h1 {
-  margin: 0 0 17px;
-  color: #5b7e98;
-  font-size: clamp(34px, 8vw, 48px);
-  font-weight: normal;
-  letter-spacing: 9px;
-}
-
-.subtitle {
-  margin: 0 0 45px;
-  color: #91aabc;
-  font-size: 9px;
-  letter-spacing: 2px;
-}
-
-nav {
-  display: grid;
-  gap: 13px;
-  width: min(100%, 400px);
-}
-
-.menu-button {
-  min-height: 70px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  background: linear-gradient(
-    135deg,
-    rgba(255,255,255,.9),
-    rgba(223,243,255,.65)
-  );
-  box-shadow: var(--shadow);
-  color: #6487a0;
-  font-size: 12px;
-  letter-spacing: 4px;
-}
-
-.menu-button:active,
-.soft-button:active {
-  opacity: .75;
-}
-
-/* ===== SUB PAGES ===== */
-
-.page {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  padding:
-    calc(25px + env(safe-area-inset-top))
-    17px
-    calc(35px + env(safe-area-inset-bottom));
-}
-
-.page-inner {
-  width: min(100%, 900px);
-  margin: 0 auto;
-}
-
-.page-header {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin-bottom: 25px;
-}
-
-.back-button {
-  flex-shrink: 0;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.8);
-  color: #6687a0;
-  padding: 10px 12px;
-  font: 10px sans-serif;
-}
-
-.page-title {
-  margin: 0;
-  color: #5b7d96;
-  font-size: 23px;
-  font-weight: normal;
-  letter-spacing: 4px;
-  overflow-wrap: anywhere;
-}
-
-.page-subtitle {
-  margin: 7px 0 0;
-  color: #90aabd;
-  font: 9px/1.7 sans-serif;
-  letter-spacing: 1px;
-}
-
-.glass-card {
-  margin-bottom: 17px;
-  padding: 17px;
-  border: 1px solid rgba(255,255,255,.95);
-  outline: 1px solid rgba(139,190,219,.3);
-  background: var(--glass);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 13px;
-}
-
-.field label {
-  display: block;
-  margin-bottom: 7px;
-  color: #7e9db2;
-  font: 10px sans-serif;
-  letter-spacing: 1px;
-}
-
-.field input,
-.field textarea {
-  width: 100%;
-  min-width: 0;
-  padding: 11px;
-  border: 1px solid rgba(137,181,208,.6);
-  border-radius: 2px;
-  background: rgba(255,255,255,.85);
-  color: #526f86;
-  font: 13px/1.6 sans-serif;
-  font-size: 16px;
-}
-
-.field textarea {
-  min-height: 85px;
-  resize: vertical;
-}
-
-.field input[type="file"] {
-  font-size: 12px;
-}
-
-.file-note,
-.notice {
-  color: #819caf;
-  font: 10px/1.8 sans-serif;
-}
-
-.file-note {
-  margin: 7px 0 0;
-}
-
-.form-actions,
-.card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.soft-button {
-  min-height: 38px;
-  padding: 10px 14px;
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.85);
-  color: #6788a0;
-  font: 10px sans-serif;
-  letter-spacing: 1px;
-}
-
-.soft-button.primary {
-  border-color: #a3d0eb;
-  background: linear-gradient(135deg, #dff3ff, #fff);
-}
-
-.soft-button.danger {
-  color: #a67584;
-  border-color: #dfc1cc;
-}
-
-.status {
-  color: #7098b2;
-  font: 11px/1.7 sans-serif;
-}
-
-.character-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 13px;
-}
-
-.character-card {
-  display: grid;
-  grid-template-columns: 88px minmax(0,1fr);
-  gap: 13px;
-  align-items: start;
-}
-
-.character-image {
-  width: 88px;
-  height: 116px;
-  object-fit: cover;
-  border: 1px solid var(--line);
-  background: #f5fbff;
-}
-
-.character-image.empty {
-  display: grid;
-  place-items: center;
-  color: #9fc9e2;
-  font-size: 25px;
-}
-
-.character-name {
-  margin: 0 0 9px;
-  font-size: 18px;
-  font-weight: normal;
-  letter-spacing: 1px;
-  overflow-wrap: anywhere;
-}
-
-.character-meta {
-  color: #7895aa;
-  font: 11px/1.8 sans-serif;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.card-actions button {
-  padding: 8px 10px;
-  border: 1px solid var(--line);
-  background: #fbfeff;
-  color: #6689a2;
-  font: 10px sans-serif;
-  letter-spacing: 1px;
-}
-
-.empty-state {
-  padding: 27px 12px;
-  text-align: center;
-  color: #8aa8bd;
-  font: 12px/1.8 sans-serif;
-}
-
-@media (min-width: 650px) {
-  .form-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .field.wide {
-    grid-column: 1 / -1;
-  }
-
-  .character-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .glass-card {
-    padding: 21px;
-  }
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;font-family:Georgia,"Times New Roman",serif;color:var(--ink)}
+body{background:radial-gradient(ellipse at 15% 10%,rgba(255,255,255,.98),transparent 38%),radial-gradient(ellipse at 85% 20%,rgba(190,229,251,.6),transparent 42%),linear-gradient(145deg,#faffff,#e7f6ff 55%,#f8fdff)}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #83c5ec;outline-offset:3px}
+.hidden{display:none!important}
+#opening{position:fixed;inset:0;height:100svh;overflow:hidden;background:#edf8ff;cursor:pointer}
+#scene{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.opening-fallback{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:30px;background:linear-gradient(160deg,#fbfeff,#dff3ff);color:#6b9ab9}
+.opening-fallback .halo{font-size:42px;letter-spacing:8px;margin-bottom:18px;color:#9bcde9}
+.opening-fallback p{font-size:12px;letter-spacing:4px}
+#tapHint{position:absolute;bottom:8%;left:0;right:0;text-align:center;color:#fff;text-shadow:0 1px 8px #5c829a;letter-spacing:4px;font-size:12px;pointer-events:none}
+#keyScreen{position:fixed;inset:0;height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:30px;background:radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.98),transparent 48%),linear-gradient(145deg,#fbfeff,#e5f5ff 58%,#f8fdff);cursor:pointer;text-align:center;overflow:hidden}
+#keyScreen:before{content:"";position:absolute;inset:13px;border:1px solid rgba(255,255,255,.9);outline:1px solid rgba(137,188,217,.3);pointer-events:none}
+.key-angel{font-size:15px;letter-spacing:5px;color:#a1c9e3}
+.key-title{margin:0;color:#668ba5;font-size:clamp(17px,4.5vw,23px);font-weight:normal;letter-spacing:3px;text-shadow:0 1px 10px rgba(255,255,255,.8)}
+.key-circle{width:48px;height:48px;border:1px solid #b6d7eb;border-radius:50%;display:grid;place-items:center;color:#8db8d4;background:rgba(255,255,255,.5);box-shadow:0 5px 20px rgba(130,180,210,.13)}
+.key-circle svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.35}
+.key-caption{margin:0;color:#9ab5c8;font:10px sans-serif;letter-spacing:2px}
+#lobby{position:fixed;inset:0;height:100svh;padding:calc(36px + env(safe-area-inset-top)) 22px calc(48px + env(safe-area-inset-bottom));text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+#lobby:before,.page:before{content:"";position:absolute;inset:12px;border:1px solid rgba(255,255,255,.78);pointer-events:none}
+.eyebrow{font-size:11px;letter-spacing:5px;color:#8da9bd;margin:0 0 76px}
+#lobby h1{font-size:clamp(34px,8vw,48px);font-weight:normal;letter-spacing:10px;margin:0 0 20px;color:#5a7b94}
+.subtitle{font-size:10px;letter-spacing:2.4px;color:#91a9bb;margin:0 0 52px}
+nav{width:min(100%,420px);display:grid;gap:14px}
+.menu-button,.soft-button{width:100%;padding:20px 14px;border:1px solid var(--line);color:#6587a0;background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(222,243,255,.58));box-shadow:var(--shadow);letter-spacing:4px;font-size:13px}
+.menu-button{min-height:76px}
+.menu-button:active,.soft-button:active{transform:translateY(1px)}
+.angel-mark{position:absolute;top:25px;right:28px;color:#a5d6f2;font-size:22px}
+.page{position:fixed;inset:0;height:100svh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:30px 18px calc(45px + env(safe-area-inset-bottom))}
+.page-inner{position:relative;z-index:1;width:min(100%,900px);margin:0 auto}
+.page-header{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.back-button{border:1px solid var(--line);background:rgba(255,255,255,.7);color:#6386a0;padding:10px 13px;font-size:11px;letter-spacing:1px;white-space:nowrap}
+.page-title{margin:0;font-size:25px;font-weight:normal;letter-spacing:5px;color:#5c7e97}
+.page-subtitle{margin:7px 0 0;font:10px/1.6 sans-serif;letter-spacing:1.2px;color:#91aabd}
+.glass-card{background:var(--glass);border:1px solid rgba(255,255,255,.95);outline:1px solid rgba(137,188,217,.28);box-shadow:var(--shadow);backdrop-filter:blur(12px);border-radius:3px;padding:18px;margin-bottom:18px}
+.form-grid{display:grid;grid-template-columns:1fr;gap:12px}
+.field label{display:block;font:10px sans-serif;letter-spacing:1.4px;color:#7d9db3;margin:0 0 7px}
+.field input,.field textarea{width:100%;border:1px solid rgba(137,181,208,.55);background:rgba(255,255,255,.78);color:#4b6276;padding:12px;border-radius:2px;font:13px/1.6 sans-serif}
+.field textarea{min-height:100px;resize:vertical}
+.file-note,.editor-help{font:10px/1.7 sans-serif;color:#8ba5b8;margin:7px 0 0}
+.form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.soft-button{width:auto;min-width:120px;padding:12px 15px;font:11px sans-serif;letter-spacing:1.4px}
+.soft-button.primary{background:linear-gradient(135deg,#d9f1ff,#fdfefe);border-color:#9ccce8}
+.soft-button.danger{color:#a16e7a;border-color:rgba(202,155,171,.65);background:rgba(255,247,250,.8)}
+.status{font:11px/1.6 sans-serif;color:#7097b0;margin:10px 0 0}
+.character-toolbar{display:flex;justify-content:flex-end;margin:0 0 18px}
+.character-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.character-tile{display:block;width:100%;padding:10px;border:1px solid rgba(255,255,255,.95);outline:1px solid rgba(137,188,217,.28);background:var(--glass);box-shadow:var(--shadow);text-align:left;color:var(--ink);min-width:0}
+.character-tile:active{transform:translateY(1px)}
+.tile-image{display:block;width:100%;aspect-ratio:1/1.12;object-fit:cover;object-position:center;border:1px solid rgba(137,188,217,.4);background:#eaf7ff}
+.tile-image.empty{display:grid;place-items:center;color:#9fc8e2;font-size:38px}
+.tile-name{display:block;font-size:clamp(15px,4vw,20px);letter-spacing:1px;margin:11px 2px 4px;overflow-wrap:anywhere}
+.tile-meta{display:block;font:10px/1.6 sans-serif;color:#829db1;margin:0 2px 3px;overflow-wrap:anywhere}
+.detail-hero{display:grid;grid-template-columns:minmax(110px,38%) 1fr;gap:18px;align-items:start}
+.detail-image{width:100%;aspect-ratio:3/4;object-fit:cover;border:1px solid rgba(137,188,217,.5);background:#eaf7ff}
+.detail-image.empty{display:grid;place-items:center;color:#9fc8e2;font-size:42px}
+.detail-name{font-size:clamp(22px,5vw,34px);font-weight:normal;letter-spacing:2px;overflow-wrap:anywhere;margin:0 0 12px}
+.detail-meta{font:12px/1.9 sans-serif;color:#7895aa;white-space:pre-wrap;overflow-wrap:anywhere}
+.detail-section{margin-top:18px}
+.detail-section h3{font-size:12px;font-weight:normal;letter-spacing:2px;color:#7b9db4;margin:0 0 9px}
+.markdown-content{font:13px/1.9 sans-serif;color:#536f83;overflow-wrap:anywhere;word-break:break-word}
+.markdown-content h1,.markdown-content h2,.markdown-content h3{font-family:Georgia,"Times New Roman",serif;font-weight:normal;letter-spacing:1px;color:#5b7e97;line-height:1.5;margin:16px 0 8px}
+.markdown-content h1{font-size:22px}.markdown-content h2{font-size:19px}.markdown-content h3{font-size:16px}
+.markdown-content p{margin:7px 0;white-space:pre-wrap}
+.markdown-content ul{padding-left:22px;margin:8px 0}.markdown-content li{margin:3px 0}
+.markdown-content blockquote{margin:10px 0;padding:5px 12px;border-left:2px solid #b8d9ec;color:#7b96aa;background:rgba(232,246,255,.45)}
+.markdown-content hr{border:0;border-top:1px solid #cfe3f1;margin:14px 0}
+.markdown-content strong{color:#3f627e}.markdown-content em{color:#6689a2}
+.editor-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.editor-toolbar button{border:1px solid rgba(137,181,208,.55);background:#f8fcff;color:#6287a1;padding:7px 10px;font:11px sans-serif;min-width:34px}
+.empty-state{text-align:center;padding:30px 12px;color:#8aa7bb;font:12px/1.8 sans-serif;letter-spacing:1px}
+.notice{font:11px/1.8 sans-serif;color:#7894a9}
+@media(min-width:650px){
+ .form-grid{grid-template-columns:1fr 1fr}.field.wide{grid-column:1/-1}
+ .character-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+ .glass-card{padding:22px}.eyebrow{margin-bottom:90px}.detail-hero{grid-template-columns:240px 1fr}
 }
 </style>
 </head>
-
 <body>
 
-<!-- りんごのオープニング -->
-<section id="opening">
-  <img id="scene" src="IMG_3320.png" alt="ARCHIVE">
-
+<section id="opening" aria-label="オープニング">
+  <img id="scene" alt="オープニング画像" src="IMG_3320.png">
   <div id="openingFallback" class="opening-fallback hidden">
-    <div class="symbol">✧ ♡ ✧</div>
-    <div style="letter-spacing:4px">PRIVATE COLLECTION</div>
+    <div class="halo">✧  ♡  ✧</div>
+    <div style="letter-spacing:5px;font-size:22px">PRIVATE COLLECTION</div>
+    <p>TOUCH TO CONTINUE</p>
   </div>
-
   <div id="tapHint">TAP TO CONTINUE　✧</div>
 </section>
 
-<!-- 鍵の画面 -->
-<section id="keyScreen" class="hidden">
+<section id="keyScreen" class="hidden" aria-label="アーカイブを開く">
   <div class="key-angel">✧　༺ ♱ ༻　✧</div>
-
   <h2 class="key-title">UNLOCK YOUR ARCHIVE</h2>
-
   <div class="key-circle" aria-hidden="true">
-    <svg viewBox="0 0 24 24">
-      <circle cx="8" cy="15" r="4"></circle>
-      <path d="M11 12 20 3l2 2-2 2 2 2-3 3-2-2-3 3"></path>
-    </svg>
+    <svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"></circle><path d="M11 12 20 3l2 2-2 2 2 2-3 3-2-2-3 3"></path></svg>
   </div>
-
   <p class="key-caption">TOUCH TO ENTER</p>
 </section>
 
-<!-- ロビー -->
 <section id="lobby" class="hidden">
   <div class="angel-mark">✧</div>
-
   <p class="eyebrow">PRIVATE COLLECTION</p>
   <h1>ARCHIVE</h1>
   <p class="subtitle">CHARACTERS / STORIES / WORLDS</p>
-
-  <nav>
+  <nav aria-label="メニュー">
     <button class="menu-button" id="charactersButton">CHARACTERS</button>
     <button class="menu-button" id="storiesButton">STORIES</button>
     <button class="menu-button" id="worldsButton">WORLDS</button>
   </nav>
 </section>
 
-<!-- キャラクター保管庫 -->
+<!-- ① キャラクター一覧 -->
 <section id="charactersPage" class="page hidden">
   <div class="page-inner">
-
     <header class="page-header">
       <button class="back-button" id="backToLobby">← HOME</button>
-      <div>
-        <h2 class="page-title">CHARACTERS</h2>
-        <p class="page-subtitle">CHARACTER ARCHIVE　✧</p>
-      </div>
+      <div><h2 class="page-title">CHARACTERS</h2><p class="page-subtitle">CHARACTER ARCHIVE　✧</p></div>
     </header>
+    <div class="character-toolbar">
+      <button class="soft-button primary" type="button" id="addCharacter">＋ NEW CHARACTER</button>
+    </div>
+    <div id="characterList" class="character-grid"></div>
+    <div class="glass-card notice" style="margin-top:22px">※ キャラクター情報はこのブラウザ内に保存されます。別の端末やほかの人の画面とは同期されません。</div>
+  </div>
+</section>
 
+<!-- ② キャラクター詳細 -->
+<section id="characterDetailPage" class="page hidden">
+  <div class="page-inner">
+    <header class="page-header">
+      <button class="back-button" id="backToCharacters">← CHARACTERS</button>
+      <div><h2 class="page-title">CHARACTER FILE</h2><p class="page-subtitle">PRIVATE COLLECTION　✧</p></div>
+    </header>
+    <div id="characterDetail"></div>
+  </div>
+</section>
+
+<!-- キャラクター追加・編集 -->
+<section id="characterEditorPage" class="page hidden">
+  <div class="page-inner">
+    <header class="page-header">
+      <button class="back-button" id="cancelEditor">← BACK</button>
+      <div><h2 class="page-title" id="editorHeading">NEW CHARACTER</h2><p class="page-subtitle">EDIT YOUR CHARACTER FILE　✧</p></div>
+    </header>
     <div class="glass-card">
-      <h3 style="font-weight:normal;letter-spacing:2px">
-        NEW / EDIT FILE
-      </h3>
-
       <form id="characterForm">
         <input type="hidden" id="editId">
-
         <div class="form-grid">
-          <div class="field">
-            <label for="name">NAME / 名前 *</label>
-            <input id="name" required maxlength="100" placeholder="キャラクター名">
-          </div>
-
-          <div class="field">
-            <label for="age">AGE / 年齢</label>
-            <input id="age" maxlength="100" placeholder="例：18歳">
-          </div>
-
-          <div class="field">
-            <label for="birthday">BIRTHDAY / 誕生日</label>
-            <input id="birthday" maxlength="100" placeholder="例：4月12日">
-          </div>
-
-          <div class="field">
-            <label for="relationships">RELATIONSHIPS / 関係性</label>
-            <input id="relationships" maxlength="300" placeholder="関係する人物など">
-          </div>
+          <div class="field"><label for="name">NAME / 名前 *</label><input id="name" required maxlength="100" placeholder="キャラクター名"></div>
+          <div class="field"><label for="age">AGE / 年齢</label><input id="age" maxlength="100" placeholder="例：18歳"></div>
+          <div class="field"><label for="birthday">BIRTHDAY / 誕生日</label><input id="birthday" maxlength="100" placeholder="例：4月12日"></div>
+          <div class="field"><label for="relationships">RELATIONSHIPS / 関係性</label><input id="relationships" maxlength="500" placeholder="関係する人物など"></div>
 
           <div class="field wide">
             <label for="profile">PROFILE / プロフィール</label>
-            <textarea id="profile" maxlength="5000" placeholder="外見、背景、プロフィールなど"></textarea>
+            <div class="editor-toolbar" data-target="profile">
+              <button type="button" data-md="bold"><b>B</b></button>
+              <button type="button" data-md="italic"><i>I</i></button>
+              <button type="button" data-md="h2">見出し</button>
+              <button type="button" data-md="list">箇条書き</button>
+              <button type="button" data-md="quote">引用</button>
+              <button type="button" data-md="hr">区切り線</button>
+            </div>
+            <textarea id="profile" maxlength="10000" placeholder="プロフィール、外見、背景など"></textarea>
+            <p class="editor-help">文字を選択してボタンを押すと書式を付けられます。例：**太字**、## 見出し、- 項目</p>
           </div>
 
           <div class="field wide">
             <label for="personality">PERSONALITY / 性格・設定</label>
-            <textarea id="personality" maxlength="5000" placeholder="性格、口調、設定など"></textarea>
+            <div class="editor-toolbar" data-target="personality">
+              <button type="button" data-md="bold"><b>B</b></button>
+              <button type="button" data-md="italic"><i>I</i></button>
+              <button type="button" data-md="h2">見出し</button>
+              <button type="button" data-md="list">箇条書き</button>
+              <button type="button" data-md="quote">引用</button>
+              <button type="button" data-md="hr">区切り線</button>
+            </div>
+            <textarea id="personality" maxlength="10000" placeholder="性格、口調、設定など"></textarea>
           </div>
 
           <div class="field wide">
             <label for="extra">OTHER NOTES / その他</label>
-            <textarea id="extra" maxlength="5000" placeholder="自由に使える追加項目"></textarea>
+            <div class="editor-toolbar" data-target="extra">
+              <button type="button" data-md="bold"><b>B</b></button>
+              <button type="button" data-md="italic"><i>I</i></button>
+              <button type="button" data-md="h2">見出し</button>
+              <button type="button" data-md="list">箇条書き</button>
+              <button type="button" data-md="quote">引用</button>
+              <button type="button" data-md="hr">区切り線</button>
+            </div>
+            <textarea id="extra" maxlength="10000" placeholder="自由に使える追加項目"></textarea>
           </div>
 
           <div class="field wide">
-            <label for="imageFile">IMAGE / 画像</label>
+            <label for="imageFile">IMAGE / アイコン画像</label>
             <input id="imageFile" type="file" accept="image/*">
-            <p class="file-note">
-              画像は小さめがおすすめ。ブラウザの保存容量には限りがあるよ。
-            </p>
+            <p class="file-note">一覧に大きく表示する画像です。1枚1MB程度がおすすめです。</p>
           </div>
         </div>
-
         <div class="form-actions">
           <button class="soft-button primary" type="submit" id="saveButton">SAVE FILE</button>
           <button class="soft-button" type="button" id="clearForm">CLEAR</button>
         </div>
-
         <p id="formStatus" class="status" aria-live="polite"></p>
       </form>
-    </div>
-
-    <h2 class="page-title" style="font-size:20px;margin:28px 0 8px">
-      SAVED FILES
-    </h2>
-    <p class="page-subtitle" style="margin-bottom:20px">YOUR COLLECTION</p>
-
-    <div id="characterList" class="character-grid"></div>
-
-    <div class="glass-card notice">
-      ※ 登録した内容は、このブラウザ内に保存されます。
-      別の端末やほかの人の画面には自動で同期されません。
     </div>
   </div>
 </section>
 
-<!-- STORIES / WORLDS -->
 <section id="placeholderPage" class="page hidden">
   <div class="page-inner">
     <header class="page-header">
       <button class="back-button" id="backPlaceholder">← HOME</button>
-      <div>
-        <h2 id="placeholderTitle" class="page-title">STORIES</h2>
-        <p class="page-subtitle">PRIVATE COLLECTION</p>
-      </div>
+      <div><h2 id="placeholderTitle" class="page-title">STORIES</h2><p class="page-subtitle">PRIVATE COLLECTION</p></div>
     </header>
-
-    <div class="glass-card empty-state">
-      この棚は準備中です。<br>✧
-    </div>
+    <div class="glass-card empty-state">この棚は準備中です。<br>✧</div>
   </div>
 </section>
 
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-
-  const opening = $("opening");
-  const scene = $("scene");
-  const keyScreen = $("keyScreen");
-  const lobby = $("lobby");
-  const charactersPage = $("charactersPage");
-  const placeholderPage = $("placeholderPage");
-
-  const bittenImage = "無題290_20261027070018.png";
+  const opening = $("opening"), scene = $("scene"), keyScreen = $("keyScreen"), lobby = $("lobby");
+  const charactersPage = $("charactersPage"), detailPage = $("characterDetailPage");
+  const editorPage = $("characterEditorPage"), placeholderPage = $("placeholderPage");
   const STORAGE_KEY = "archive_character_files_ice_v1";
+  const bittenImage = "無題290_20261027070018.png";
+  let stage = 0, currentImageData = "", editorReturn = "list", selectedCharacterId = "";
 
-  let stage = 0;
-  let currentImageData = "";
-
-  // オープニング画像が読み込めないときの代替表示
   scene.addEventListener("error", () => {
     scene.classList.add("hidden");
     $("openingFallback").classList.remove("hidden");
   });
-
   scene.addEventListener("load", () => {
     scene.classList.remove("hidden");
     $("openingFallback").classList.add("hidden");
   });
 
-  // 1回目：りんごがかじられる
-  // 2回目：鍵の画面へ進む
   opening.addEventListener("click", () => {
     if (stage === 0) {
       stage = 1;
@@ -672,27 +263,68 @@ nav {
     }
   });
 
-  // 鍵の画面は1回タップするだけでロビーへ
   keyScreen.addEventListener("click", () => {
     keyScreen.classList.add("hidden");
     lobby.classList.remove("hidden");
   });
 
+  function hideAllPages() {
+    [lobby, charactersPage, detailPage, editorPage, placeholderPage]
+      .forEach(el => el.classList.add("hidden"));
+  }
+
   function showLobby() {
-    charactersPage.classList.add("hidden");
-    placeholderPage.classList.add("hidden");
+    hideAllPages();
     lobby.classList.remove("hidden");
   }
 
-  $("charactersButton").addEventListener("click", () => {
-    lobby.classList.add("hidden");
+  function showCharacterList() {
+    hideAllPages();
     charactersPage.classList.remove("hidden");
     renderCharacters();
-  });
+    charactersPage.scrollTop = 0;
+  }
+
+  function showDetail(id) {
+    const item = getCharacters().find(entry => entry.id === id);
+    if (!item) {
+      showCharacterList();
+      return;
+    }
+    selectedCharacterId = id;
+    hideAllPages();
+    detailPage.classList.remove("hidden");
+    renderDetail(item);
+    detailPage.scrollTop = 0;
+  }
+
+  function showEditor(mode, item = null) {
+    editorReturn = mode;
+    resetForm();
+
+    if (item) {
+      $("editId").value = item.id;
+      ["name", "age", "birthday", "relationships", "profile", "personality", "extra"]
+        .forEach(key => $(key).value = item[key] || "");
+      currentImageData = "";
+      $("imageFile").value = "";
+      $("saveButton").textContent = "UPDATE FILE";
+      $("editorHeading").textContent = "EDIT CHARACTER";
+      $("formStatus").textContent = "画像を選び直さなければ、今の画像が残ります。";
+    } else {
+      $("editorHeading").textContent = "NEW CHARACTER";
+    }
+
+    hideAllPages();
+    editorPage.classList.remove("hidden");
+    editorPage.scrollTop = 0;
+  }
+
+  $("charactersButton").addEventListener("click", showCharacterList);
 
   function showPlaceholder(title) {
     $("placeholderTitle").textContent = title;
-    lobby.classList.add("hidden");
+    hideAllPages();
     placeholderPage.classList.remove("hidden");
   }
 
@@ -700,6 +332,13 @@ nav {
   $("worldsButton").addEventListener("click", () => showPlaceholder("WORLDS"));
   $("backToLobby").addEventListener("click", showLobby);
   $("backPlaceholder").addEventListener("click", showLobby);
+  $("backToCharacters").addEventListener("click", showCharacterList);
+  $("addCharacter").addEventListener("click", () => showEditor("list"));
+
+  $("cancelEditor").addEventListener("click", () => {
+    if (editorReturn === "detail") showDetail(selectedCharacterId);
+    else showCharacterList();
+  });
 
   function getCharacters() {
     try {
@@ -713,7 +352,7 @@ nav {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }
 
-  function fieldValue(id) {
+  function value(id) {
     return $(id).value.trim();
   }
 
@@ -727,7 +366,7 @@ nav {
 
   $("clearForm").addEventListener("click", resetForm);
 
-  $("imageFile").addEventListener("change", event => {
+  $("imageFile").addEventListener("change", async event => {
     const file = event.target.files && event.target.files[0];
     if (!file) {
       currentImageData = "";
@@ -737,156 +376,317 @@ nav {
     if (file.size > 1.5 * 1024 * 1024) {
       event.target.value = "";
       currentImageData = "";
-      $("formStatus").textContent =
-        "画像が大きすぎます。1.5MB以下の画像を選んでね。";
+      $("formStatus").textContent = "画像が大きすぎます。1.5MB以下の画像を選んでね。";
       return;
     }
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      currentImageData = String(reader.result || "");
-      $("formStatus").textContent = "画像を読み込みました。保存してね。";
-    };
-
-    reader.onerror = () => {
+    try {
+      currentImageData = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      $("formStatus").textContent = "画像を読み込みました。保存ボタンを押してね。";
+    } catch {
       currentImageData = "";
-      $("formStatus").textContent = "画像を読み込めませんでした。";
-    };
-
-    reader.readAsDataURL(file);
+      $("formStatus").textContent = "画像を読み込めませんでした。別の画像を試してね。";
+    }
   });
 
   $("characterForm").addEventListener("submit", event => {
     event.preventDefault();
 
     const id = $("editId").value ||
-      Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-
+      (Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
     const items = getCharacters();
     const old = items.find(item => item.id === id);
 
     const item = {
       id,
-      name: fieldValue("name"),
-      age: fieldValue("age"),
-      birthday: fieldValue("birthday"),
-      relationships: fieldValue("relationships"),
-      profile: fieldValue("profile"),
-      personality: fieldValue("personality"),
-      extra: fieldValue("extra"),
+      name: value("name"),
+      age: value("age"),
+      birthday: value("birthday"),
+      relationships: value("relationships"),
+      profile: value("profile"),
+      personality: value("personality"),
+      extra: value("extra"),
       image: currentImageData || (old && old.image) || ""
     };
 
-    const updated = old
+    const next = old
       ? items.map(entry => entry.id === id ? item : entry)
       : [item, ...items];
 
     try {
-      setCharacters(updated);
+      setCharacters(next);
       resetForm();
-      renderCharacters();
-      $("formStatus").textContent = "保存しました。";
+      if (editorReturn === "detail") showDetail(id);
+      else showCharacterList();
     } catch {
-      $("formStatus").textContent =
-        "保存容量が足りないみたい。画像を小さくして試してね。";
+      $("formStatus").textContent = "保存容量が足りないみたい。画像を小さくして、もう一度試してね。";
     }
   });
 
   function makeText(tag, className, text) {
-    const element = document.createElement(tag);
-    if (className) element.className = className;
-    element.textContent = text || "";
-    return element;
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    el.textContent = text || "";
+    return el;
   }
 
+  // Markdown表示：太字、斜体、見出し、箇条書き、引用、区切り線
+  function renderMarkdown(source) {
+    const root = document.createElement("div");
+    root.className = "markdown-content";
+    const lines = String(source || "").replace(/\r/g, "").split("\n");
+    let paragraph = [], list = null;
+
+    function inline(text) {
+      const frag = document.createDocumentFragment();
+      const re = /\*\*(.+?)\*\*|\*(.+?)\*|`([^`]+)`/g;
+      let last = 0, match;
+
+      while ((match = re.exec(text))) {
+        frag.append(document.createTextNode(text.slice(last, match.index)));
+        let el;
+
+        if (match[1] !== undefined) {
+          el = document.createElement("strong");
+          el.textContent = match[1];
+        } else if (match[2] !== undefined) {
+          el = document.createElement("em");
+          el.textContent = match[2];
+        } else {
+          el = document.createElement("code");
+          el.textContent = match[3];
+        }
+
+        frag.append(el);
+        last = re.lastIndex;
+      }
+
+      frag.append(document.createTextNode(text.slice(last)));
+      return frag;
+    }
+
+    function flushParagraph() {
+      if (paragraph.length) {
+        const p = document.createElement("p");
+        p.append(inline(paragraph.join("\n")));
+        root.append(p);
+        paragraph = [];
+      }
+    }
+
+    function closeList() {
+      list = null;
+    }
+
+    for (const line of lines) {
+      const heading = line.match(/^(#{1,3})\s+(.+)$/);
+
+      if (heading) {
+        flushParagraph();
+        closeList();
+        const h = document.createElement("h" + heading[1].length);
+        h.append(inline(heading[2]));
+        root.append(h);
+        continue;
+      }
+
+      if (/^\s*[-*]\s+/.test(line)) {
+        flushParagraph();
+        if (!list) {
+          list = document.createElement("ul");
+          root.append(list);
+        }
+        const li = document.createElement("li");
+        li.append(inline(line.replace(/^\s*[-*]\s+/, "")));
+        list.append(li);
+        continue;
+      } else {
+        closeList();
+      }
+
+      if (/^>\s?/.test(line)) {
+        flushParagraph();
+        const quote = document.createElement("blockquote");
+        quote.append(inline(line.replace(/^>\s?/, "")));
+        root.append(quote);
+        continue;
+      }
+
+      if (/^---+$/.test(line.trim())) {
+        flushParagraph();
+        root.append(document.createElement("hr"));
+        continue;
+      }
+
+      if (!line.trim()) {
+        flushParagraph();
+        continue;
+      }
+
+      paragraph.push(line);
+    }
+
+    flushParagraph();
+    return root;
+  }
+
+  function imageElement(item, className) {
+    if (item.image) {
+      const img = document.createElement("img");
+      img.className = className;
+      img.src = item.image;
+      img.alt = item.name + "のアイコン";
+      return img;
+    }
+    return makeText("div", className + " empty", "✧");
+  }
+
+  // ① 一覧：大きな画像と名前を並べ、カードをタップすると詳細へ
   function renderCharacters() {
     const list = $("characterList");
     list.replaceChildren();
-
     const items = getCharacters();
 
     if (!items.length) {
       list.append(makeText(
-        "div",
-        "glass-card empty-state",
-        "まだファイルがありません。上のフォームから追加してね。 ✧"
+        "div", "glass-card empty-state",
+        "まだキャラクターがいません。「＋ NEW CHARACTER」から追加してね。 ✧"
       ));
       return;
     }
 
     items.forEach(item => {
-      const card = makeText("article", "glass-card character-card", "");
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "character-tile";
+      card.setAttribute("aria-label", item.name + "の詳細を開く");
+      card.append(imageElement(item, "tile-image"));
+      card.append(makeText("span", "tile-name", item.name));
 
-      if (item.image) {
-        const image = document.createElement("img");
-        image.className = "character-image";
-        image.src = item.image;
-        image.alt = item.name + "の画像";
-        card.append(image);
-      } else {
-        card.append(makeText("div", "character-image empty", "✧"));
-      }
+      const meta = [item.age, item.birthday].filter(Boolean).join("　/ ");
+      if (meta) card.append(makeText("span", "tile-meta", meta));
 
-      const details = document.createElement("div");
-      details.append(makeText("h3", "character-name", item.name));
-
-      const description = [
-        item.age && "年齢：" + item.age,
-        item.birthday && "誕生日：" + item.birthday,
-        item.relationships && "関係性：" + item.relationships,
-        item.profile && "プロフィール：" + item.profile,
-        item.personality && "性格・設定：" + item.personality,
-        item.extra && "その他：" + item.extra
-      ].filter(Boolean).join("\n\n");
-
-      details.append(makeText(
-        "div",
-        "character-meta",
-        description || "詳細未登録"
-      ));
-
-      const actions = makeText("div", "card-actions", "");
-
-      const edit = makeText("button", "", "EDIT");
-      edit.type = "button";
-
-      edit.addEventListener("click", () => {
-        $("editId").value = item.id;
-
-        ["name","age","birthday","relationships","profile","personality","extra"]
-          .forEach(key => {
-            $(key).value = item[key] || "";
-          });
-
-        currentImageData = "";
-        $("imageFile").value = "";
-        $("saveButton").textContent = "UPDATE FILE";
-
-        $("formStatus").textContent =
-          "編集したら UPDATE FILE を押してね。画像を選び直さなければ元の画像が残ります。";
-
-        charactersPage.scrollTo({ top: 0, behavior: "smooth" });
-      });
-
-      const del = makeText("button", "", "DELETE");
-      del.type = "button";
-
-      del.addEventListener("click", () => {
-        if (!confirm("「" + item.name + "」を削除する？")) return;
-
-        setCharacters(getCharacters().filter(entry => entry.id !== item.id));
-        renderCharacters();
-      });
-
-      actions.append(edit, del);
-      details.append(actions);
-      card.append(details);
+      card.addEventListener("click", () => showDetail(item.id));
       list.append(card);
     });
   }
+
+  function addDetailSection(container, title, content) {
+    if (!content) return;
+    const section = document.createElement("section");
+    section.className = "detail-section";
+    section.append(makeText("h3", "", title));
+    section.append(renderMarkdown(content));
+    container.append(section);
+  }
+
+  // ② 詳細：プロフィールなどをMarkdownで整形して表示
+  function renderDetail(item) {
+    const root = $("characterDetail");
+    root.replaceChildren();
+
+    const hero = makeText("div", "glass-card detail-hero", "");
+    hero.append(imageElement(item, "detail-image"));
+
+    const info = document.createElement("div");
+    info.append(makeText("h1", "detail-name", item.name));
+
+    const meta = [
+      item.age && "年齢：" + item.age,
+      item.birthday && "誕生日：" + item.birthday,
+      item.relationships && "関係性：" + item.relationships
+    ].filter(Boolean).join("\n");
+
+    if (meta) info.append(makeText("div", "detail-meta", meta));
+    else info.append(makeText("div", "detail-meta", "PROFILE FILE　✧"));
+
+    hero.append(info);
+    root.append(hero);
+
+    addDetailSection(root, "PROFILE / プロフィール", item.profile);
+    addDetailSection(root, "PERSONALITY / 性格・設定", item.personality);
+    addDetailSection(root, "OTHER NOTES / その他", item.extra);
+
+    if (!item.profile && !item.personality && !item.extra) {
+      root.append(makeText(
+        "div", "glass-card empty-state",
+        "詳細はまだ登録されていません。EDITから追加できます。"
+      ));
+    }
+
+    const actions = makeText("div", "form-actions", "");
+    const edit = makeText("button", "soft-button primary", "EDIT CHARACTER");
+    edit.type = "button";
+    edit.addEventListener("click", () => showEditor("detail", item));
+
+    const del = makeText("button", "soft-button danger", "DELETE CHARACTER");
+    del.type = "button";
+    del.addEventListener("click", () => {
+      if (!confirm("「" + item.name + "」を削除する？")) return;
+      setCharacters(getCharacters().filter(entry => entry.id !== item.id));
+      showCharacterList();
+    });
+
+    actions.append(edit, del);
+    root.append(actions);
+  }
+
+  // 書式ボタン：選択した文字に記号を付けたり、見出しなどを挿入
+  document.querySelectorAll(".editor-toolbar button").forEach(button => {
+    button.addEventListener("click", () => {
+      const toolbar = button.closest(".editor-toolbar");
+      const field = $(toolbar.dataset.target);
+      const type = button.dataset.md;
+      field.focus();
+
+      const start = field.selectionStart;
+      const end = field.selectionEnd;
+      const selected = field.value.slice(start, end);
+      const before = field.value.slice(0, start);
+      const after = field.value.slice(end);
+      let insert = "", cursorStart = start, cursorEnd = end;
+
+      if (type === "bold") {
+        const text = selected || "太字";
+        insert = "**" + text + "**";
+        cursorStart = start + 2;
+        cursorEnd = cursorStart + text.length;
+      } else if (type === "italic") {
+        const text = selected || "斜体";
+        insert = "*" + text + "*";
+        cursorStart = start + 1;
+        cursorEnd = cursorStart + text.length;
+      } else if (type === "h2") {
+        const prefix = before.endsWith("\n") || start === 0 ? "" : "\n";
+        const text = selected || "見出し";
+        insert = prefix + "## " + text + "\n";
+        cursorStart = start + prefix.length + 3;
+        cursorEnd = cursorStart + text.length;
+      } else if (type === "list") {
+        insert = (selected || "項目").split("\n").map(line => "- " + line).join("\n");
+        cursorStart = start;
+        cursorEnd = start + insert.length;
+      } else if (type === "quote") {
+        insert = (selected || "引用文").split("\n").map(line => "> " + line).join("\n");
+        cursorStart = start;
+        cursorEnd = start + insert.length;
+      } else {
+        insert = (start === 0 || before.endsWith("\n") ? "" : "\n") + "---\n";
+        cursorStart = start + insert.length;
+        cursorEnd = cursorStart;
+      }
+
+      field.value = before + insert + after;
+      field.setSelectionRange(cursorStart, cursorEnd);
+      field.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  });
 })();
 </script>
-
 </body>
 </html>
