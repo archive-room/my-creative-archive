@@ -4,30 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ARCHIVE — Private Collection</title>
+
 <style>
 :root {
   --ink: #4b6276;
+  --muted: #8298aa;
+  --ice: #eaf7ff;
+  --ice2: #d7efff;
   --line: rgba(117,166,198,.55);
   --glass: rgba(255,255,255,.68);
+  --blue: #a8d9f4;
+  --white: #fbfeff;
   --shadow: 0 12px 34px rgba(104,157,190,.16);
 }
+
 * { box-sizing: border-box; }
+
 html, body {
   margin: 0;
   min-height: 100%;
   font-family: Georgia, "Times New Roman", serif;
   color: var(--ink);
 }
+
 body {
   background:
-    radial-gradient(ellipse at 15% 10%, #fff, transparent 38%),
-    radial-gradient(ellipse at 85% 20%, rgba(190,229,251,.6), transparent 42%),
-    linear-gradient(145deg, #faffff, #e7f6ff 55%, #f8fdff);
+    radial-gradient(ellipse at 15% 10%,rgba(255,255,255,.98),transparent 38%),
+    radial-gradient(ellipse at 85% 20%,rgba(190,229,251,.6),transparent 42%),
+    linear-gradient(145deg,#faffff,#e7f6ff 55%,#f8fdff);
   min-height: 100svh;
 }
+
 button, input, textarea { font: inherit; }
 button { cursor: pointer; }
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #83c5ec;
+  outline-offset: 3px;
+}
+
 .hidden { display: none !important; }
+
+/* OPENING */
 
 #opening {
   position: relative;
@@ -37,6 +57,7 @@ button { cursor: pointer; }
   background: #edf8ff;
   cursor: pointer;
 }
+
 #scene {
   display: block;
   width: 100%;
@@ -44,6 +65,7 @@ button { cursor: pointer; }
   object-fit: cover;
   object-position: center;
 }
+
 .opening-fallback {
   position: absolute;
   inset: 0;
@@ -51,19 +73,22 @@ button { cursor: pointer; }
   place-content: center;
   text-align: center;
   padding: 30px;
-  background: linear-gradient(160deg, #fbfeff, #dff3ff);
+  background: linear-gradient(160deg,#fbfeff,#dff3ff);
   color: #6b9ab9;
 }
+
 .opening-fallback .halo {
   font-size: 42px;
   letter-spacing: 8px;
   margin-bottom: 18px;
   color: #9bcde9;
 }
+
 .opening-fallback p {
   font-size: 12px;
   letter-spacing: 4px;
 }
+
 #tapHint {
   position: absolute;
   bottom: 8%;
@@ -77,9 +102,82 @@ button { cursor: pointer; }
   pointer-events: none;
 }
 
+/* KEY SCREEN */
+
+#keyScreen {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  padding: 30px;
+  background:
+    radial-gradient(ellipse at 50% 35%,rgba(255,255,255,.98),transparent 48%),
+    linear-gradient(145deg,#fbfeff,#e5f5ff 58%,#f8fdff);
+  cursor: pointer;
+  text-align: center;
+  overflow: hidden;
+}
+
+#keyScreen::before {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border: 1px solid rgba(255,255,255,.9);
+  outline: 1px solid rgba(137,188,217,.3);
+  pointer-events: none;
+}
+
+.key-angel {
+  font-size: 15px;
+  letter-spacing: 5px;
+  color: #a1c9e3;
+}
+
+.key-title {
+  margin: 0;
+  color: #668ba5;
+  font-size: clamp(17px,4.5vw,23px);
+  font-weight: normal;
+  letter-spacing: 3px;
+  text-shadow: 0 1px 10px rgba(255,255,255,.8);
+}
+
+.key-circle {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #b6d7eb;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #8db8d4;
+  background: rgba(255,255,255,.5);
+  box-shadow: 0 5px 20px rgba(130,180,210,.13);
+}
+
+.key-circle svg {
+  width: 21px;
+  height: 21px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.35;
+}
+
+.key-caption {
+  margin: 0;
+  color: #9ab5c8;
+  font: 10px sans-serif;
+  letter-spacing: 2px;
+}
+
+/* LOBBY */
+
 #lobby {
   min-height: 100svh;
-  padding: calc(36px + env(safe-area-inset-top)) 22px calc(48px + env(safe-area-inset-bottom));
+  padding: calc(36px + env(safe-area-inset-top)) 22px
+    calc(48px + env(safe-area-inset-bottom));
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -88,51 +186,63 @@ button { cursor: pointer; }
   position: relative;
   overflow: hidden;
 }
-#lobby:before, .page:before {
+
+#lobby::before,
+.page::before {
   content: "";
   position: absolute;
   inset: 12px;
   border: 1px solid rgba(255,255,255,.78);
   pointer-events: none;
 }
+
 .eyebrow {
   font-size: 11px;
   letter-spacing: 5px;
   color: #8da9bd;
   margin: 0 0 76px;
 }
+
 #lobby h1 {
-  font-size: clamp(34px, 8vw, 48px);
+  font-size: clamp(34px,8vw,48px);
   font-weight: normal;
   letter-spacing: 10px;
   margin: 0 0 20px;
   color: #5a7b94;
 }
+
 .subtitle {
   font-size: 10px;
   letter-spacing: 2.4px;
   color: #91a9bb;
   margin: 0 0 52px;
 }
+
 nav {
-  width: min(100%, 420px);
+  width: min(100%,420px);
   display: grid;
   gap: 14px;
 }
-.menu-button, .soft-button {
+
+.menu-button,
+.soft-button {
   width: 100%;
   padding: 20px 14px;
   border: 1px solid var(--line);
   color: #6587a0;
-  background: linear-gradient(135deg, rgba(255,255,255,.86), rgba(222,243,255,.58));
+  background: linear-gradient(135deg,rgba(255,255,255,.86),rgba(222,243,255,.58));
   box-shadow: var(--shadow);
   letter-spacing: 4px;
   font-size: 13px;
 }
+
 .menu-button { min-height: 76px; }
-.menu-button:active, .soft-button:active {
+
+.menu-button:active,
+.soft-button:active {
   transform: translateY(1px);
 }
+
 .angel-mark {
   position: absolute;
   top: 25px;
@@ -141,23 +251,28 @@ nav {
   font-size: 22px;
 }
 
+/* PAGES */
+
 .page {
   position: relative;
   min-height: 100svh;
   padding: 30px 18px calc(45px + env(safe-area-inset-bottom));
 }
+
 .page-inner {
   position: relative;
   z-index: 1;
-  width: min(100%, 900px);
+  width: min(100%,900px);
   margin: 0 auto;
 }
+
 .page-header {
   display: flex;
   align-items: center;
   gap: 14px;
   margin-bottom: 26px;
 }
+
 .back-button {
   border: 1px solid var(--line);
   background: rgba(255,255,255,.7);
@@ -167,6 +282,7 @@ nav {
   letter-spacing: 1px;
   white-space: nowrap;
 }
+
 .page-title {
   margin: 0;
   font-size: 25px;
@@ -174,12 +290,14 @@ nav {
   letter-spacing: 5px;
   color: #5c7e97;
 }
+
 .page-subtitle {
   margin: 7px 0 0;
   font: 10px/1.6 sans-serif;
   letter-spacing: 1.2px;
   color: #91aabd;
 }
+
 .glass-card {
   background: var(--glass);
   border: 1px solid rgba(255,255,255,.95);
@@ -190,11 +308,13 @@ nav {
   padding: 18px;
   margin-bottom: 18px;
 }
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
 }
+
 .field label {
   display: block;
   font: 10px sans-serif;
@@ -202,7 +322,9 @@ nav {
   color: #7d9db3;
   margin: 0 0 7px;
 }
-.field input, .field textarea {
+
+.field input,
+.field textarea {
   width: 100%;
   border: 1px solid rgba(137,181,208,.55);
   background: rgba(255,255,255,.78);
@@ -211,21 +333,25 @@ nav {
   border-radius: 2px;
   font: 13px/1.6 sans-serif;
 }
+
 .field textarea {
   min-height: 84px;
   resize: vertical;
 }
+
 .file-note {
   font: 10px/1.7 sans-serif;
   color: #8ba5b8;
   margin: 8px 0 0;
 }
+
 .form-actions {
   display: flex;
   gap: 9px;
   flex-wrap: wrap;
   margin-top: 14px;
 }
+
 .soft-button {
   width: auto;
   min-width: 120px;
@@ -233,26 +359,37 @@ nav {
   font: 11px sans-serif;
   letter-spacing: 1.4px;
 }
+
 .soft-button.primary {
-  background: linear-gradient(135deg, #d9f1ff, #fdfefe);
+  background: linear-gradient(135deg,#d9f1ff,#fdfefe);
   border-color: #9ccce8;
 }
+
+.soft-button.danger {
+  color: #a16e7a;
+  border-color: rgba(202,155,171,.65);
+  background: rgba(255,247,250,.8);
+}
+
 .status {
   font: 11px/1.6 sans-serif;
   color: #7097b0;
   margin: 10px 0 0;
 }
+
 .character-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 14px;
 }
+
 .character-card {
   display: grid;
   grid-template-columns: 94px 1fr;
   gap: 14px;
   align-items: start;
 }
+
 .character-image {
   width: 94px;
   height: 122px;
@@ -260,30 +397,35 @@ nav {
   border: 1px solid rgba(137,188,217,.45);
   background: #f5fbff;
 }
+
 .character-image.empty {
   display: grid;
   place-items: center;
   color: #9fc8e2;
   font-size: 25px;
 }
+
 .character-name {
   font-size: 19px;
   letter-spacing: 2px;
   margin: 0 0 8px;
   overflow-wrap: anywhere;
 }
+
 .character-meta {
   font: 11px/1.7 sans-serif;
   color: #7995a9;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+
 .card-actions {
   display: flex;
   gap: 7px;
   flex-wrap: wrap;
   margin-top: 12px;
 }
+
 .card-actions button {
   font: 10px sans-serif;
   letter-spacing: 1px;
@@ -292,6 +434,7 @@ nav {
   background: #f9fdff;
   color: #6b8ca4;
 }
+
 .empty-state {
   text-align: center;
   padding: 30px 12px;
@@ -299,36 +442,60 @@ nav {
   font: 12px/1.8 sans-serif;
   letter-spacing: 1px;
 }
+
 .notice {
   font: 11px/1.8 sans-serif;
   color: #7894a9;
 }
-@media (min-width: 650px) {
+
+@media (min-width:650px) {
   .form-grid { grid-template-columns: 1fr 1fr; }
-  .field.wide { grid-column: 1 / -1; }
+  .field.wide { grid-column: 1/-1; }
   .character-grid { grid-template-columns: 1fr 1fr; }
   .glass-card { padding: 22px; }
   .eyebrow { margin-bottom: 90px; }
 }
 </style>
 </head>
+
 <body>
 
+<!-- OPENING：りんごの画面 -->
 <section id="opening" aria-label="オープニング">
   <img id="scene" alt="オープニング画像" src="IMG_3320.png">
+
   <div id="openingFallback" class="opening-fallback hidden">
-    <div class="halo">✧ ♡ ✧</div>
+    <div class="halo">✧  ♡  ✧</div>
     <div style="letter-spacing:5px;font-size:22px">PRIVATE COLLECTION</div>
     <p>TOUCH TO CONTINUE</p>
   </div>
-  <div id="tapHint">TAP TO CONTINUE ✧</div>
+
+  <div id="tapHint">TAP TO CONTINUE　✧</div>
 </section>
 
+<!-- 鍵の画面 -->
+<section id="keyScreen" class="hidden" aria-label="アーカイブを開く">
+  <div class="key-angel">✧　༺ ♱ ༻　✧</div>
+
+  <h2 class="key-title">UNLOCK YOUR ARCHIVE</h2>
+
+  <div class="key-circle" aria-hidden="true">
+    <svg viewBox="0 0 24 24">
+      <circle cx="8" cy="15" r="4"></circle>
+      <path d="M11 12 20 3l2 2-2 2 2 2-3 3-2-2-3 3"></path>
+    </svg>
+  </div>
+
+  <p class="key-caption">TOUCH TO ENTER</p>
+</section>
+
+<!-- ロビー -->
 <section id="lobby" class="hidden">
   <div class="angel-mark">✧</div>
   <p class="eyebrow">PRIVATE COLLECTION</p>
   <h1>ARCHIVE</h1>
   <p class="subtitle">CHARACTERS / STORIES / WORLDS</p>
+
   <nav aria-label="メニュー">
     <button class="menu-button" id="charactersButton">CHARACTERS</button>
     <button class="menu-button" id="storiesButton">STORIES</button>
@@ -336,59 +503,77 @@ nav {
   </nav>
 </section>
 
+<!-- キャラクター保管庫 -->
 <section id="charactersPage" class="page hidden">
   <div class="page-inner">
+
     <header class="page-header">
       <button class="back-button" id="backToLobby">← HOME</button>
       <div>
         <h2 class="page-title">CHARACTERS</h2>
-        <p class="page-subtitle">CHARACTER ARCHIVE ✧</p>
+        <p class="page-subtitle">CHARACTER ARCHIVE　✧</p>
       </div>
     </header>
 
     <div class="glass-card">
-      <h3 style="font-weight:normal;letter-spacing:2px;margin:0 0 18px">NEW / EDIT FILE</h3>
+      <h3 style="font-weight:normal;letter-spacing:2px;margin:0 0 18px">
+        NEW / EDIT FILE
+      </h3>
+
       <form id="characterForm">
         <input type="hidden" id="editId">
+
         <div class="form-grid">
           <div class="field">
             <label for="name">NAME / 名前 *</label>
             <input id="name" required maxlength="100" placeholder="キャラクター名">
           </div>
+
           <div class="field">
             <label for="age">AGE / 年齢</label>
             <input id="age" maxlength="100" placeholder="例：18歳">
           </div>
+
           <div class="field">
             <label for="birthday">BIRTHDAY / 誕生日</label>
             <input id="birthday" maxlength="100" placeholder="例：4月12日">
           </div>
+
           <div class="field">
             <label for="relationships">RELATIONSHIPS / 関係性</label>
             <input id="relationships" maxlength="300" placeholder="関係する人物など">
           </div>
+
           <div class="field wide">
             <label for="profile">PROFILE / プロフィール</label>
             <textarea id="profile" maxlength="5000" placeholder="プロフィール、外見、背景など"></textarea>
           </div>
+
           <div class="field wide">
             <label for="personality">PERSONALITY / 性格・設定</label>
             <textarea id="personality" maxlength="5000" placeholder="性格、口調、設定など"></textarea>
           </div>
+
           <div class="field wide">
             <label for="extra">OTHER NOTES / その他</label>
             <textarea id="extra" maxlength="5000" placeholder="自由に使える追加項目"></textarea>
           </div>
+
           <div class="field wide">
             <label for="imageFile">IMAGE / 画像</label>
             <input id="imageFile" type="file" accept="image/*">
-            <p class="file-note">画像は小さめがおすすめ。保存容量に限りがあるため、1枚1MB程度を目安にしてね。</p>
+            <p class="file-note">
+              画像は小さめがおすすめ。ブラウザ内保存の容量に限りがあるため、
+              1枚1MB程度を目安にしてね。
+            </p>
           </div>
         </div>
+
         <div class="form-actions">
           <button class="soft-button primary" type="submit" id="saveButton">SAVE FILE</button>
           <button class="soft-button" type="button" id="clearForm">CLEAR</button>
         </div>
+
         <p id="formStatus" class="status" aria-live="polite"></p>
       </form>
     </div>
@@ -399,15 +584,22 @@ nav {
         <p class="page-subtitle">YOUR COLLECTION</p>
       </div>
     </div>
+
     <div id="characterList" class="character-grid"></div>
+
     <div class="glass-card notice">
-      ※ 今の保存方式では、このブラウザ内だけに保存されます。別の端末や他の閲覧者には同期されません。公開内容に反映するには、後からGitHubのファイル更新が必要です。
+      ※ 今の保存方式では、このブラウザ内だけに保存されます。
+      公開サイトを見ている人や別の端末には同期されません。
+      公開内容に反映させるには、後からGitHubのファイル更新が必要です。
     </div>
+
   </div>
 </section>
 
+<!-- STORIES / WORLDS -->
 <section id="placeholderPage" class="page hidden">
   <div class="page-inner">
+
     <header class="page-header">
       <button class="back-button" id="backPlaceholder">← HOME</button>
       <div>
@@ -415,31 +607,33 @@ nav {
         <p class="page-subtitle">PRIVATE COLLECTION</p>
       </div>
     </header>
-    <div class="glass-card empty-state">この棚は準備中です。<br>✧</div>
+
+    <div class="glass-card empty-state">
+      この棚は準備中です。<br>✧
+    </div>
+
   </div>
 </section>
 
 <script>
 (() => {
   const $ = id => document.getElementById(id);
+
   const opening = $("opening");
   const scene = $("scene");
+  const keyScreen = $("keyScreen");
   const lobby = $("lobby");
   const charactersPage = $("charactersPage");
   const placeholderPage = $("placeholderPage");
 
-  // オープニング画像のファイル名
-  const images = [
-    "IMG_3320.png",
-    "無題290_20261027070018.png",
-    "無題290_20261027070623.png",
-    "無題290_20261027073150.png"
-  ];
+  const bittenImage = "無題290_20261027070018.png";
 
   let stage = 0;
   let currentImageData = "";
+
   const STORAGE_KEY = "archive_character_files_ice_v1";
 
+  // 画像が読み込めない場合の代替画面
   scene.addEventListener("error", () => {
     scene.classList.add("hidden");
     $("openingFallback").classList.remove("hidden");
@@ -450,14 +644,23 @@ nav {
     $("openingFallback").classList.add("hidden");
   });
 
+  // りんご：1回目でかじられた画像、2回目で鍵の画面
   opening.addEventListener("click", () => {
-    stage++;
-    if (stage < images.length) {
-      scene.src = images[stage];
+    if (stage === 0) {
+      stage = 1;
+      scene.src = bittenImage;
+      $("tapHint").textContent = "TAP TO CONTINUE　✧";
     } else {
       opening.classList.add("hidden");
-      lobby.classList.remove("hidden");
+      keyScreen.classList.remove("hidden");
+      stage = 2;
     }
+  });
+
+  // 鍵の画面：1回タップするだけでロビーへ
+  keyScreen.addEventListener("click", () => {
+    keyScreen.classList.add("hidden");
+    lobby.classList.remove("hidden");
   });
 
   function showLobby() {
@@ -483,6 +686,7 @@ nav {
   $("backToLobby").addEventListener("click", showLobby);
   $("backPlaceholder").addEventListener("click", showLobby);
 
+  // キャラクターの保存
   function getCharacters() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
@@ -509,8 +713,10 @@ nav {
 
   $("clearForm").addEventListener("click", resetForm);
 
+  // 画像を読み込む
   $("imageFile").addEventListener("change", async event => {
     const file = event.target.files && event.target.files[0];
+
     if (!file) {
       currentImageData = "";
       return;
@@ -519,7 +725,8 @@ nav {
     if (file.size > 1.5 * 1024 * 1024) {
       event.target.value = "";
       currentImageData = "";
-      $("formStatus").textContent = "画像が大きすぎます。1.5MB以下の画像を選んでね。";
+      $("formStatus").textContent =
+        "画像が大きすぎます。1.5MB以下の画像を選んでね。";
       return;
     }
 
@@ -530,18 +737,22 @@ nav {
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
-      $("formStatus").textContent = "画像を読み込みました。保存ボタンを押してね。";
+
+      $("formStatus").textContent =
+        "画像を読み込みました。保存ボタンを押してね。";
     } catch {
       currentImageData = "";
-      $("formStatus").textContent = "画像を読み込めませんでした。別の画像を試してね。";
+      $("formStatus").textContent =
+        "画像を読み込めませんでした。別の画像を試してね。";
     }
   });
 
+  // 新規登録・編集内容の保存
   $("characterForm").addEventListener("submit", event => {
     event.preventDefault();
 
     const id = $("editId").value ||
-      (Date.now().toString(36) + Math.random().toString(36).slice(2, 7));
+      (Date.now().toString(36) + Math.random().toString(36).slice(2,7));
 
     const items = getCharacters();
     const old = items.find(item => item.id === id);
@@ -568,7 +779,8 @@ nav {
       renderCharacters();
       $("formStatus").textContent = "保存しました。";
     } catch {
-      $("formStatus").textContent = "保存容量が足りないみたい。画像を小さくして、もう一度試してね。";
+      $("formStatus").textContent =
+        "保存容量が足りないみたい。画像を小さくして、もう一度試してね。";
     }
   });
 
@@ -579,15 +791,20 @@ nav {
     return el;
   }
 
+  // 登録済みキャラクターを表示
   function renderCharacters() {
     const list = $("characterList");
     list.replaceChildren();
+
     const items = getCharacters();
 
     if (!items.length) {
       list.append(
-        makeText("div", "glass-card empty-state",
-          "まだファイルがありません。上のフォームから追加してね。 ✧")
+        makeText(
+          "div",
+          "glass-card empty-state",
+          "まだファイルがありません。上のフォームから追加してね。 ✧"
+        )
       );
       return;
     }
@@ -606,6 +823,7 @@ nav {
       }
 
       const details = document.createElement("div");
+
       details.append(makeText("h3", "character-name", item.name));
 
       const lines = [
@@ -617,32 +835,45 @@ nav {
         item.extra && "その他：" + item.extra
       ].filter(Boolean).join("\n\n");
 
-      details.append(makeText("div", "character-meta", lines || "詳細未登録"));
+      details.append(
+        makeText("div", "character-meta", lines || "詳細未登録")
+      );
 
       const actions = makeText("div", "card-actions", "");
+
+      // 編集ボタン
       const edit = makeText("button", "", "EDIT");
       edit.type = "button";
 
       edit.addEventListener("click", () => {
         $("editId").value = item.id;
-        ["name", "age", "birthday", "relationships", "profile", "personality", "extra"]
-          .forEach(key => $(key).value = item[key] || "");
+
+        ["name","age","birthday","relationships","profile","personality","extra"]
+          .forEach(key => {
+            $(key).value = item[key] || "";
+          });
 
         currentImageData = "";
         $("imageFile").value = "";
         $("saveButton").textContent = "UPDATE FILE";
+
         $("formStatus").textContent =
-          "編集後に UPDATE FILE を押してね。画像を選び直さなければ今の画像が残ります。";
+          "編集内容を入力して UPDATE FILE を押してね。画像を選び直さなければ今の画像が残ります。";
 
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
+      // 削除ボタン
       const del = makeText("button", "", "DELETE");
       del.type = "button";
 
       del.addEventListener("click", () => {
         if (!confirm("「" + item.name + "」を削除する？")) return;
-        setCharacters(getCharacters().filter(entry => entry.id !== item.id));
+
+        setCharacters(
+          getCharacters().filter(entry => entry.id !== item.id)
+        );
+
         renderCharacters();
       });
 
@@ -654,5 +885,6 @@ nav {
   }
 })();
 </script>
+
 </body>
 </html>
