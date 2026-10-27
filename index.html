@@ -86,17 +86,20 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 </style>
 </head>
 <body>
-
 <section id="opening">
   <img id="scene" src="IMG_3320.png" alt="ARCHIVE" draggable="false">
   <div id="openingFallback" class="hidden"><div>ARCHIVE</div><p>PRIVATE COLLECTION</p></div>
   <div id="tapHint">TAP TO CONTINUE</div>
 </section>
-
 <section id="lobby" class="hidden">
   <div class="top-actions">
     <button class="icon-button" id="filesShortcut" aria-label="FILES" title="FILES">▤</button>
-    <button class="icon-button" id="settingsShortcut" aria-label="設定" title="SETTINGS">⚙</button>
+    <button class="icon-button" id="settingsShortcut" aria-label="設定" title="SETTINGS">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/>
+        <path d="m19.4 13.5 1.1.85-1.1 1.9-1.35-.45a7.9 7.9 0 0 1-1.45.85l-.25 1.4h-2.2l-.25-1.4a7.9 7.9 0 0 1-1.7 0l-.25 1.4h-2.2l-.25-1.4a7.9 7.9 0 0 1-1.45-.85l-1.35.45-1.1-1.9 1.1-.85a7.6 7.6 0 0 1 0-1.7l-1.1-.85 1.1-1.9 1.35.45a7.9 7.9 0 0 1 1.45-.85l.25-1.4h2.2l.25 1.4a7.9 7.9 0 0 1 1.7 0l.25-1.4h2.2l.25 1.4a7.9 7.9 0 0 1 1.45.85l1.35-.45 1.1 1.9-1.1.85a7.6 7.6 0 0 1 0 1.7Z" transform="translate(-1.2 -1.1) scale(1.05)"/>
+      </svg>
+    </button>
   </div>
   <p class="eyebrow">PRIVATE COLLECTION</p>
   <h1>ARCHIVE</h1>
@@ -108,7 +111,6 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
     <button class="menu-button" data-page="filesPage">FILES</button>
   </nav>
 </section>
-
 <section id="charactersPage" class="page hidden">
   <div class="inner">
     <header class="page-header"><button class="back" data-home>← HOME</button><div><h2 class="page-title">CHARACTERS</h2><p class="note">CHARACTER ARCHIVE</p></div></header>
@@ -137,10 +139,8 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
     <div id="detailContainer"></div>
   </div>
 </section>
-
 <section id="storiesPage" class="page hidden"><div class="inner"><header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">STORIES</h2></header><div class="panel"><h3 class="panel-title">STORIES</h3><p class="note">ストーリー機能は準備中です。</p></div></div></section>
 <section id="worldsPage" class="page hidden"><div class="inner"><header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">WORLDS</h2></header><div class="panel"><h3 class="panel-title">WORLDS</h3><p class="note">ワールド機能は準備中です。</p></div></div></section>
-
 <section id="filesPage" class="page hidden">
   <div class="inner">
     <header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">FILES</h2></header>
@@ -148,7 +148,6 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
     <div class="section-heading"><h3>ALL FILES</h3><p id="fileCount">0 FILES</p></div><div id="fileList" class="file-list"></div>
   </div>
 </section>
-
 <section id="settingsPage" class="page hidden">
   <div class="inner">
     <header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">SETTINGS</h2></header>
@@ -165,31 +164,24 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
     <div class="panel"><h3 class="panel-title">ACCOUNT STATUS</h3><p id="accountStatus" class="note">未ログイン</p></div>
   </div>
 </section>
-
 <section id="adminPage" class="page hidden">
   <div class="inner"><header class="page-header"><button class="back" data-home>← HOME</button><h2 class="page-title">ADMIN</h2></header><div class="panel"><h3 class="panel-title">ADMIN PANEL</h3><p class="note">Supabaseにログイン中です。</p><div class="actions"><button id="adminToFiles">OPEN FILES</button><button id="adminToCharacters">OPEN CHARACTERS</button><button id="adminLogout2">LOG OUT</button></div></div></div>
 </section>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (() => {
 "use strict";
-
 const $ = id => document.getElementById(id);
-
 /* ARCHIVEのSupabase接続情報 */
 const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
 const SUPABASE_KEY = "sb_publishable_6Qbg-igLVVploBHb6SH51Q_G8V7DTyG";
 const TABLE = "characters";
-
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 let stage = 0;
 let selectedImage = "";
 let currentUser = null;
 let characters = [];
 let busy = false;
-
 function showOnly(id) {
   ["opening","lobby","charactersPage","storiesPage","worldsPage","filesPage","settingsPage","adminPage"].forEach(p => $(p).classList.add("hidden"));
   $(id).classList.remove("hidden");
@@ -284,7 +276,6 @@ function openForm(item=null){
   }
   $("formPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
-
 $("scene").addEventListener("error",()=>{
   $("scene").classList.add("hidden");
   $("openingFallback").classList.remove("hidden");
@@ -312,7 +303,6 @@ $("settingsShortcut").addEventListener("click",()=>showOnly("settingsPage"));
 $("filesShortcut").addEventListener("click",()=>{renderFiles();showOnly("filesPage");});
 $("addCharacter").addEventListener("click",()=>openForm());
 $("cancelForm").addEventListener("click",clearForm);
-
 $("imageFile").addEventListener("change",async e=>{
   const file=e.target.files&&e.target.files[0];
   if(!file){selectedImage="";return;}
@@ -338,7 +328,6 @@ $("imageFile").addEventListener("change",async e=>{
     message("formStatus","画像を読み込めませんでした。");
   }
 });
-
 $("characterForm").addEventListener("submit",async e=>{
   e.preventDefault();
   if(!isAdmin()){
@@ -346,10 +335,8 @@ $("characterForm").addEventListener("submit",async e=>{
     return;
   }
   if(busy)return;
-
   const name=$("name").value.trim();
   if(!name){message("formStatus","名前を入力してください。");return;}
-
   const editId=$("editId").value;
   const old=characters.find(x=>String(x.id)===String(editId));
   const item={
@@ -363,11 +350,9 @@ $("characterForm").addEventListener("submit",async e=>{
     image:selectedImage||(old&&old.image)||"",
     updated_at:new Date().toISOString()
   };
-
   busy=true;
   $("saveButton").disabled=true;
   message("formStatus","Supabaseに保存しています…");
-
   try{
     let result;
     if(editId){
@@ -396,7 +381,6 @@ $("characterForm").addEventListener("submit",async e=>{
     $("saveButton").disabled=false;
   }
 });
-
 function details(item){
   const container=$("detailContainer");
   container.replaceChildren();
@@ -407,13 +391,11 @@ function details(item){
   header.append(titleGroup);
   button(header,"CLOSE",()=>panel.remove());
   panel.append(header);
-
   if(item.image){
     const img=el("img","detail-photo");
     img.src=item.image;img.alt=item.name+"の画像";img.draggable=false;
     panel.append(img);
   }else panel.append(el("div","detail-photo no-image","NO IMAGE"));
-
   let hasDetails=false;
   if(item.age||item.birthday){
     const basic=el("div","detail-basic-info");
@@ -437,7 +419,6 @@ function details(item){
     panel.append(group);
   });
   if(!hasDetails)panel.append(el("p","detail-empty","詳しい設定はまだ登録されていません。"));
-
   if(isAdmin()){
     const actions=el("div","actions");
     button(actions,"EDIT FILE",()=>{panel.remove();openForm(item);},"primary");
@@ -447,7 +428,6 @@ function details(item){
   container.append(panel);
   panel.scrollIntoView({behavior:"smooth",block:"start"});
 }
-
 async function removeCharacter(id){
   if(!isAdmin()){alert("管理人ログインが必要です。");return;}
   const item=characters.find(x=>String(x.id)===String(id));
@@ -463,7 +443,6 @@ async function removeCharacter(id){
     alert("削除エラー："+(error.message||"不明なエラー"));
   }
 }
-
 function renderCharacters(){
   const list=$("characterList");
   list.replaceChildren();
@@ -506,7 +485,6 @@ function renderCharacters(){
     list.append(card);
   });
 }
-
 function renderFiles(){
   const list=$("fileList");
   list.replaceChildren();
@@ -527,7 +505,6 @@ function renderFiles(){
     list.append(row);
   });
 }
-
 $("exportData").addEventListener("click",()=>{
   const blob=new Blob([JSON.stringify({app:"ARCHIVE",version:2,characters},null,2)],{type:"application/json"});
   const url=URL.createObjectURL(blob);
@@ -536,12 +513,10 @@ $("exportData").addEventListener("click",()=>{
   setTimeout(()=>URL.revokeObjectURL(url),1000);
   message("fileStatus","バックアップを作成しました。");
 });
-
 $("importButton").addEventListener("click",()=>{
   if(!isAdmin()){message("fileStatus","インポートには管理人ログインが必要です。");return;}
   $("importFile").click();
 });
-
 $("importFile").addEventListener("change",async e=>{
   const file=e.target.files&&e.target.files[0];
   if(!file)return;
@@ -553,7 +528,6 @@ $("importFile").addEventListener("change",async e=>{
     const append=confirm("OK：現在のデータに追加\nキャンセル：現在のデータを置き換え");
     const source=append?items:items;
     if(!append&&!confirm("現在のキャラクターをすべて削除して置き換えます。続けますか？"))return;
-
     if(!append){
       const {error}=await supabase.from(TABLE).delete().eq("owner_id",currentUser.id);
       if(error)throw error;
@@ -581,7 +555,6 @@ $("importFile").addEventListener("change",async e=>{
     message("fileStatus","読み込みエラー："+(error.message||"ファイルを確認してください。"));
   }finally{e.target.value="";}
 });
-
 $("adminForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const email=$("adminEmail").value.trim();
@@ -601,7 +574,6 @@ $("adminForm").addEventListener("submit",async e=>{
     message("adminStatus","ログインできませんでした："+(error.message||"メールアドレスとパスワードを確認してください。"));
   }finally{$("loginButton").disabled=false;}
 });
-
 async function logout(){
   const {error}=await supabase.auth.signOut();
   if(error){message("adminStatus","ログアウトエラー："+error.message);return;}
@@ -614,12 +586,10 @@ $("adminLogout").addEventListener("click",logout);
 $("adminLogout2").addEventListener("click",logout);
 $("adminToFiles").addEventListener("click",()=>{renderFiles();showOnly("filesPage");});
 $("adminToCharacters").addEventListener("click",()=>{loadCharacters();showOnly("charactersPage");});
-
 supabase.auth.onAuthStateChange((_event,session)=>{
   currentUser=session?.user||null;
   updateAdminUI();
 });
-
 (async()=>{
   try{
     const {data,error}=await supabase.auth.getSession();
