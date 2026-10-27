@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -70,7 +71,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .character-card:hover{background:#ffffffed;border-color:#e9a6c4}
 .character-card:focus-visible{outline:2px solid #e9a6c4;outline-offset:3px}
 
-/* 画像枠を正方形に固定 */
+/* 一覧画像の枠は正方形のまま */
 .character-photo-frame{
   display:block;
   position:relative;
@@ -85,7 +86,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   line-height:0;
 }
 
-/* 画像全体を正方形の枠内に収める */
+/* 元の縦横比を維持して、ほんの少しだけ大きく見せる */
 .character-photo{
   display:block;
   width:100%;
@@ -100,6 +101,10 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   user-select:none;
   -webkit-user-select:none;
   pointer-events:none;
+}
+.character-photo-frame img.character-photo{
+  transform:scale(1.04);
+  transform-origin:center;
 }
 .no-image{
   display:grid;
@@ -121,11 +126,34 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .card-actions{display:flex;flex-wrap:wrap;gap:5px;margin:10px 2px 2px}
 .card-actions button{padding:7px 9px;font:10px sans-serif}
 .empty{padding:25px 12px;color:#8aa7bb;text-align:center;font:12px/1.8 sans-serif}
+
+/* キャラクター詳細 */
 .detail-panel{margin:20px 0 16px;padding:16px;background:var(--glass);border:1px solid white;outline:1px solid #89bcd733;box-shadow:0 5px 18px #689dbe17}
 .detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:15px}
 .detail-number{margin:0 0 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1.5px}
 .detail-title{margin:0;font-size:22px;font-weight:normal;overflow-wrap:anywhere}
-.detail-photo{display:block;width:100%;max-width:100%;height:min(72svh,650px);min-height:260px;box-sizing:border-box;object-fit:contain;object-position:center;background:#eaf7ff55;border:1px solid #89bcd72e;margin-bottom:22px;pointer-events:none}
+.detail-furigana{margin:5px 0 0;color:#8298aa;font:12px/1.6 sans-serif;letter-spacing:1px;overflow-wrap:anywhere}
+
+/* 詳細画像も正方形にして、最大420pxに抑える */
+.detail-photo{
+  display:block;
+  width:100%;
+  max-width:420px;
+  aspect-ratio:1 / 1;
+  height:auto;
+  min-height:0;
+  box-sizing:border-box;
+  object-fit:contain;
+  object-position:center;
+  background:#eaf7ff55;
+  border:1px solid #89bcd72e;
+  margin:0 auto 22px;
+  pointer-events:none;
+}
+.detail-photo.no-image{
+  height:auto;
+  aspect-ratio:1 / 1;
+}
 .detail-basic-info{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 28px;margin:0 0 22px;padding:12px 14px;background:#eaf7ff66;border:1px solid #89bcd72e}
 .detail-basic-item{min-width:0;flex:0 1 auto;max-width:100%}
 .detail-field{margin:0 0 18px}
@@ -133,6 +161,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .detail-field-value{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9;font-size:13px}
 .detail-empty{padding:18px 10px;text-align:center;color:#8aa7bb;font:11px/1.8 sans-serif}
 .detail-panel .actions{margin-top:20px}
+
 .file-list{display:grid;gap:8px}
 .file-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);background:#ffffffb3}
 .file-row-name{min-width:0;overflow-wrap:anywhere;font-size:13px}
@@ -145,7 +174,6 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   .form-grid{grid-template-columns:1fr 1fr}
   .panel,.detail-panel{padding:22px}
   .character-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-  .detail-photo{height:min(75vh,760px)}
 }
 @media(min-width:1000px){
   .character-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -211,6 +239,10 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
           <div>
             <label for="name">NAME / 名前 *</label>
             <input id="name" maxlength="100" required>
+          </div>
+          <div>
+            <label for="furigana">FURIGANA / ふりがな</label>
+            <input id="furigana" maxlength="100" placeholder="名前のふりがな">
           </div>
           <div>
             <label for="age">AGE / 年齢</label>
@@ -412,6 +444,7 @@ function normalizeRow(row){
     id:row.id,
     owner_id:row.owner_id,
     name:row.name||"",
+    furigana:row.furigana||"",
     age:row.age||"",
     birthday:row.birthday||"",
     relationships:row.relationships||"",
@@ -474,7 +507,9 @@ function openForm(item=null){
     $("formTitle").textContent="EDIT FILE";
     $("saveButton").textContent="UPDATE FILE";
     $("editId").value=String(item.id);
-    ["name","age","birthday","relationships","profile","personality","extra"].forEach(k=>$(k).value=item[k]||"");
+    ["name","furigana","age","birthday","relationships","profile","personality","extra"].forEach(k=>{
+      $(k).value=item[k]||"";
+    });
   }else{
     $("formTitle").textContent="NEW FILE";
   }
@@ -578,6 +613,7 @@ $("characterForm").addEventListener("submit",async e=>{
 
   const item={
     name,
+    furigana:$("furigana").value.trim(),
     age:$("age").value.trim(),
     birthday:$("birthday").value.trim(),
     relationships:$("relationships").value.trim(),
@@ -637,6 +673,10 @@ function details(item){
     el("p","detail-number","No."+characterNumber(item)),
     el("h3","detail-title",item.name)
   );
+
+  if(item.furigana){
+    titleGroup.append(el("p","detail-furigana",item.furigana));
+  }
 
   header.append(titleGroup);
   button(header,"CLOSE",()=>panel.remove());
@@ -763,7 +803,6 @@ function renderCharacters(){
     card.setAttribute("role","button");
     card.setAttribute("aria-label","No."+(index+1)+" "+item.name+"の詳細を表示");
 
-    /* 全カードで統一した正方形の画像枠 */
     const frame=el("div","character-photo-frame");
 
     if(item.image){
@@ -860,7 +899,7 @@ function renderFiles(){
 
 $("exportData").addEventListener("click",()=>{
   const blob=new Blob(
-    [JSON.stringify({app:"ARCHIVE",version:2,characters},null,2)],
+    [JSON.stringify({app:"ARCHIVE",version:3,characters},null,2)],
     {type:"application/json"}
   );
 
@@ -921,6 +960,7 @@ $("importFile").addEventListener("change",async e=>{
     const rows=source.map(x=>({
       owner_id:currentUser.id,
       name:x.name||"",
+      furigana:x.furigana||"",
       age:x.age||"",
       birthday:x.birthday||"",
       relationships:x.relationships||"",
