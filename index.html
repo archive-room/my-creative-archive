@@ -332,49 +332,13 @@ const $ = id => document.getElementById(id);
 const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
 const SUPABASE_KEY = "sb_publishable_6Qbg-igLVVploBH6SH51Q_G8V7DTyG";
 const TABLE = "characters";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let supabase = null;
 let stage = 0;
 let selectedImage = "";
 let currentUser = null;
 let characters = [];
 let busy = false;
-
-/* 接続エラーを画面に分かりやすく表示 */
-function explainError(error){
-  const raw = error && error.message ? error.message : String(error || "不明なエラー");
-  const lower = raw.toLowerCase();
-
-  if(
-    lower.includes("invalid api key") ||
-    lower.includes("invalidapikey") ||
-    lower.includes("api key is invalid")
-  ){
-    return "SupabaseのAPIキーが無効と判定されました。設定しているProject URLとPublishable keyが同じプロジェクトのものか確認してください。";
-  }
-
-  if(
-    lower.includes("failed to fetch") ||
-    lower.includes("networkerror") ||
-    lower.includes("load failed")
-  ){
-    return "通信に失敗しました。インターネット接続とSupabaseの状態を確認してください。";
-  }
-
-  if(
-    lower.includes("permission denied") ||
-    lower.includes("row-level security") ||
-    lower.includes("rls")
-  ){
-    return "データベースのアクセス権限で拒否されました。charactersテーブルのRLSポリシーとログイン状態を確認してください。";
-  }
-
-  if(lower.includes("relation") && lower.includes("does not exist")){
-    return "charactersテーブルが見つかりません。Supabaseのテーブル名を確認してください。";
-  }
-
-  return raw;
-}
 
 function showOnly(id) {
   ["opening","lobby","charactersPage","storiesPage","worldsPage","filesPage","settingsPage","adminPage"].forEach(p => $(p).classList.add("hidden"));
@@ -438,27 +402,20 @@ function updateAdminUI(){
 }
 
 async function loadCharacters(){
-  if(!supabase){
-    message("connectionStatus","Supabaseのライブラリを読み込めませんでした。ページを再読み込みしてください。");
-    return;
-  }
-
   message("connectionStatus","Supabaseからデータを読み込んでいます…");
-
   try{
     const {data,error}=await supabase.from(TABLE).select("*").order("id",{ascending:true});
     if(error)throw error;
-
     characters=(data||[]).map(normalizeRow);
     message("connectionStatus","Supabaseに接続しました。");
     renderCharacters();
     renderFiles();
   }catch(error){
-    console.error("ARCHIVE load error:",error);
+    console.error(error);
     characters=[];
     renderCharacters();
     renderFiles();
-    message("connectionStatus","接続エラー："+explainError(error));
+    message("connectionStatus","接続エラー："+(error.message||"設定を確認してください。"));
   }
 }
 
@@ -477,10 +434,8 @@ function openForm(item=null){
     alert("編集するには管理人ログインが必要です。");
     return;
   }
-
   clearForm();
   $("formPanel").classList.remove("hidden");
-
   if(item){
     $("formTitle").textContent="EDIT FILE";
     $("saveButton").textContent="UPDATE FILE";
@@ -489,7 +444,6 @@ function openForm(item=null){
   }else{
     $("formTitle").textContent="NEW FILE";
   }
-
   $("formPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
@@ -519,14 +473,11 @@ document.querySelectorAll("[data-page]").forEach(b=>{
 });
 
 document.querySelectorAll("[data-home]").forEach(b=>b.addEventListener("click",home));
-
 $("settingsShortcut").addEventListener("click",()=>showOnly("settingsPage"));
-
 $("filesShortcut").addEventListener("click",()=>{
   renderFiles();
   showOnly("filesPage");
 });
-
 $("addCharacter").addEventListener("click",()=>openForm());
 $("cancelForm").addEventListener("click",clearForm);
 
@@ -550,7 +501,6 @@ $("imageFile").addEventListener("change",async e=>{
 
   if(file.size>maxSize){
     message("formStatus","画像は2MB以下にしてください。");
-    e.target.value="";
     return;
   }
 
@@ -577,11 +527,6 @@ $("characterForm").addEventListener("submit",async e=>{
 
   if(!isAdmin()){
     message("formStatus","先に管理人ログインをしてください。");
-    return;
-  }
-
-  if(!supabase){
-    message("formStatus","Supabaseに接続できていません。");
     return;
   }
 
@@ -638,8 +583,8 @@ $("characterForm").addEventListener("submit",async e=>{
     await loadCharacters();
     message("connectionStatus","保存しました。Supabaseに反映されています。");
   }catch(error){
-    console.error("ARCHIVE save error:",error);
-    message("formStatus","保存エラー："+explainError(error));
+    console.error(error);
+    message("formStatus","保存エラー："+(error.message||"不明なエラー"));
   }finally{
     busy=false;
     $("saveButton").disabled=false;
@@ -760,8 +705,8 @@ async function removeCharacter(id){
     await loadCharacters();
     message("connectionStatus","削除しました。");
   }catch(error){
-    console.error("ARCHIVE delete error:",error);
-    alert("削除エラー："+explainError(error));
+    console.error(error);
+    alert("削除エラー："+(error.message||"不明なエラー"));
   }
 }
 
@@ -925,7 +870,7 @@ $("importFile").addEventListener("change",async e=>{
     }
 
     const append=confirm("OK：現在のデータに追加\nキャンセル：現在のデータを置き換え");
-    const source=items;
+    const source=append?items:items;
 
     if(!append&&!confirm("現在のキャラクターをすべて削除して置き換えます。続けますか？")){
       return;
@@ -960,8 +905,8 @@ $("importFile").addEventListener("change",async e=>{
     await loadCharacters();
     message("fileStatus","バックアップをSupabaseに読み込みました。");
   }catch(error){
-    console.error("ARCHIVE import error:",error);
-    message("fileStatus","読み込みエラー："+explainError(error));
+    console.error(error);
+    message("fileStatus","読み込みエラー："+(error.message||"ファイルを確認してください。"));
   }finally{
     e.target.value="";
   }
@@ -969,11 +914,6 @@ $("importFile").addEventListener("change",async e=>{
 
 $("adminForm").addEventListener("submit",async e=>{
   e.preventDefault();
-
-  if(!supabase){
-    message("adminStatus","Supabaseのライブラリを読み込めていません。ページを再読み込みしてください。");
-    return;
-  }
 
   const email=$("adminEmail").value.trim();
   const password=$("adminPassword").value;
@@ -992,23 +932,18 @@ $("adminForm").addEventListener("submit",async e=>{
     showOnly("adminPage");
     message("adminStatus","ログインしました。");
   }catch(error){
-    console.error("ARCHIVE login error:",error);
-    message("adminStatus","ログインできませんでした："+explainError(error));
+    console.error(error);
+    message("adminStatus","ログインできませんでした："+(error.message||"メールアドレスとパスワードを確認してください。"));
   }finally{
     $("loginButton").disabled=false;
   }
 });
 
 async function logout(){
-  if(!supabase){
-    message("adminStatus","Supabaseに接続できていません。");
-    return;
-  }
-
   const {error}=await supabase.auth.signOut();
 
   if(error){
-    message("adminStatus","ログアウトエラー："+explainError(error));
+    message("adminStatus","ログアウトエラー："+error.message);
     return;
   }
 
@@ -1031,33 +966,11 @@ $("adminToCharacters").addEventListener("click",()=>{
   showOnly("charactersPage");
 });
 
-/* Supabaseの読み込み確認 */
-if(!window.supabase || typeof window.supabase.createClient!=="function"){
-  message("connectionStatus","Supabaseのライブラリを読み込めませんでした。インターネット接続を確認してページを再読み込みしてください。");
-  message("adminStatus","Supabaseのライブラリを読み込めていません。");
-  $("addActions").classList.add("hidden");
-  console.error("Supabase JS SDK is unavailable.");
-  return;
-}
-
-/* クライアントの初期化 */
-try{
-  supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-}catch(error){
-  console.error("Supabase initialization error:",error);
-  message("connectionStatus","Supabaseの初期化に失敗しました："+explainError(error));
-  message("adminStatus","Supabaseの初期化に失敗しました："+explainError(error));
-  $("addActions").classList.add("hidden");
-  return;
-}
-
-/* ログイン状態の監視 */
 supabase.auth.onAuthStateChange((_event,session)=>{
   currentUser=session?.user||null;
   updateAdminUI();
 });
 
-/* 起動時にログイン状態を確認してデータを読み込む */
 (async()=>{
   try{
     const {data,error}=await supabase.auth.getSession();
@@ -1068,8 +981,8 @@ supabase.auth.onAuthStateChange((_event,session)=>{
     updateAdminUI();
     await loadCharacters();
   }catch(error){
-    console.error("ARCHIVE startup error:",error);
-    message("connectionStatus","接続できませんでした："+explainError(error));
+    console.error(error);
+    message("connectionStatus","接続できませんでした："+(error.message||"通信状態を確認してください。"));
   }
 })();
 
