@@ -2,215 +2,84 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>ARCHIVE</title>
 <style>
-*{box-sizing:border-box}
-:root{
-  --blue:#9fd5ef;
-  --blue2:#dff3fc;
-  --ink:#496679;
-  --silver:#c8dfea;
-  --paper:#fbfdff;
-}
-html,body{
-  margin:0;min-height:100%;
-  font-family:"Yu Mincho","Hiragino Mincho ProN",serif;
-  background:#141319;
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--blue:#a8d9f2;--pale:#eaf7ff;--ink:#496679;--silver:#c8dfea}
+html,body{margin:0;width:100%;min-height:100%;background:#141319;font-family:"Yu Mincho","Hiragino Mincho ProN",serif}
 button,input,textarea{font:inherit}
 button{cursor:pointer;touch-action:manipulation}
-button:active{transform:scale(.99)}
 [hidden]{display:none!important}
 
-/* OPENING */
-#opening{
-  width:100%;height:100vh;height:100svh;
-  overflow:hidden;cursor:pointer;
-  background:#141319;
-}
-#scene{
-  display:block;width:100%;height:100%;
-  object-fit:cover;object-position:center;
-  user-select:none;-webkit-user-drag:none;
-}
+/* OPENING：元のりんご画面 */
+#opening{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;background:#141319}
+#scene{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-drag:none}
+#appleTarget{position:absolute;left:52%;top:67.5%;width:120px;height:120px;transform:translate(-50%,-50%);border:0;outline:0;background:transparent;border-radius:50%;padding:0;touch-action:manipulation}
+#appleTarget:focus{outline:none}
+#appleTarget:before,#appleTarget:after{content:"";position:absolute;inset:25%;border:1px solid rgba(255,255,255,.8);border-radius:50%;pointer-events:none;animation:ripple 2.6s ease-out infinite}
+#appleTarget:after{animation-delay:1.3s}
+@keyframes ripple{0%{transform:scale(.7);opacity:.8}100%{transform:scale(2.2);opacity:0}}
 
 /* ORIGINAL ARCHIVE MENU */
-#lobby{
-  display:none;min-height:100vh;
-  padding:40px 22px 60px;
-  color:#f6f1f4;background:#141319;
-  text-align:center;
-}
-#lobby h1{
-  margin:20vh 0 15px;font-size:27px;
-  font-weight:normal;letter-spacing:7px;
-}
-#lobby p{
-  color:#aaa3b3;font-size:12px;letter-spacing:3px;
-}
-#lobby nav{max-width:400px;margin:45px auto}
-#lobby button{
-  width:100%;margin:7px 0;padding:20px;
-  color:white;background:transparent;
-  border:1px solid #494451;font-size:14px;
-  letter-spacing:3px;
-}
-#lobby button:active{background:#292630}
+#lobby{display:none;min-height:100vh;padding:60px 22px;color:#f6f1f4;background:#141319;text-align:center}
+#lobby h1{margin-top:20vh;font-size:25px;font-weight:normal;letter-spacing:5px}
+#lobby p{color:#aaa3b3;font-size:12px;letter-spacing:3px}
+#lobby nav{max-width:400px;margin:50px auto}
+#lobby nav button{width:100%;margin:7px 0;padding:20px;color:white;background:transparent;border:1px solid #494451;font-size:14px;letter-spacing:3px}
+#homeButton{position:absolute;top:20px;left:20px;width:auto;margin:0;padding:10px 14px;color:#c9c2ce;background:transparent;border:1px solid #494451;font-size:11px;letter-spacing:2px}
 
-/* CHARACTER ARCHIVE */
-#charactersPage{
-  display:none;min-height:100vh;
-  color:var(--ink);
-  background:
-    radial-gradient(ellipse at 50% 0%,#fff 0%,#f4fbff 38%,#dceffa 100%);
-}
-.topbar{
-  padding:17px 18px;
-  border-bottom:1px solid var(--silver);
-  background:#ffffffb8;
-  display:flex;justify-content:space-between;
-  align-items:center;gap:10px;
-}
-.topbar button,.soft-button{
-  color:#527b94;background:#ffffffc9;
-  border:1px solid #bfdce9;padding:10px 13px;
-  font-size:12px;letter-spacing:1px;
-}
-.brand{
-  font-size:11px;letter-spacing:3px;
-  color:#83b8d4;text-align:center;
-}
-.hero{text-align:center;padding:35px 18px 25px}
-.hero .ornament{color:#91c9e6;letter-spacing:8px}
-.hero h1{
-  margin:12px 0 8px;font-size:clamp(27px,7vw,42px);
-  font-weight:normal;letter-spacing:5px;
-}
-.hero p{font-size:11px;letter-spacing:2px;color:#91afc0}
-.inner{
-  width:min(950px,100%);
-  margin:auto;padding:0 15px 50px;
-}
-.glass{
-  padding:22px 17px;margin-bottom:18px;
-  border:1px solid #c7e0ec;
-  outline:1px solid #ffffff;
-  outline-offset:-5px;
-  background:#ffffffbd;
-  box-shadow:0 12px 35px #8fc5df20;
-}
-.section-title{
-  margin:0 0 17px;font-size:18px;
-  font-weight:normal;letter-spacing:2px;
-}
+/* ICE BLUE × ANGELIC CHARACTER AREA */
+#charactersPage{display:none;min-height:100vh;color:var(--ink);background:radial-gradient(ellipse at 50% 0%,#fff 0%,#f4fbff 38%,#dceffa 100%)}
+.topbar{padding:15px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--silver);background:#ffffffc9}
+.topbar button,.soft-button{padding:10px 12px;color:#527b94;background:#fff;border:1px solid #bfdce9;font-size:11px;letter-spacing:1px}
+.brand{font-size:10px;letter-spacing:2px;text-align:center;color:#83b8d4}
+.hero{text-align:center;padding:35px 15px 25px}
+.ornament{color:#91c9e6;letter-spacing:7px}
+.hero h1{margin:12px 0 8px;font-size:clamp(28px,7vw,42px);font-weight:normal;letter-spacing:4px}
+.hero p{font-size:10px;letter-spacing:2px;color:#91afc0}
+.inner{width:min(950px,100%);margin:auto;padding:0 14px 45px}
+.glass{padding:22px 16px;margin-bottom:18px;border:1px solid #c7e0ec;outline:1px solid #fff;outline-offset:-5px;background:#ffffffc9;box-shadow:0 12px 35px #8fc5df20}
+.section-title{margin:0 0 16px;font-size:17px;font-weight:normal;letter-spacing:2px}
 .section-title:before{content:"✧ ";color:#8cc7e5}
 .small-note{font-size:12px;line-height:1.9;color:#89a8ba}
-#characterList{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
-  gap:14px;
-}
-.character-card{
-  min-width:0;padding:10px;
-  border:1px solid #c9e1ed;background:#ffffffdf;
-}
-.character-card img{
-  width:100%;aspect-ratio:3/4;object-fit:cover;
-  display:block;background:#eaf7ff;
-}
-.character-card h3{
-  font-weight:normal;font-size:17px;
-  overflow-wrap:anywhere;margin:12px 0 6px;
-}
-.character-card p{
-  font-size:12px;line-height:1.8;
-  overflow-wrap:anywhere;white-space:pre-wrap;
-}
-.card-actions{display:flex;gap:6px;flex-wrap:wrap}
-.card-actions button{
-  flex:1;padding:8px 5px;font-size:11px;
-  color:#52758a;background:#f5fbff;
-  border:1px solid #c5deeb;
-}
-.card-actions .delete{
-  color:#a36e81;background:#fff8fa;border-color:#e7cbd4;
-}
-#empty{
-  padding:30px 5px;text-align:center;
-  font-size:12px;color:#95b3c3;
-}
-.field-label{
-  display:block;margin:17px 0 7px;
-  font-size:12px;letter-spacing:1px;
-}
-input[type=text],input[type=number],input[type=date],textarea{
-  width:100%;padding:12px;
-  border:1px solid #c7dfe9;
-  border-radius:2px;color:#405e70;
-  background:#fbfdff;outline:none;
-}
-input:focus,textarea:focus{
-  border-color:#85c4e3;
-  box-shadow:0 0 0 3px #b9e5fa55;
-}
-textarea{min-height:120px;resize:vertical;line-height:1.9}
+#characterList{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:13px}
+.character-card{min-width:0;padding:9px;border:1px solid #c9e1ed;background:#fff}
+.character-card img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:#eaf7ff}
+.character-card h3{font-size:16px;font-weight:normal;overflow-wrap:anywhere;margin:12px 0 6px}
+.character-card p{font-size:12px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.card-actions{display:flex;gap:5px;flex-wrap:wrap}
+.card-actions button{flex:1;padding:8px 5px;font-size:11px;color:#52758a;background:#f5fbff;border:1px solid #c5deeb}
+.card-actions .delete,.danger{color:#a36e81!important;background:#fff8fa!important;border-color:#e7cbd4!important}
+#empty{text-align:center;padding:28px 5px;font-size:12px;color:#95b3c3}
+.field-label{display:block;margin:17px 0 7px;font-size:12px;letter-spacing:1px}
+input[type=text],textarea{width:100%;padding:12px;border:1px solid #c7dfe9;border-radius:2px;color:#405e70;background:#fbfdff;outline:none}
+input:focus,textarea:focus{border-color:#85c4e3;box-shadow:0 0 0 3px #b9e5fa55}
+textarea{min-height:115px;resize:vertical;line-height:1.9}
 input[type=file]{max-width:100%;font-size:12px}
-.row{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;
-}
-.preview{
-  display:block;max-width:140px;max-height:180px;
-  object-fit:contain;margin-top:12px;
-  border:1px solid #c8dfe9;background:#f2faff;
-}
-.extra-item{
-  margin-top:12px;padding:12px;
-  border:1px solid #d2e6ef;background:#f8fcff;
-}
-.extra-item textarea{min-height:80px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.preview{display:block;max-width:140px;max-height:180px;object-fit:contain;margin-top:12px;border:1px solid #c8dfe9;background:#f2faff}
+.extra-item{margin-top:12px;padding:12px;border:1px solid #d2e6ef;background:#f8fcff}
+.extra-item textarea{min-height:75px}
 .buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-.buttons button{
-  padding:12px 15px;
-  border:1px solid #b8d9e8;
-  color:#4c7187;background:#fff;
-  font-size:12px;letter-spacing:1px;
-}
-.buttons .primary{
-  background:linear-gradient(135deg,#b8e2f5,#e7f7ff);
-  border-color:#96cce5;
-}
-.buttons .danger{
-  color:#a36e81;background:#fff8fa;border-color:#e7cbd4;
-}
-.back-bottom{
-  display:block;margin:20px auto 0;
-  padding:12px 20px;background:#ffffffb8;
-  border:1px solid #c6deea;color:#5e8296;
-}
-footer{
-  padding:25px;text-align:center;
-  border-top:1px solid #c8dfe9;
-  color:#91b6c9;font-size:10px;letter-spacing:3px;
-}
-@media(max-width:430px){
-  .row{grid-template-columns:1fr;gap:0}
-  .glass{padding:20px 14px}
-  .topbar{padding:13px 10px}
-}
+.buttons button{padding:12px 14px;border:1px solid #b8d9e8;color:#4c7187;background:#fff;font-size:12px;letter-spacing:1px}
+.buttons .primary{background:linear-gradient(135deg,#b8e2f5,#e7f7ff);border-color:#96cce5}
+.back-bottom{display:block;margin:20px auto 0;padding:12px 20px;background:#ffffffc9;border:1px solid #c6deea;color:#5e8296}
+footer{text-align:center;padding:24px;border-top:1px solid #c8dfe9;color:#91b6c9;font-size:10px;letter-spacing:3px}
+@media(max-width:430px){.row{grid-template-columns:1fr;gap:0}.glass{padding:20px 13px}.topbar{padding:12px 8px}}
 </style>
 </head>
 <body>
 
-<!-- りんごのオープニング -->
-<section id="opening" aria-label="ARCHIVE opening">
-  <img id="scene"
-       src="CECF8610-476D-4D10-ACCF-58DD0A7CB056.png"
-       alt="タップして進む">
+<!-- 1. りんごのオープニング：元の画像順を維持 -->
+<section id="opening">
+  <img id="scene" alt="">
+  <button id="appleTarget" aria-label="りんごをタップ"></button>
 </section>
 
-<!-- 既存のARCHIVEメニュー -->
+<!-- 2. 元のARCHIVEメニュー -->
 <section id="lobby">
+  <button id="homeButton">← HOME</button>
   <p>PRIVATE COLLECTION</p>
   <h1>ARCHIVE</h1>
   <p>CHARACTERS / STORIES / WORLDS</p>
@@ -221,7 +90,7 @@ footer{
   </nav>
 </section>
 
-<!-- 同じサイト内に組み込んだ水色の管理画面 -->
+<!-- 3. 同じページ内の水色の管理画面 -->
 <section id="charactersPage">
   <div class="topbar">
     <button id="backToMenu">← ARCHIVE</button>
@@ -238,10 +107,7 @@ footer{
   <main class="inner">
     <section class="glass">
       <h2 class="section-title">CHARACTER INDEX</h2>
-      <p class="small-note">
-        登録したキャラクターの資料を整理する場所。<br>
-        カードから編集・削除できます。
-      </p>
+      <p class="small-note">キャラクター資料を整理する場所。カードから編集・削除できます。</p>
       <div id="characterList"></div>
       <div id="empty">✧ CHARACTER FILES WILL APPEAR HERE ✧</div>
     </section>
@@ -254,7 +120,7 @@ footer{
         <label class="field-label" for="image">PORTRAIT / 画像</label>
         <input id="image" type="file" accept="image/*">
         <img id="preview" class="preview" alt="画像プレビュー" hidden>
-        <p class="small-note">画像はブラウザ内に保存されます。大きい画像は保存できない場合があります。</p>
+        <p class="small-note">画像はこのブラウザ内に保存されます。大きい画像は保存できない場合があります。</p>
 
         <label class="field-label" for="name">NAME / 名前 *</label>
         <input id="name" type="text" required maxlength="200" placeholder="キャラクターの名前">
@@ -284,49 +150,64 @@ footer{
         <div class="buttons">
           <button type="button" id="addExtra">＋ 項目を追加</button>
         </div>
-
         <div class="buttons">
           <button type="submit" class="primary">SAVE CHARACTER</button>
           <button type="button" id="clearForm">CLEAR</button>
         </div>
       </form>
       <p class="small-note">
-        この試作版の保存先は、現在のブラウザ内です。<br>
-        別の端末や友達の公開画面には自動反映されません。<br>
-        ログインによる編集制限も、まだ設定していません。
+        ※ この試作版は現在のブラウザ内にデータを保存します。<br>
+        他の端末・友達の公開ページへの自動反映とログイン機能は、まだ実装していません。
       </p>
     </section>
 
     <button class="back-bottom" id="backToMenuBottom">← BACK TO ARCHIVE</button>
   </main>
-
   <footer>ARCHIVE · ANGELIC CHARACTER FILES</footer>
 </section>
 
 <script>
+/* 元のりんごオープニングの画像ファイル名・順番 */
 const images = [
-  "CECF8610-476D-4D10-ACCF-58DD0A7CB056.png",
   "IMG_3320.png",
   "無題290_20261027070018.png",
-  "無題290_20261027075250.png"
+  "無題290_20261027075250.png",
+  "無題290_20261027081745.png"
 ];
 
 const $ = id => document.getElementById(id);
 const opening = $("opening");
 const scene = $("scene");
+const appleTarget = $("appleTarget");
 const lobby = $("lobby");
-const charactersPage = $("charactersPage");
-let stage = 0;
-let characters = [];
-let currentImage = "";
-let nextId = 1;
-const STORAGE_KEY = "archive_character_files_v2";
+const homeButton = $("homeButton");
+let currentIndex = 0;
+let loading = true;
 
-/* Opening: tap through the existing images */
-opening.addEventListener("click", () => {
-  stage++;
-  if (stage < images.length) {
-    scene.src = images[stage];
+/* 画像を読み込み、元のタップ操作を維持 */
+function loadImage(index) {
+  loading = true;
+  appleTarget.disabled = true;
+  scene.onload = () => {
+    loading = false;
+    appleTarget.disabled = false;
+  };
+  scene.onerror = () => {
+    loading = true;
+    appleTarget.disabled = true;
+    alert("画像が読み込めませんでした。ファイル名を確認してください。");
+  };
+  scene.src = images[index];
+}
+
+appleTarget.addEventListener("click", event => {
+  event.preventDefault();
+  event.stopPropagation();
+  if (loading) return;
+
+  if (currentIndex < images.length - 1) {
+    currentIndex++;
+    loadImage(currentIndex);
   } else {
     opening.style.display = "none";
     lobby.style.display = "block";
@@ -334,7 +215,16 @@ opening.addEventListener("click", () => {
   }
 });
 
-/* Navigation inside the same website */
+homeButton.addEventListener("click", () => {
+  lobby.style.display = "none";
+  charactersPage.style.display = "none";
+  opening.style.display = "block";
+  currentIndex = 0;
+  loadImage(currentIndex);
+  window.scrollTo(0, 0);
+});
+
+/* メニューから管理画面へ切り替える */
 $("openCharacters").addEventListener("click", () => {
   lobby.style.display = "none";
   charactersPage.style.display = "block";
@@ -350,23 +240,24 @@ function backToMenu() {
 $("backToMenu").addEventListener("click", backToMenu);
 $("backToMenuBottom").addEventListener("click", backToMenu);
 
-$("storiesButton").addEventListener("click", () => {
-  alert("STORIESのページはこれから追加します。");
-});
-$("worldsButton").addEventListener("click", () => {
-  alert("WORLDSのページはこれから追加します。");
-});
+$("storiesButton").addEventListener("click", () => alert("物語の資料はこれから追加します"));
+$("worldsButton").addEventListener("click", () => alert("世界観の資料はこれから追加します"));
 $("newCharacterTop").addEventListener("click", () => {
   resetForm();
   $("editor").scrollIntoView({behavior:"smooth"});
 });
 
-/* Character data: saved in this browser only */
+/* キャラクターの仮保存機能 */
+const STORAGE_KEY = "archive_character_files_v3";
+let characters = [];
+let currentImage = "";
+let nextId = 1;
+
 function loadCharacters() {
   try {
     characters = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
     nextId = Math.max(0, ...characters.map(c => Number(c.id) || 0)) + 1;
-  } catch (e) {
+  } catch {
     characters = [];
   }
   renderCharacters();
@@ -376,8 +267,8 @@ function persist() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(characters));
     return true;
-  } catch (e) {
-    alert("保存できませんでした。画像のサイズを小さくして、もう一度試してください。");
+  } catch {
+    alert("保存できませんでした。画像を小さくして再度お試しください。");
     return false;
   }
 }
@@ -423,9 +314,9 @@ function addExtraField(title = "", value = "") {
   const box = document.createElement("div");
   box.className = "extra-item";
 
-  const nameLabel = document.createElement("label");
-  nameLabel.className = "field-label";
-  nameLabel.textContent = "項目名";
+  const label1 = document.createElement("label");
+  label1.className = "field-label";
+  label1.textContent = "項目名";
 
   const nameInput = document.createElement("input");
   nameInput.type = "text";
@@ -433,9 +324,9 @@ function addExtraField(title = "", value = "") {
   nameInput.value = title;
   nameInput.placeholder = "例：好きなもの";
 
-  const valueLabel = document.createElement("label");
-  valueLabel.className = "field-label";
-  valueLabel.textContent = "内容";
+  const label2 = document.createElement("label");
+  label2.className = "field-label";
+  label2.textContent = "内容";
 
   const valueInput = document.createElement("textarea");
   valueInput.className = "extra-value";
@@ -449,7 +340,7 @@ function addExtraField(title = "", value = "") {
   remove.style.marginTop = "10px";
   remove.addEventListener("click", () => box.remove());
 
-  box.append(nameLabel, nameInput, valueLabel, valueInput, remove);
+  box.append(label1, nameInput, label2, valueInput, remove);
   $("extraFields").append(box);
 }
 $("addExtra").addEventListener("click", () => addExtraField());
@@ -457,7 +348,6 @@ $("addExtra").addEventListener("click", () => addExtraField());
 $("image").addEventListener("change", event => {
   const file = event.target.files[0];
   if (!file) return;
-
   if (!file.type.startsWith("image/")) {
     alert("画像ファイルを選んでね。");
     event.target.value = "";
@@ -468,7 +358,6 @@ $("image").addEventListener("change", event => {
     event.target.value = "";
     return;
   }
-
   const reader = new FileReader();
   reader.onload = () => {
     currentImage = reader.result;
@@ -480,7 +369,6 @@ $("image").addEventListener("change", event => {
 
 $("characterForm").addEventListener("submit", event => {
   event.preventDefault();
-
   const id = $("editId").value;
   const existing = characters.find(c => String(c.id) === id);
   const extras = [...document.querySelectorAll(".extra-item")].map(box => ({
@@ -519,7 +407,6 @@ $("characterForm").addEventListener("submit", event => {
 function editCharacter(id) {
   const c = characters.find(item => item.id === id);
   if (!c) return;
-
   $("editId").value = c.id;
   $("name").value = c.name || "";
   $("age").value = c.age || "";
@@ -531,11 +418,10 @@ function editCharacter(id) {
   currentImage = c.image || "";
   $("preview").hidden = !currentImage;
   if (currentImage) $("preview").src = currentImage;
-
   $("image").value = "";
+
   $("extraFields").replaceChildren();
   (c.extras || []).forEach(item => addExtraField(item.title, item.value));
-
   $("formTitle").textContent = "EDIT CHARACTER";
   $("editor").scrollIntoView({behavior:"smooth"});
 }
@@ -543,7 +429,6 @@ function editCharacter(id) {
 function deleteCharacter(id) {
   const c = characters.find(item => item.id === id);
   if (!c || !confirm("「" + c.name + "」を削除しますか？")) return;
-
   const previous = [...characters];
   characters = characters.filter(item => item.id !== id);
 
@@ -566,6 +451,8 @@ function resetForm() {
 }
 $("clearForm").addEventListener("click", resetForm);
 
+/* 初期化 */
+loadImage(currentIndex);
 loadCharacters();
 </script>
 </body>
