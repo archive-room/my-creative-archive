@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -60,7 +61,11 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .no-image{display:grid;place-items:center;color:#9fc8e2;font:12px sans-serif}
 .card-number{margin:10px 2px 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1px}
 .card-name{margin:0 2px 7px;font-size:17px;font-weight:normal;overflow-wrap:anywhere}
-.card-summary{margin:0 2px;color:#7995a9;font:10px/1.7 sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* 一覧画面：年齢と誕生日を横並びに */
+.card-basic-info{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:0 2px;color:#7995a9;font:10px/1.7 sans-serif}
+.card-basic-info span{min-width:0;overflow-wrap:anywhere}
+
 .card-hint{margin:9px 2px 0;color:#b58aa1;font:9px sans-serif;letter-spacing:.5px}
 .card-actions{display:flex;flex-wrap:wrap;gap:5px;margin:10px 2px 2px}
 .card-actions button{padding:7px 9px;font:10px sans-serif}
@@ -71,6 +76,13 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .detail-number{margin:0 0 5px;color:#b58aa1;font:10px sans-serif;letter-spacing:1.5px}
 .detail-title{margin:0;font-size:22px;font-weight:normal;overflow-wrap:anywhere}
 .detail-photo{display:block;width:100%;height:min(72svh,650px);min-height:260px;object-fit:contain;object-position:center;background:#eaf7ff55;border:1px solid #89bcd72e;margin-bottom:22px;-webkit-user-drag:none;user-select:none;-webkit-user-select:none;pointer-events:none}
+
+/* 詳細画面：年齢と誕生日を同じ行に配置 */
+.detail-basic-info{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px 28px;margin:0 0 22px;padding:12px 14px;background:#eaf7ff66;border:1px solid #89bcd72e}
+.detail-basic-item{min-width:0;flex:0 1 auto;max-width:100%}
+.detail-basic-item .detail-field-label{margin-bottom:6px}
+.detail-basic-item .detail-field-value{overflow-wrap:anywhere}
+
 .detail-field{margin:0 0 18px}
 .detail-field-label{margin:0 0 6px;color:#b58aa1;font:11px sans-serif;letter-spacing:.5px}
 .detail-field-value{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9;font-size:13px}
@@ -464,16 +476,42 @@ function details(item){
     panel.append(el("div","detail-photo no-image","NO IMAGE"));
   }
 
+  let hasDetails=false;
+
+  /* 年齢と誕生日を横並びの基本情報欄にする */
+  if(item.age||item.birthday){
+    const basicInfo=el("div","detail-basic-info");
+
+    if(item.age){
+      const ageGroup=el("div","detail-basic-item");
+      ageGroup.append(
+        el("p","detail-field-label","年齢"),
+        el("p","detail-field-value",item.age)
+      );
+      basicInfo.append(ageGroup);
+      hasDetails=true;
+    }
+
+    if(item.birthday){
+      const birthdayGroup=el("div","detail-basic-item");
+      birthdayGroup.append(
+        el("p","detail-field-label","誕生日"),
+        el("p","detail-field-value",item.birthday)
+      );
+      basicInfo.append(birthdayGroup);
+      hasDetails=true;
+    }
+
+    panel.append(basicInfo);
+  }
+
   const fields=[
-    ["年齢",item.age],
-    ["誕生日",item.birthday],
     ["関係性",item.relationships],
     ["プロフィール",item.profile],
     ["性格・設定",item.personality],
     ["その他",item.extra]
   ];
 
-  let hasDetails=false;
   fields.forEach(([label,value])=>{
     if(!value)return;
     hasDetails=true;
@@ -552,12 +590,20 @@ function renderCharacters(){
     card.append(el("p","card-number","No."+(index+1)));
     card.append(el("h3","card-name",item.name));
 
-    const summary=[
-      item.age&&"年齢："+item.age,
-      item.birthday&&"誕生日："+item.birthday
-    ].filter(Boolean).join("\n");
+    /* 一覧でも年齢と誕生日を横並びで表示 */
+    if(item.age||item.birthday){
+      const basicInfo=el("div","card-basic-info");
 
-    if(summary)card.append(el("p","card-summary",summary));
+      if(item.age){
+        basicInfo.append(el("span","","年齢："+item.age));
+      }
+
+      if(item.birthday){
+        basicInfo.append(el("span","","誕生日："+item.birthday));
+      }
+
+      card.append(basicInfo);
+    }
 
     card.append(el("p","card-hint","TAP TO VIEW DETAILS"));
 
