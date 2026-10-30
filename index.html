@@ -277,7 +277,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
           </div>
           <div class="wide">
             <label for="imageFile">IMAGE / 画像</label>
-            <input id="imageFile" type="file" accept="image/*">
+            <input id="imageFile" type="file" accept="image/*,.heic,.heif,.avif,.tif,.tiff">
             <p class="note">画像を変更しない場合は選び直さなくて大丈夫です。画像は保存前に自動で最適化されます。元画像は2MBまでです。</p>
           </div>
         </div>
@@ -403,7 +403,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 const $ = id => document.getElementById(id);
 
 const SUPABASE_URL = "https://zwygucetzeqbzayiyoed.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3eWd1Y2V0emVxYnpheWl5b2VkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMwNTQ2MTYsImV4cCI6MjEwODYzMDYxNn0.gtq4-kqSOQYl9TyAsKmXLqK6jI9KJlvZPWppEMglCc8";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp3eWd1Y2V0emVxYnpheWl5b2VkIiwiaWF0IjoxNzkzMDU0NjE2LCJleHAiOjIxMDg2MzA2MTZ9.gtq4-kqSOQYl9TyAsKmXLqK6jI9KJlvZPWppEMglCc8";
 const TABLE = "characters";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -579,7 +579,7 @@ function nextSortOrder(){
   return orders.length?Math.max(...orders)+1:characters.length+1;
 }
 
-/* 画像を軽量化してData URLに変換 */
+/* 画像を読み込んでData URLに変換 */
 function readFileAsDataURL(file){
   return new Promise((resolve,reject)=>{
     const reader=new FileReader();
@@ -598,6 +598,7 @@ function blobToDataURL(blob){
   });
 }
 
+/* 画像を軽量化。ブラウザで開けない形式は元データを保持 */
 async function optimizeImage(file){
   const originalData=await readFileAsDataURL(file);
 
@@ -612,7 +613,7 @@ async function optimizeImage(file){
   try{
     await new Promise((resolve,reject)=>{
       image.onload=resolve;
-      image.onerror=()=>reject(new Error("画像を開けませんでした。"));
+      image.onerror=()=>reject(new Error("この形式はブラウザで変換できません。"));
       image.src=objectURL;
     });
 
@@ -644,6 +645,10 @@ async function optimizeImage(file){
     if(compressedBlob.size>=file.size)return originalData;
 
     return await blobToDataURL(compressedBlob);
+  }catch(error){
+    /* HEIC・HEIFなど、ブラウザが直接開けない画像は元データを保持 */
+    console.warn("画像の自動変換をスキップしました。元画像を使用します。",error);
+    return originalData;
   }finally{
     URL.revokeObjectURL(objectURL);
   }
@@ -732,8 +737,21 @@ $("imageFile").addEventListener("change",async e=>{
 
   selectedImage="";
 
-  if(!file.type.startsWith("image/")){
+  /* MIMEタイプが空のiPhone画像も拡張子で判定 */
+  const fileName=file.name||"";
+  const extension=fileName.split(".").pop().toLowerCase();
+  const allowedExtensions=[
+    "jpg","jpeg","png","gif","webp",
+    "heic","heif","avif","bmp","tif","tiff","svg"
+  ];
+
+  const isImage=
+    file.type.startsWith("image/")||
+    allowedExtensions.includes(extension);
+
+  if(!isImage){
     message("formStatus","画像ファイルを選んでください。");
+    e.target.value="";
     return;
   }
 
