@@ -121,6 +121,10 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
 .card-hint{margin:9px 2px 0;color:#b58aa1;font:9px sans-serif;letter-spacing:.5px}
 .card-actions{display:flex;flex-wrap:wrap;gap:5px;margin:10px 2px 2px}
 .card-actions button{padding:7px 9px;font:10px sans-serif}
+.sort-actions{display:flex;gap:5px;margin:9px 2px 2px}
+.sort-actions button{flex:1;min-width:0;padding:7px 5px;font:10px sans-serif;color:#7896ac;background:#f5fbff;border-color:#b9d8e9}
+.sort-actions button:disabled{opacity:.35;cursor:default}
+.sort-note{margin:0 0 12px;color:#8298aa;font:10px/1.7 sans-serif}
 .empty{padding:25px 12px;color:#8aa7bb;text-align:center;font:12px/1.8 sans-serif}
 
 /* キャラクター詳細 */
@@ -144,10 +148,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
   margin:0 auto 22px;
   pointer-events:none;
 }
-.detail-photo.no-image{
-  height:auto;
-  aspect-ratio:1 / 1;
-}
+.detail-photo.no-image{height:auto;aspect-ratio:1 / 1}
 .detail-basic-info{
   display:flex;
   flex-wrap:wrap;
@@ -293,6 +294,7 @@ h1{margin:0;color:#5a7b94;font-size:clamp(34px,8vw,48px);font-weight:normal;lett
       <h3>SAVED FILES</h3>
       <p id="characterCount">0 FILES</p>
     </div>
+    <p class="sort-note" id="sortNote">並び順：手動（昇順）／ ↑ ↓ で順番を変更できます。</p>
     <div id="characterList" class="character-grid"></div>
     <div id="detailContainer"></div>
   </div>
@@ -411,6 +413,7 @@ let selectedImage = "";
 let currentUser = null;
 let characters = [];
 let busy = false;
+let sortingBusy = false;
 
 function showOnly(id) {
   ["opening","lobby","charactersPage","storiesPage","worldsPage","filesPage","settingsPage","adminPage"].forEach(p => $(p).classList.add("hidden"));
@@ -445,6 +448,19 @@ function characterNumber(item){
   return index>=0?index+1:"—";
 }
 
+function compareCharacters(a,b){
+  const aOrder=Number.isFinite(Number(a.sort_order))?Number(a.sort_order):Number.MAX_SAFE_INTEGER;
+  const bOrder=Number.isFinite(Number(b.sort_order))?Number(b.sort_order):Number.MAX_SAFE_INTEGER;
+
+  if(aOrder!==bOrder)return aOrder-bOrder;
+
+  return String(a.id).localeCompare(String(b.id),undefined,{numeric:true});
+}
+
+function sortCharacters(){
+  characters.sort(compareCharacters);
+}
+
 function normalizeRow(row){
   return {
     id:row.id,
@@ -459,6 +475,7 @@ function normalizeRow(row){
     personality:row.personality||"",
     extra:row.extra||"",
     image:row.image||"",
+    sort_order:row.sort_order,
     updatedAt:row.updated_at||row.updatedAt||""
   };
 }
@@ -477,10 +494,14 @@ function updateAdminUI(){
 
 async function loadCharacters(){
   message("connectionStatus","Supabaseからデータを読み込んでいます…");
+
   try{
     const {data,error}=await supabase.from(TABLE).select("*").order("id",{ascending:true});
     if(error)throw error;
+
     characters=(data||[]).map(normalizeRow);
+    sortCharacters();
+
     message("connectionStatus","Supabaseに接続しました。");
     renderCharacters();
     renderFiles();
@@ -491,6 +512,69 @@ async function loadCharacters(){
     renderFiles();
     message("connectionStatus","接続エラー："+(error.message||"設定を確認してください。"));
   }
+}
+
+/* 並び順をSupabaseに保存 */
+async function saveCharacterOrder(){
+  if(!isAdmin())throw new Error("管理人ログインが必要です。");
+
+  for(let i=0;i<characters.length;i++){
+    const item=characters[i];
+
+    const {error}=await supabase.from(TABLE)
+      .update({sort_order:i+1})
+      .eq("id",item.id)
+      .eq("owner_id",currentUser.id);
+
+    if(error)throw error;
+
+    item.sort_order=i+1;
+  }
+}
+
+/* 手動並び替え */
+async function moveCharacter(id,direction){
+  if(!isAdmin()||sortingBusy)return;
+
+  const from=characters.findIndex(x=>String(x.id)===String(id));
+  if(from<0)return;
+
+  const to=from+direction;
+  if(to<0||to>=characters.length)return;
+
+  const previous=[...characters];
+
+  [characters[from],characters[to]]=[characters[to],characters[from]];
+  renderCharacters();
+  sortingBusy=true;
+  message("connectionStatus","並び順を保存しています…");
+
+  try{
+    await saveCharacterOrder();
+    message("connectionStatus","並び順を保存しました。");
+    renderCharacters();
+    renderFiles();
+  }catch(error){
+    console.error(error);
+    characters=previous;
+    renderCharacters();
+    message("connectionStatus","並び順の保存に失敗しました："+(error.message||"設定を確認してください。"));
+    alert("並び順を保存できませんでした。\nSupabaseのsort_order列が追加されているか確認してください。");
+  }finally{
+    sortingBusy=false;
+    renderCharacters();
+  }
+}
+
+/* 新規キャラクターの追加位置を取得 */
+function nextSortOrder(){
+  if(!characters.length)return 1;
+
+  const orders=characters
+    .map(x=>Number(x.sort_order))
+    .filter(Number.isFinite);
+
+  return orders.length?Math.max(...orders)+1:characters.length+1;
 }
 
 function clearForm(){
@@ -508,18 +592,22 @@ function openForm(item=null){
     alert("編集するには管理人ログインが必要です。");
     return;
   }
+
   clearForm();
   $("formPanel").classList.remove("hidden");
+
   if(item){
     $("formTitle").textContent="EDIT FILE";
     $("saveButton").textContent="UPDATE FILE";
     $("editId").value=String(item.id);
+
     ["name","furigana","gender","age","birthday","relationships","profile","personality","extra"].forEach(k=>{
       $(k).value=item[k]||"";
     });
   }else{
     $("formTitle").textContent="NEW FILE";
   }
+
   $("formPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
@@ -646,8 +734,10 @@ $("characterForm").addEventListener("submit",async e=>{
         .eq("owner_id",currentUser.id)
         .select();
     }else{
+      const newOrder=nextSortOrder();
+
       result=await supabase.from(TABLE)
-        .insert({...item,owner_id:currentUser.id})
+        .insert({...item,owner_id:currentUser.id,sort_order:newOrder})
         .select();
     }
 
@@ -659,7 +749,7 @@ $("characterForm").addEventListener("submit",async e=>{
 
     clearForm();
     await loadCharacters();
-    message("connectionStatus","保存しました。Supabaseに反映されています。");
+    message("connectionStatus",editId?"更新しました。":"新しいキャラクターを最後尾に追加しました。");
   }catch(error){
     console.error(error);
     message("formStatus","保存エラー："+(error.message||"不明なエラー"));
@@ -850,6 +940,18 @@ function renderCharacters(){
     card.append(el("p","card-hint","TAP TO VIEW DETAILS"));
 
     if(isAdmin()){
+      const sortActions=el("div","sort-actions");
+
+      const up=button(sortActions,"↑ 上へ",()=>moveCharacter(item.id,-1));
+      up.disabled=index===0||sortingBusy;
+      up.setAttribute("aria-label",item.name+"を一つ上へ移動");
+
+      const down=button(sortActions,"↓ 下へ",()=>moveCharacter(item.id,1));
+      down.disabled=index===characters.length-1||sortingBusy;
+      down.setAttribute("aria-label",item.name+"を一つ下へ移動");
+
+      card.append(sortActions);
+
       const actions=el("div","card-actions");
       button(actions,"EDIT",()=>openForm(item));
       button(actions,"DELETE",()=>removeCharacter(item.id),"danger");
@@ -908,7 +1010,7 @@ function renderFiles(){
 
 $("exportData").addEventListener("click",()=>{
   const blob=new Blob(
-    [JSON.stringify({app:"ARCHIVE",version:3,characters},null,2)],
+    [JSON.stringify({app:"ARCHIVE",version:4,characters},null,2)],
     {type:"application/json"}
   );
 
@@ -952,7 +1054,6 @@ $("importFile").addEventListener("change",async e=>{
     }
 
     const append=confirm("OK：現在のデータに追加\nキャンセル：現在のデータを置き換え");
-    const source=items;
 
     if(!append&&!confirm("現在のキャラクターをすべて削除して置き換えます。続けますか？")){
       return;
@@ -966,7 +1067,9 @@ $("importFile").addEventListener("change",async e=>{
       if(error)throw error;
     }
 
-    const rows=source.map(x=>({
+    const startOrder=append?nextSortOrder():1;
+
+    const rows=items.map((x,index)=>({
       owner_id:currentUser.id,
       name:x.name||"",
       furigana:x.furigana||"",
@@ -978,6 +1081,7 @@ $("importFile").addEventListener("change",async e=>{
       personality:x.personality||"",
       extra:x.extra||"",
       image:x.image||"",
+      sort_order:startOrder+index,
       updated_at:new Date().toISOString()
     }));
 
